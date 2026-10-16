@@ -1,18 +1,33 @@
-<!-- Gửi game: PR này CHỈ được thêm/sửa tệp trong submissions/<game-id>/ (1 game / PR). Xem developers/GUI-GAME.md -->
-## Game
-- **id:** `<game-id>`  ·  **phiên bản:** `X.Y.Z`  ·  **tên:**
-- **Mô tả ngắn / luật chơi:**
-- **Số người:**   ·  **Bản mới hay cập nhật:**
+<!-- Đọc trước khi gửi: QUY-TAC-GUI-GAME.md. Tiêu đề PR PHẢI là: [Gửi game] <id> v<version> — <Tên game>
+     PR CHỈ được đụng submissions/<id>/, nhánh gui-<id>. Điền ĐỦ 9 mục dưới; máy kiểm từ chối mục trống (E_PR_BODY). -->
+## Tên game
+<Tên game> (id `<id>`, phiên bản `<version>`, bản mới / cập nhật)
 
-## Tự kiểm (bắt buộc)
-- [ ] PR chỉ đụng `submissions/<game-id>/` (`git status` / tab "Files changed" không có tệp nào khác)
-- [ ] `python3 devkit/check_submission.py submissions/<game-id>` → `KẾT QUẢ: ĐẠT` (dán dòng cuối vào dưới)
-- [ ] Chơi thử trọn 1 ván bằng `node jagame.js play <game-id>` ở 390×844 và 1366×900, không lỗi console, không tràn ngang
-- [ ] `view` không lộ bí mật của ghế khác / người xem
-- [ ] Có `README.md` (mô tả, luật, tác giả, giấy phép mã + NGUỒN và giấy phép từng tài sản không tự làm) và `LICENSE`
-- [ ] Không nhân vật / hình / nhạc / phông / tên có bản quyền của người khác; không ROM; nội dung hợp gia đình; không tiền thật
-- [ ] Tôi có quyền với mọi tệp trong PR và đồng ý cho Jagame phân phối game theo giấy phép đã ghi
+## Mô tả ngắn
+<1–3 câu: game là gì, luật chính>
 
+## Số người chơi
+<min>–<max>
+
+## Tác giả và liên hệ
+<tên> — <email hoặc @github>
+
+## Giấy phép (mã + tài sản)
+Mã: <MIT…> · Tài sản: <tự vẽ, cùng giấy phép / giấy phép riêng>
+
+## Nguồn ảnh và âm thanh
+<"Tự vẽ bằng SVG/CSS, không dùng âm riêng" hoặc liệt kê: tệp — tác giả — nguồn — giấy phép>
+
+## Xác nhận
+- [ ] Tôi (hoặc AI tôi dùng) tự viết mã; không dùng nhân vật, hình, nhạc, phông, tên có bản quyền của người khác; không ROM
+- [ ] Nội dung hợp gia đình 8+ tuổi; không tiền thật, không quảng cáo, không thu thập dữ liệu
+- [ ] PR chỉ đụng submissions/<id>/ trên nhánh gui-<id>
+- [ ] Tôi đồng ý cho Jagame phân phối game theo giấy phép đã ghi
+
+## Kết quả 3 lệnh
 ```
-(dán kết quả check_submission.py ở đây)
+<dán nguyên các dòng cuối của: node devkit/jagame.js check <id> · python3 devkit/check_submission.py submissions/<id> · python3 devkit/check_pr.py>
 ```
+
+## Ảnh chụp màn hình
+<kéo-thả ảnh vào đây, hoặc ghi đường dẫn trong bài gửi: submissions/<id>/screenshots/1.png>

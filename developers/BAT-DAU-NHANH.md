@@ -6,13 +6,13 @@ Cần **Node ≥ 22.2** (`node -v`) và **Python ≥ 3.8** (`python3 --version`)
 Fork repo `phamduybk/JagameServer` trên GitHub (nút **Fork**), rồi:
 ```bash
 git clone https://github.com/<tên-bạn>/JagameServer.git
-cd JagameServer/devkit
+cd JagameServer
 ```
-(Chỉ muốn thử, chưa gửi: **Code → Download ZIP**, giải nén, `cd JagameServer-main/devkit`.)
+(Chỉ muốn thử, chưa gửi: **Code → Download ZIP**, giải nén, `cd JagameServer-main`.)
 
 ## 2. Tạo game mới (1 phút)
 ```bash
-node jagame.js new bongbay --name "Bóng bay" --author "Tên bạn"
+node devkit/jagame.js new bongbay --name "Bóng bay" --author "Tên bạn"
 ```
 Tạo `games/bongbay/` từ trò mẫu Oẳn tù tì, đủ bộ:
 ```
@@ -29,8 +29,8 @@ games/bongbay/
 
 ## 3. Chạy thử (2 phút)
 ```bash
-node jagame.js check bongbay     # phải ra "KẾT QUẢ: ĐẠT — 0 lỗi"
-node jagame.js play bongbay      # mở http://127.0.0.1:7788/tools/play.html?game=bongbay
+node devkit/jagame.js check bongbay     # phải ra "KẾT QUẢ: ĐẠT — 0 lỗi"
+node devkit/jagame.js play bongbay      # mở http://127.0.0.1:7788/tools/play.html?game=bongbay
 ```
 Trang chơi thử có "máy chủ giả" chạy luật chơi ngay trong trình duyệt, 2 người chơi chung 1 máy (tự đổi ghế theo lượt).
 Thêm `&players=3`, `&bot=1` (máy chơi ghế khác), `&tick=0` (dừng đồng hồ). Mở thêm cửa sổ thứ 2 cùng địa chỉ để soi ở cỡ màn khác
@@ -41,16 +41,16 @@ Thêm `&players=3`, `&bot=1` (máy chơi ghế khác), `&tick=0` (dừng đồng
    `games/nhatque` (theo lượt, máy chơi, gợi ý, lý do kết thúc riêng) và `games/xucxac` (2–6 người, ngẫu nhiên bằng `ctx.rng`, bảng điểm).
 2. `client/index.js`: vẽ bàn trong `game.root`, gửi nước bằng `game.send({type: …})`.
 3. `test/cases.json`: thêm ca cho luật chính, nước sai, đầu hàng, kết thúc.
-4. Chạy lại `node jagame.js check bongbay` sau mỗi lần sửa.
+4. Chạy lại `node devkit/jagame.js check bongbay` sau mỗi lần sửa.
 
 ## 5. Đóng gói và tự kiểm bài gửi (1 phút)
 ```bash
-node jagame.js submit bongbay                         # check rồi chép sang ../submissions/bongbay/
-python3 check_submission.py ../submissions/bongbay    # bộ kiểm GIỐNG HỆT máy kiểm trên Pull Request — phải "KẾT QUẢ: ĐẠT"
+node devkit/jagame.js submit bongbay                         # check rồi chép sang submissions/bongbay/
+python3 devkit/check_submission.py submissions/bongbay    # bộ kiểm GIỐNG HỆT máy kiểm trên Pull Request — phải "KẾT QUẢ: ĐẠT"
 ```
 Muốn có gói `.jgame` để cài thử lên hội quán của chính bạn (Quản trị → Chợ game → Cài thủ công, bật "Cho phép nhập game ngoài kho"):
 ```bash
-python3 check_submission.py ../submissions/bongbay --jgame bongbay.jgame
+python3 devkit/check_submission.py submissions/bongbay --jgame bongbay.jgame
 ```
 
 ## 6. Gửi

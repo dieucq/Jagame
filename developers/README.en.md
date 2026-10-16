@@ -8,12 +8,12 @@ tier; each clubhouse admin decides whether to install it. The detailed docs are 
 Requirements: **Node ≥ 22.2** and **Python ≥ 3.8**. No `npm install`, no Jagame install.
 ```bash
 git clone https://github.com/<you>/JagameServer.git     # your fork
-cd JagameServer/devkit
-node jagame.js new bongbay --name "Balloons" --author "Your name"   # games/bongbay/ from a template (+ README.md, LICENSE)
-node jagame.js check bongbay      # manifest, icon, rules in a sandbox, test cases, 200 random games, bots, protocol v2
-node jagame.js play bongbay       # http://127.0.0.1:7788/tools/play.html?game=bongbay  (&players=3 &bot=1 &tick=0)
-node jagame.js submit bongbay     # copies to ../submissions/bongbay/
-python3 check_submission.py ../submissions/bongbay   # same checks as the PR bot — must print "KẾT QUẢ: ĐẠT" (PASS)
+cd JagameServer
+node devkit/jagame.js new bongbay --name "Balloons" --author "Your name"   # games/bongbay/ from a template (+ README.md, LICENSE)
+node devkit/jagame.js check bongbay      # manifest, icon, rules in a sandbox, test cases, 200 random games, bots, protocol v2
+node devkit/jagame.js play bongbay       # http://127.0.0.1:7788/tools/play.html?game=bongbay  (&players=3 &bot=1 &tick=0)
+node devkit/jagame.js submit bongbay     # copies to submissions/bongbay/
+python3 devkit/check_submission.py submissions/bongbay   # same checks as the PR bot — must print "KẾT QUẢ: ĐẠT" (PASS)
 ```
 Examples: `games/oantuti` (simultaneous + timer), `games/nhatque` (turn-based, bot, hints, custom end reason),
 `games/xucxac` (2–6 players, `ctx.rng`, scores).

@@ -1,3 +1,5 @@
+> **Đọc trước khi gửi:** [QUY-TAC-GUI-GAME.md](../QUY-TAC-GUI-GAME.md) — luật gửi game R1–R16 (nguồn chính, cùng developers/AI-RULES.md).
+
 # Dành cho nhà phát triển — viết game cho Jagame
 
 Ai cũng viết được game (và ứng dụng nhỏ chạy trong khung game) cho Jagame rồi gửi lên **Chợ game**. Chủ kho duyệt, ký hạng
@@ -17,8 +19,7 @@ Bộ công cụ: [`../devkit/`](../devkit/) — SDK, `manifest.schema.json`, `re
 `check_submission.py`, trang chơi thử, 3 game mẫu (`oantuti`, `nhatque`, `xucxac`).
 
 ```bash
-cd devkit
-node jagame.js new bongbay --name "Bóng bay" --author "Tên bạn"
-node jagame.js play bongbay
-node jagame.js submit bongbay && python3 check_submission.py ../submissions/bongbay
+node devkit/jagame.js new bongbay --name "Bóng bay" --author "Tên bạn"
+node devkit/jagame.js play bongbay
+node devkit/jagame.js submit bongbay && python3 devkit/check_submission.py submissions/bongbay
 ```

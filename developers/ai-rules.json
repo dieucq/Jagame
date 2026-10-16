@@ -342,46 +342,49 @@
  "commands": [
   {
    "step": 1,
-   "cwd": "devkit",
-   "run": "node jagame.js new <id> --name \"<Tên>\" --author \"<Tác giả>\"",
+   "cwd": ".",
+   "run": "node devkit/jagame.js new <id> --name \"<Tên>\" --author \"<Tác giả>\"",
    "pass": "Đã tạo"
   },
   {
    "step": 2,
-   "cwd": "devkit",
-   "run": "node jagame.js check <id>",
-   "pass": "KẾT QUẢ: ĐẠT — 0 lỗi"
-  },
-  {
-   "step": 3,
-   "cwd": "devkit",
-   "run": "node jagame.js play <id>",
-   "pass": "Chơi thử: http://127.0.0.1:7788/tools/play.html?game=<id>",
+   "cwd": ".",
+   "run": "node devkit/jagame.js shot <id>",
+   "pass": "Ảnh chụp:",
    "optional": true
   },
   {
-   "step": 4,
-   "cwd": "devkit",
-   "run": "node jagame.js submit <id>",
+   "step": 3,
+   "cwd": ".",
+   "run": "node devkit/jagame.js submit <id>",
    "pass": "Đã chép sang"
+  },
+  {
+   "step": 4,
+   "cwd": ".",
+   "run": "git checkout -b gui-<id> && git add submissions/<id> && git commit -m \"Gửi game <id> v<version>\"",
+   "pass": ""
   },
   {
    "step": 5,
    "cwd": ".",
-   "run": "python3 devkit/check_submission.py submissions/<id>",
-   "pass": "KẾT QUẢ: ĐẠT — 0 lỗi"
+   "run": "node devkit/jagame.js check <id>",
+   "pass": "KẾT QUẢ: ĐẠT — 0 lỗi",
+   "required_before_pr": true
   },
   {
    "step": 6,
    "cwd": ".",
-   "run": "git add submissions/<id> && git commit -m \"Gửi game <id> <version>\"",
-   "pass": ""
+   "run": "python3 devkit/check_submission.py submissions/<id>",
+   "pass": "KẾT QUẢ: ĐẠT — 0 lỗi",
+   "required_before_pr": true
   },
   {
    "step": 7,
    "cwd": ".",
-   "run": "python3 devkit/check_pr.py",
-   "pass": "PR ĐẠT — giống workflow GitHub"
+   "run": "python3 devkit/check_pr.py --title \"[Gửi game] <id> v<version> — <Tên>\" --body-file pr.md",
+   "pass": "PR ĐẠT — giống workflow GitHub",
+   "required_before_pr": true
   }
  ],
  "error_codes": {
@@ -508,6 +511,39 @@
   "E_SYSTEM": {
    "cause": "lỗi công cụ kiểm (không phải lỗi bài gửi)",
    "fix": "chạy lại; báo chủ kho nếu lặp lại"
+  },
+  "E_BRANCH_NAME": {
+   "cause": "nhánh PR không phải gui-<id>",
+   "fix": "git branch -m gui-<id> (đổi tên nhánh hiện tại) rồi push lại"
+  },
+  "E_PR_TITLE": {
+   "cause": "tiêu đề PR sai mẫu \"[Gửi game] <id> v<version> — <Tên game>\" hoặc lệch manifest (id/version/name)",
+   "fix": "sửa tiêu đề PR đúng từng ký tự; dấu — là gạch dài (U+2014); version/name lấy đúng từ manifest.json"
+  },
+  "E_PR_BODY": {
+   "cause": "mô tả PR thiếu/để trống mục bắt buộc, ô xác nhận chưa [x], thiếu kết quả 3 lệnh hoặc ảnh chụp",
+   "fix": "dán đúng mẫu .github/pull_request_template.md, điền đủ 9 mục ##, dán nguyên đầu ra 3 lệnh, thêm ảnh hoặc đường dẫn screenshots/<tệp>.png"
   }
+ },
+ "pr": {
+  "branch": "gui-<id>",
+  "title_regex": "^\\[Gửi game\\] (?P<id>[a-z][a-z0-9-]{1,31}) v(?P<version>(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)) — (?P<name>\\S.*)$",
+  "title_example": "[Gửi game] bongbay v0.1.0 — Bóng bay",
+  "sections": [
+   "Tên game",
+   "Mô tả ngắn",
+   "Số người chơi",
+   "Tác giả và liên hệ",
+   "Giấy phép (mã + tài sản)",
+   "Nguồn ảnh và âm thanh",
+   "Xác nhận",
+   "Kết quả 3 lệnh",
+   "Ảnh chụp màn hình"
+  ],
+  "results_must_contain": [
+   "KẾT QUẢ: ĐẠT — 0 lỗi",
+   "PR ĐẠT — giống workflow GitHub"
+  ],
+  "commit_message": "Gửi game <id> v<version>"
  }
 }

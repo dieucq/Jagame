@@ -13,7 +13,7 @@ labels: gui-game
 
 **Câu hỏi hoặc mô tả game:**
 
-**Nếu gửi game qua Issue:** đính kèm `<game-id>-<phiên bản>.jgsrc.zip` (do `node jagame.js pack <game-id>` tạo) và dán kết quả:
+**Nếu gửi game qua Issue:** đính kèm `<game-id>-<phiên bản>.jgsrc.zip` (do `node devkit/jagame.js pack <game-id>` tạo) và dán kết quả:
 ```
 python3 devkit/check_submission.py submissions/<game-id>
 ```

@@ -1,3 +1,5 @@
+> **Đọc trước khi gửi:** [QUY-TAC-GUI-GAME.md](../QUY-TAC-GUI-GAME.md) — luật gửi game R1–R16 (nguồn chính, cùng developers/AI-RULES.md).
+
 # AI-RULES — luật viết và gửi game Jagame (dành cho AI agent)
 
 > Đối tượng: AI agent viết code (Claude Code, Codex, Cursor…). Đọc HẾT tệp này trước khi sửa bất cứ thứ gì. Mọi câu ở đây là luật,
@@ -9,15 +11,15 @@
 1. Mục tiêu: 1 thư mục `submissions/<id>/` chứa 1 game đúng chuẩn + 1 Pull Request chỉ đụng thư mục đó.
 2. Bạn MUST chỉ tạo/sửa tệp trong `submissions/<id>/` (và nháp trong `devkit/games/<id>/`, đã bị `.gitignore`). MUST NOT sửa tệp nào khác.
 3. `<id>` MUST khớp `^[a-z][a-z0-9-]{1,31}$`, MUST NOT nằm trong danh sách id cấm (mục 1).
-4. Tạo khung bằng `node jagame.js new <id>` trong `devkit/` rồi viết lại thành game CỦA BẠN. MUST NOT gửi bản đổi tên / biến thể nhỏ của
+4. Tạo khung bằng `node devkit/jagame.js new <id>` (từ gốc repo) rồi viết lại thành game CỦA BẠN. MUST NOT gửi bản đổi tên / biến thể nhỏ của
    game mẫu (`oantuti` oẳn tù tì, `nhatque` nhặt que kiểu Nim — gồm "đếm tới 21", `xucxac` gieo xúc xắc) hay của game chính thức: người duyệt từ chối.
 5. Luật chơi `server/game.js`: `module.exports = JGCore.game({...})`, hàm thuần trên state JSON, tất định, ngẫu nhiên chỉ `ctx.rng()`.
 6. Giao diện `client/index.js`: `JG.defineGame(function (game) { … })`, chỉ vẽ trong `game.root`, chỉ gửi nước bằng `game.send()`.
 7. MUST NOT dùng API cấm (mục 4.4) — kể cả trong chuỗi; chữ `async`/`await` cấm kể cả trong chú thích.
 8. MUST có `test/cases.json`, `README.md`, `LICENSE`.
-9. Chạy lệnh mục 6 ĐÚNG THỨ TỰ; lặp sửa tới khi MỌI lệnh in dòng ĐẠT.
+9. Đọc `QUY-TAC-GUI-GAME.md` (R1–R16). Chạy lệnh mục 6 ĐÚNG THỨ TỰ; lặp sửa tới khi MỌI lệnh in dòng ĐẠT.
 10. Gặp mã lỗi `[E_…]` → tra bảng mục 7, sửa đúng nguyên nhân, chạy lại từ lệnh trượt.
-11. Chỉ khi `python3 devkit/check_pr.py` in `PR ĐẠT — giống workflow GitHub` mới push + mở PR theo mẫu mục 8.
+11. Chỉ khi `python3 devkit/check_pr.py --title … --body-file …` in `PR ĐẠT — giống workflow GitHub` mới push + mở PR (nhánh `gui-<id>`, tiêu đề + mô tả mục 8).
 12. Không cần hỏi người dùng gì thêm: mọi thứ cần biết nằm trong tệp này + `devkit/games/nhatque/` (mẫu theo lượt) + `devkit/games/xucxac/` (mẫu nhiều người).
 
 ## 1. Đặt tên
@@ -283,15 +285,18 @@ Mọi tệp chữ (trừ `README.md`, `test/`): MUST NOT chứa `http://` / `htt
 ## 6. Lệnh tự test — chạy ĐÚNG THỨ TỰ, từ GỐC repo, lặp tới khi tất cả ĐẠT
 | # | Lệnh | ĐẠT khi in |
 |---|---|---|
-| 1 | `cd devkit && node jagame.js new <id> --name "<Tên>" --author "<Tác giả>"` | `Đã tạo …/devkit/games/<id>` |
-| 2 | (viết game trong `devkit/games/<id>/`) `node jagame.js check <id>` | dòng cuối `KẾT QUẢ: ĐẠT — 0 lỗi` |
-| 3 | (tùy chọn, có trình duyệt) `node jagame.js play <id>` → mở `http://127.0.0.1:7788/tools/play.html?game=<id>&bot=1` | chơi hết 1 ván, không lỗi console; Ctrl+C để dừng |
-| 4 | `node jagame.js submit <id> && cd ..` | `Đã chép sang …/submissions/<id>` |
-| 5 | `python3 devkit/check_submission.py submissions/<id>` | dòng `KẾT QUẢ: ĐẠT — 0 lỗi, N lưu ý`. MUST đọc từng dòng `LƯU Ý`: `innerHTML` là bình thường NẾU mọi chữ từ người chơi đã qua `JGUI.esc()` (kiểm lại từng dòng được nêu); thiếu `screenshots/` được phép |
-| 6 | `git checkout -b gui-<id> && git add submissions/<id> && git commit -m "Gửi game <id> <version>"` | `git status` sạch ngoài `devkit/games/` |
-| 7 | `python3 devkit/check_pr.py` (chạy y như workflow GitHub) | dòng cuối `PR ĐẠT — giống workflow GitHub` |
-Mỗi lần sửa mã: sửa trong `devkit/games/<id>/` rồi chạy lại từ bước 2 (bước 4 chép đè), hoặc sửa thẳng `submissions/<id>/` rồi chạy lại từ bước 5
-(`node jagame.js check ../submissions/<id>` cũng chạy được). MUST NOT mở PR khi còn bất kỳ dòng `TRƯỢT`.
+| 1 | `node devkit/jagame.js new <id> --name "<Tên>" --author "<Tác giả>"` | `Đã tạo …/devkit/games/<id>` |
+| 2 | (viết game trong `devkit/games/<id>/`) `node devkit/jagame.js check <id>` | dòng cuối `KẾT QUẢ: ĐẠT — 0 lỗi` |
+| 3 | `node devkit/jagame.js shot <id>` (cần Playwright; mã thoát 2 = không có → tự chụp theo hướng dẫn in ra, hoặc ghi lý do ở mục Ảnh của PR) | `Ảnh chụp: … — 0 lỗi JS` |
+| 4 | `node devkit/jagame.js submit <id>` | `Đã chép sang …/submissions/<id>` |
+| 5 | `git checkout -b gui-<id> && git add submissions/<id> && git commit -m "Gửi game <id> v<version>"` | `git status` sạch (trừ `devkit/games/`) |
+| 6 | `node devkit/jagame.js check <id>` (giờ kiểm `submissions/<id>/`) | `KẾT QUẢ: ĐẠT — 0 lỗi` |
+| 7 | `python3 devkit/check_submission.py submissions/<id>` | `KẾT QUẢ: ĐẠT — 0 lỗi, N lưu ý`. MUST đọc từng dòng `LƯU Ý`: `innerHTML` là bình thường NẾU mọi chữ từ người chơi đã qua `JGUI.esc()`; thiếu `screenshots/` được phép |
+| 8 | Viết `devkit/games/pr-<id>.md` theo `.github/pull_request_template.md` (9 mục, mục 8), dán đầu ra bước 6, 7 và 9 | |
+| 9 | `python3 devkit/check_pr.py --title "[Gửi game] <id> v<version> — <Tên>" --body-file devkit/games/pr-<id>.md` | dòng cuối `PR ĐẠT — giống workflow GitHub` |
+Bước 9 lần đầu có thể TRƯỢT `E_PR_BODY` vì chưa có dòng `PR ĐẠT` của chính nó: chạy `python3 devkit/check_pr.py` (không tham số) → dán đầu ra
+vào mục "Kết quả 3 lệnh" → chạy lại bước 9. Sửa mã: sửa trong `devkit/games/<id>/` → `submit` lại → `git commit` → chạy lại từ bước 6
+(`check` báo lỗi nếu bản nháp khác bài gửi). MUST NOT mở PR khi còn bất kỳ dòng `TRƯỢT`. MUST NOT commit `pr-<id>.md`.
 
 ## 7. Mã lỗi từ chối
 Bộ kiểm in `TRƯỢT [E_…]` và dòng cuối `KẾT QUẢ: TRƯỢT — … · mã: E_…`. Sửa theo bảng:
@@ -329,6 +334,9 @@ Bộ kiểm in `TRƯỢT [E_…]` và dòng cuối `KẾT QUẢ: TRƯỢT — �
 | `E_TIMEOUT` | bộ chạy luật chơi quá thời gian (vòng lặp vô hạn / quá chậm) | sửa vòng lặp, giới hạn bot |
 | `E_RECEIPT` | jagame-submit.json không khớp mã (gói zip bị sửa sau khi đóng) | đóng gói lại |
 | `E_SYSTEM` | lỗi công cụ kiểm (không phải lỗi bài gửi) | chạy lại; báo chủ kho nếu lặp lại |
+| `E_BRANCH_NAME` | nhánh PR không phải gui-<id> | git branch -m gui-<id> (đổi tên nhánh hiện tại) rồi push lại |
+| `E_PR_TITLE` | tiêu đề PR sai mẫu "[Gửi game] <id> v<version> — <Tên game>" hoặc lệch manifest (id/version/name) | sửa tiêu đề PR đúng từng ký tự; dấu — là gạch dài (U+2014); version/name lấy đúng từ manifest.json |
+| `E_PR_BODY` | mô tả PR thiếu/để trống mục bắt buộc, ô xác nhận chưa [x], thiếu kết quả 3 lệnh hoặc ảnh chụp | dán đúng mẫu .github/pull_request_template.md, điền đủ 9 mục ##, dán nguyên đầu ra 3 lệnh, thêm ảnh hoặc đường dẫn screenshots/<tệp>.png |
 <!-- /ERROR_CODES -->
 
 ## 8. Checklist cuối + mẫu PR
@@ -340,17 +348,46 @@ Bộ kiểm in `TRƯỢT [E_…]` và dòng cuối `KẾT QUẢ: TRƯỢT — �
 - [ ] `view` không lộ bí mật; mọi tên người chơi qua `JGUI.esc` (đã soát từng dòng `innerHTML` mà bộ kiểm nêu)
 - [ ] Không push lên `main`; PR mở từ nhánh `gui-<id>` của bản fork
 
-**Tiêu đề PR:** `Gửi game <id> <version>` (vd `Gửi game bongbay 0.1.0`)
-**Mô tả PR** (điền mẫu `.github/pull_request_template.md`):
+**Tên nhánh:** `gui-<id>` (`E_BRANCH_NAME`). **Tiêu đề PR:** `[Gửi game] <id> v<version> — <Tên game>` — `version`, `Tên game` lấy NGUYÊN từ
+manifest, `—` là gạch dài U+2014 (vd `[Gửi game] bongbay v0.1.0 — Bóng bay`; `E_PR_TITLE`).
+**Mô tả PR** = `.github/pull_request_template.md` điền ĐỦ 9 mục `##`, không còn chỗ `<…>` (`E_PR_BODY`). Ví dụ đầy đủ:
+~~~markdown
+## Tên game
+Bóng bay (id `bongbay`, phiên bản `0.1.0`, bản mới)
+
+## Mô tả ngắn
+Lần lượt bơm bóng 1–3 hơi, ai làm bóng nổ là thua.
+
+## Số người chơi
+2–4
+
+## Tác giả và liên hệ
+Nguyễn Văn A — @nguyenvana (GitHub)
+
+## Giấy phép (mã + tài sản)
+Mã: MIT · Tài sản: tự vẽ bằng SVG/CSS, MIT
+
+## Nguồn ảnh và âm thanh
+Tự vẽ bằng SVG/CSS; chỉ dùng âm có sẵn của khung (game.sound), không có tệp âm riêng.
+
+## Xác nhận
+- [x] Tôi (hoặc AI tôi dùng) tự viết mã; không dùng nhân vật, hình, nhạc, phông, tên có bản quyền của người khác; không ROM
+- [x] Nội dung hợp gia đình 8+ tuổi; không tiền thật, không quảng cáo, không thu thập dữ liệu
+- [x] PR chỉ đụng submissions/bongbay/ trên nhánh gui-bongbay
+- [x] Tôi đồng ý cho Jagame phân phối game theo giấy phép đã ghi
+
+## Kết quả 3 lệnh
 ```
-## Game
-- id: `<id>` · phiên bản: `<version>` · tên: <Tên>
-- Mô tả ngắn / luật chơi: <1–3 câu>
-- Số người: <min>–<max> · Bản mới
-## Tự kiểm
-- [x] PR chỉ đụng submissions/<id>/
-- [x] python3 devkit/check_submission.py submissions/<id> → KẾT QUẢ: ĐẠT
-- [x] python3 devkit/check_pr.py → PR ĐẠT — giống workflow GitHub
-- [x] view không lộ bí mật · README.md + LICENSE · không tài sản có bản quyền · hợp gia đình
-- Viết bởi AI agent: <tên công cụ> (người gửi chịu trách nhiệm nội dung)
+$ node devkit/jagame.js check bongbay
+KẾT QUẢ: ĐẠT — 0 lỗi
+$ python3 devkit/check_submission.py submissions/bongbay
+KẾT QUẢ: ĐẠT — 0 lỗi, 2 lưu ý
+$ python3 devkit/check_pr.py
+PR ĐẠT — giống workflow GitHub
 ```
+
+## Ảnh chụp màn hình
+submissions/bongbay/screenshots/1.png · submissions/bongbay/screenshots/2.png
+~~~
+`## Tác giả và liên hệ`: MUST là tên + liên hệ của NGƯỜI GỬI (lấy `git config user.name`, tài khoản GitHub của bản fork / `git remote -v`); MUST NOT bịa hay chép email, số điện thoại từ ngữ cảnh khác.
+Ghi chú thêm (SHOULD, đặt cuối mục "Mô tả ngắn"): "Viết bởi AI agent <tên công cụ>; người gửi chịu trách nhiệm nội dung"; lý do bỏ ca kiểm hết ván (mục 5) nếu có.

@@ -1,3 +1,5 @@
+> **Đọc trước khi gửi:** [QUY-TAC-GUI-GAME.md](QUY-TAC-GUI-GAME.md) — luật gửi game R1–R16 (nguồn chính, cùng developers/AI-RULES.md).
+
 # Đóng góp cho Jagame
 
 Repo này chứa **bản phát hành đã mã hóa** của Jagame (máy chủ hội quán) cùng **tài liệu + bộ công cụ cho nhà phát triển game**.
@@ -5,7 +7,7 @@ Mã nguồn hệ thống (máy chủ, đồng bộ kho, tên miền, bảo mật
 
 ## Gửi game
 1. Đọc [developers/BAT-DAU-NHANH.md](developers/BAT-DAU-NHANH.md) và [developers/GUI-GAME.md](developers/GUI-GAME.md).
-2. Fork → tạo game bằng `devkit/` → `node jagame.js submit <game-id>` → `python3 devkit/check_submission.py submissions/<game-id>` phải ĐẠT.
+2. Fork → tạo game bằng `devkit/` → `node devkit/jagame.js submit <game-id>` → `python3 devkit/check_submission.py submissions/<game-id>` phải ĐẠT.
 3. Mở Pull Request **chỉ** đụng `submissions/<game-id>/`, một game mỗi PR, điền mẫu PR.
 4. Máy kiểm chạy tự động; chủ dự án duyệt, chơi thử, ký hạng **Cộng đồng** rồi đưa lên Chợ game.
 

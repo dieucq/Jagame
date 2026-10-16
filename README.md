@@ -1,3 +1,5 @@
+> **Đọc trước khi gửi:** [QUY-TAC-GUI-GAME.md](QUY-TAC-GUI-GAME.md) — luật gửi game R1–R16 (nguồn chính, cùng developers/AI-RULES.md).
+
 # Jagame · Hội quán game của riêng tụi mình 🎮
 
 **Cờ caro, cờ tướng, ô ăn quan, bầu cua, đố vui… và tám chuyện với hội bạn — trên trang web của riêng bạn, chạy ngay trên máy tính ở nhà.**
@@ -38,10 +40,9 @@ Tải bản mới, chép đè lên thư mục cũ (giữ nguyên `database/`, `u
 Ai cũng viết được game cho Jagame và gửi lên **Chợ game**: tài liệu ở [`developers/`](developers/README.md) (tiếng Việt, tóm tắt
 [English](developers/README.en.md)), bộ công cụ ở [`devkit/`](devkit/README.md) — chỉ cần Node + Python.
 ```bash
-cd devkit
-node jagame.js new bongbay --name "Bóng bay" --author "Tên bạn"   # tạo game từ trò mẫu
-node jagame.js play bongbay                                      # chơi thử trong trình duyệt
-node jagame.js submit bongbay && python3 check_submission.py ../submissions/bongbay
+node devkit/jagame.js new bongbay --name "Bóng bay" --author "Tên bạn"   # tạo game từ trò mẫu
+node devkit/jagame.js play bongbay                                      # chơi thử trong trình duyệt
+node devkit/jagame.js submit bongbay && python3 devkit/check_submission.py submissions/bongbay
 ```
 Gửi bằng **Pull Request chỉ đụng `submissions/<game-id>/`** ([GUI-GAME.md](developers/GUI-GAME.md), [CONTRIBUTING.md](CONTRIBUTING.md)).
 Chủ kho duyệt, ký hạng *Cộng đồng*; admin từng hội quán tự quyết cài.

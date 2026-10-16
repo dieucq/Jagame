@@ -6,6 +6,7 @@ name: Kiểm bài gửi game
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, edited]   # edited: sửa tiêu đề/mô tả PR thì kiểm lại
 
 permissions:
   contents: read
@@ -52,3 +53,15 @@ jobs:
         run: |
           case "$GAME_ID" in ''|*[!a-z0-9-]*) echo "id không hợp lệ"; exit 1;; esac
           python3 -I trusted/devkit/check_submission.py "pr/submissions/$GAME_ID" --json report.json --rounds 120
+
+      - name: "3. Tên nhánh gui-<id> + tiêu đề + mô tả PR"
+        # Chữ do người gửi viết chỉ đi qua BIẾN MÔI TRƯỜNG, không nội suy biểu thức vào lệnh shell (chống injection).
+        if: steps.paths.outputs.deleted_only != 'true'
+        env:
+          GAME_ID: ${{ steps.paths.outputs.id }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_BRANCH: ${{ github.head_ref }}
+        run: |
+          case "$GAME_ID" in ''|*[!a-z0-9-]*) echo "id không hợp lệ"; exit 1;; esac
+          python3 -I trusted/devkit/tools/pr_meta.py --id "$GAME_ID" --manifest "pr/submissions/$GAME_ID/manifest.json"
