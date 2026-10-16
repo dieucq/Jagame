@@ -63,14 +63,17 @@ class Report:
     def __init__(self):
         self.checks = []
 
-    def add(self, group, title, status, detail='', items=None):
-        self.checks.append({'group': group, 'title': title, 'status': status, 'detail': detail, 'items': (items or [])[:12]})
+    def add(self, group, title, status, detail='', items=None, code=None):
+        c = {'group': group, 'title': title, 'status': status, 'detail': detail, 'items': (items or [])[:12]}
+        if code:
+            c['code'] = code
+        self.checks.append(c)
 
     def ok(self, group, title, detail=''):
         self.add(group, title, 'ok', detail)
 
-    def fail(self, group, title, detail='', items=None):
-        self.add(group, title, 'fail', detail, items)
+    def fail(self, group, title, detail='', items=None, code='E_SYSTEM'):
+        self.add(group, title, 'fail', detail, items, code)
 
     def warn(self, group, title, detail='', items=None):
         self.add(group, title, 'warn', detail, items)
@@ -123,18 +126,18 @@ def safe_unzip(zip_path, dest, rep):
     G = 'Gói nộp'
     size = os.path.getsize(zip_path)
     if size > MAX_ZIP:
-        rep.fail(G, 'Cỡ tệp zip', '%.1f MB — tối đa %d MB' % (size / 1048576.0, MAX_ZIP // 1048576))
+        rep.fail(G, 'Cỡ tệp zip', '%.1f MB — tối đa %d MB' % (size / 1048576.0, MAX_ZIP // 1048576), code='E_SIZE')
         return False
     rep.ok(G, 'Cỡ tệp zip', '%.2f MB (tối đa %d MB)' % (size / 1048576.0, MAX_ZIP // 1048576))
     try:
         z = zipfile.ZipFile(zip_path)
         infos = z.infolist()
     except zipfile.BadZipFile as e:
-        rep.fail(G, 'Là tệp zip hợp lệ', 'không đọc được zip: %s' % e)
+        rep.fail(G, 'Là tệp zip hợp lệ', 'không đọc được zip: %s' % e, code='E_ZIP')
         return False
     rep.ok(G, 'Là tệp zip hợp lệ')
     if len(infos) > MAX_FILES + 60:       # +60: chỗ cho mục thư mục / rác macOS
-        rep.fail(G, 'Số tệp', '%d mục — tối đa %d tệp' % (len(infos), MAX_FILES))
+        rep.fail(G, 'Số tệp', '%d mục — tối đa %d tệp' % (len(infos), MAX_FILES), code='E_SIZE')
         return False
     entries = []
     bad = []
@@ -183,7 +186,13 @@ def safe_unzip(zip_path, dest, rep):
     if len(plan) > MAX_FILES:
         bad.append('quá %d tệp (%d)' % (MAX_FILES, len(plan)))
     if bad:
-        rep.fail(G, 'Tên tệp & loại mục an toàn', '%d vấn đề — gói bị từ chối, không giải nén' % len(bad), bad)
+        typ = [b for b in bad if 'đuôi' in b or 'chỉ được chứa' in b]
+        oth = [b for b in bad if b not in typ]
+        if typ:
+            rep.fail(G, 'Loại tệp cho phép (không ROM / nhị phân lạ)', '%d tệp — gói bị từ chối' % len(typ), typ, code='E_FILE_TYPE')
+        if oth:
+            rep.fail(G, 'Tên tệp & loại mục an toàn', '%d vấn đề — gói bị từ chối, không giải nén' % len(oth), oth,
+                     code='E_SYMLINK' if all('symlink' in b for b in oth) else 'E_FILE_NAME')
         return False
     rep.ok(G, 'Tên tệp & loại mục an toàn', '%d tệp; không có "..", đường dẫn tuyệt đối, symlink, tệp ẩn hay mã hóa' % len(plan))
     real_dest = os.path.realpath(dest)
@@ -191,7 +200,7 @@ def safe_unzip(zip_path, dest, rep):
     for zi, rel in plan:
         target = os.path.realpath(os.path.join(dest, *rel.split('/')))
         if not target.startswith(real_dest + os.sep):
-            rep.fail(G, 'Giải nén', '%s thoát khỏi thư mục đích (zip-slip)' % zi.filename)
+            rep.fail(G, 'Giải nén', '%s thoát khỏi thư mục đích (zip-slip)' % zi.filename, code='E_FILE_NAME')
             return False
         os.makedirs(os.path.dirname(target), exist_ok=True)
         with z.open(zi) as f, open(target, 'xb') as out:
@@ -201,7 +210,7 @@ def safe_unzip(zip_path, dest, rep):
                     break
                 total += len(chunk)           # đếm lúc đọc, không tin header
                 if total > MAX_UNPACKED:
-                    rep.fail(G, 'Cỡ sau giải nén', 'vượt %d MB' % (MAX_UNPACKED // 1048576))
+                    rep.fail(G, 'Cỡ sau giải nén', 'vượt %d MB' % (MAX_UNPACKED // 1048576), code='E_SIZE')
                     return False
                 out.write(chunk)
     rep.ok(G, 'Cỡ sau giải nén', '%.2f MB (tối đa %d MB)' % (total / 1048576.0, MAX_UNPACKED // 1048576))
@@ -367,7 +376,7 @@ def static_scan(src, files, rep):
                 viol.append('%s dòng %d: %s' % (rel, ln, label))
     if viol:
         errors += len(viol)
-        rep.fail(G, 'Mã luật chơi (server/) không dùng API cấm', '%d chỗ vi phạm' % len(viol), viol)
+        rep.fail(G, 'Mã luật chơi (server/) không dùng API cấm', '%d chỗ vi phạm' % len(viol), viol, code='E_FORBIDDEN_API')
     else:
         rep.ok(G, 'Mã luật chơi (server/) không dùng API cấm', 'không có eval, Function, require, process, Date, async/await…')
     # --- client
@@ -380,7 +389,7 @@ def static_scan(src, files, rep):
                 viol.append('%s dòng %d: %s' % (rel, ln, label))
     if viol:
         errors += len(viol)
-        rep.fail(G, 'Giao diện (client/) không dùng API cấm', '%d chỗ vi phạm' % len(viol), viol)
+        rep.fail(G, 'Giao diện (client/) không dùng API cấm', '%d chỗ vi phạm' % len(viol), viol, code='E_FORBIDDEN_API_CLIENT')
     else:
         rep.ok(G, 'Giao diện (client/) không dùng API cấm', 'không có fetch, WebSocket, localStorage, postMessage, iframe, eval…')
     # --- URL ngoài ở mọi tệp văn bản (manifest/README được nhắc tới cũng tính — game không có liên kết ngoài)
@@ -392,7 +401,7 @@ def static_scan(src, files, rep):
             viol.append('%s dòng %d: địa chỉ ngoài http(s)://' % (rel, ln))
     if viol:
         errors += len(viol)
-        rep.fail(G, 'Không có địa chỉ mạng ngoài (http/https)', '%d chỗ — cấm liên kết ngoài, tải tài nguyên ngoài' % len(viol), viol)
+        rep.fail(G, 'Không có địa chỉ mạng ngoài (http/https)', '%d chỗ — cấm liên kết ngoài, tải tài nguyên ngoài' % len(viol), viol, code='E_EXTERNAL_URL')
     else:
         rep.ok(G, 'Không có địa chỉ mạng ngoài (http/https)')
     # --- mã nén / khó đọc
@@ -410,7 +419,7 @@ def static_scan(src, files, rep):
                 break
     if mini:
         errors += len(mini)
-        rep.fail(G, 'Mã đọc được (không nén/làm rối)', 'bắt buộc nộp mã nguồn đọc được', mini)
+        rep.fail(G, 'Mã đọc được (không nén/làm rối)', 'bắt buộc nộp mã nguồn đọc được', mini, code='E_MINIFIED')
     else:
         rep.ok(G, 'Mã đọc được (không nén/làm rối)')
     if longl:
@@ -436,7 +445,7 @@ def static_scan(src, files, rep):
                 fake.append('%s: không phải văn bản UTF-8 (tệp nhị phân đổi đuôi?)' % rel)
     if fake:
         errors += len(fake)
-        rep.fail(G, 'Tệp đúng định dạng (không nhị phân lạ / ROM)', '%d tệp' % len(fake), fake)
+        rep.fail(G, 'Tệp đúng định dạng (không nhị phân lạ / ROM)', '%d tệp' % len(fake), fake, code='E_FAKE_BINARY')
     else:
         rep.ok(G, 'Tệp đúng định dạng (không nhị phân lạ / ROM)')
     # --- svg phụ trong gói
@@ -451,7 +460,7 @@ def static_scan(src, files, rep):
     svg_bad = [e for e in svg_bad if 'viewBox' not in e]       # SVG phụ không cần vuông
     if svg_bad:
         errors += len(svg_bad)
-        rep.fail(G, 'SVG an toàn (không script/sự kiện)', '', svg_bad)
+        rep.fail(G, 'SVG an toàn (không script/sự kiện)', '', svg_bad, code='E_SVG')
     # --- cảnh báo
     warn = []
     for rel, t in cli:
@@ -562,7 +571,7 @@ def dynamic_check(jg, srcdir, work, rounds, timeout, rep):
         code = p.returncode
     except subprocess.TimeoutExpired as e:
         out = (e.stdout or b'').decode('utf-8', 'replace')[-4000:]
-        rep.fail(G, 'Chạy bộ kiểm luật chơi', 'quá %d giây — luật chơi chạy quá chậm hoặc vòng lặp vô hạn' % timeout, out.strip().split('\n')[-6:])
+        rep.fail(G, 'Chạy bộ kiểm luật chơi', 'quá %d giây — luật chơi chạy quá chậm hoặc vòng lặp vô hạn' % timeout, out.strip().split('\n')[-6:], code='E_TIMEOUT')
         return
     dur = time.time() - t0
     for secret in (os.path.realpath(srcdir), srcdir, os.path.realpath(work), work, tools_dir):   # không lộ đường dẫn máy chủ kiểm
@@ -579,7 +588,7 @@ def dynamic_check(jg, srcdir, work, rounds, timeout, rep):
                      '(bot/hint 250 ms): giới hạn độ sâu tìm kiếm của bot' % (mx, QJS_CALL_MS))
     else:
         tail = fails or [l for l in out.strip().split('\n')[-8:] if l.strip()]
-        rep.fail(G, 'Ca kiểm + ván ngẫu nhiên + nước rác + tất định', '%d lỗi (mã thoát %d)' % (len(fails), code), tail)
+        rep.fail(G, 'Ca kiểm + ván ngẫu nhiên + nước rác + tất định', '%d lỗi (mã thoát %d)' % (len(fails), code), tail, code='E_RULES_TEST')
 
 
 def isolation_limits(jg, m, pf, rep):
@@ -597,7 +606,7 @@ def isolation_limits(jg, m, pf, rep):
     if 'action' in modes or m.get('action'):
         bad.append('game hành động (mode "action") chưa chạy được trong khu cách ly — chỉ game chính thức')
     if bad:
-        rep.fail(G, 'Giới hạn khu cách ly', '%d lỗi' % len(bad), bad)
+        rep.fail(G, 'Giới hạn khu cách ly', '%d lỗi' % len(bad), bad, code='E_ISOLATION')
         return False
     rep.ok(G, 'Giới hạn khu cách ly', 'server/game.js (đã gộp SDK) %d KB / %d KB, không phải game hành động' % (size // 1024, QJS_MAX_SOURCE // 1024))
     tick = m.get('tick_ms')
@@ -608,21 +617,62 @@ def isolation_limits(jg, m, pf, rep):
 
 # ───────────────────────────── chế độ thư mục (bài gửi qua Pull Request) ─────────────────────────────
 ID_RE = re.compile(r'^[a-z][a-z0-9-]{1,31}$')
+RESERVED_PREFIXES = ['local-', 'jg-']
+
+
+# ───────────── ai-rules.json = NGUỒN SỰ THẬT của luật gửi game (developers/ai-rules.json; devkit/tools/ai-rules.json) ─────────────
+# Giá trị dựng sẵn ở trên chỉ là dự phòng khi không có tệp (máy cổng nộp cũ); test_ai_rules.py bảo đảm 2 bên khớp nhau.
+def rules_path():
+    if os.environ.get('JAGAME_AI_RULES') == '-':        # test_ai_rules.py: đọc giá trị dựng sẵn để so khớp
+        return None
+    for p in (os.environ.get('JAGAME_AI_RULES') or '', os.path.join(HERE, 'ai-rules.json'),
+              os.path.join(ROOT, '..', 'developers', 'ai-rules.json'),
+              os.path.join(ROOT, '..', 'Script', 'publish', 'developers', 'ai-rules.json')):
+        if p and os.path.isfile(p):
+            return os.path.realpath(p)
+    return None
+
+
+def apply_rules(path):
+    global MAX_ZIP, MAX_FILES, MAX_UNPACKED, EXT_OK, TOP_OK, TEST_EXT, QJS_CALL_MS, QJS_MAX_SOURCE, QJS_MIN_TICK
+    global SERVER_RULES, CLIENT_RULES, URL_RE, ID_RE, NAME_RE, RESERVED_PREFIXES, RULES
+    with open(path, encoding='utf-8') as f:
+        r = json.load(f)
+    lim = r['limits']
+    MAX_ZIP, MAX_FILES, MAX_UNPACKED = lim['max_zip_bytes'], lim['max_files'], lim['max_unpacked_bytes']
+    QJS_CALL_MS, QJS_MAX_SOURCE, QJS_MIN_TICK = lim['call_ms'], lim['server_bundled_max_bytes'], lim['min_tick_ms']
+    EXT_OK = set(r['allowed_ext'])
+    TEST_EXT = set(r['test_ext'])
+    TOP_OK = {x for x in r['paths']['allowed_top'] if '<' not in x}
+    NAME_RE = re.compile(r['paths']['path_part_regex'])
+    SERVER_RULES = [(x['re'], x['label'], bool(x.get('even_in_comments'))) for x in r['forbidden_server']]
+    CLIENT_RULES = [(x['re'], x['label']) for x in r['forbidden_client']]
+    URL_RE = re.compile(r['external_url_re'], re.I)
+    ID_RE = re.compile(r['id']['regex'])
+    RESERVED_PREFIXES = list(r['id']['reserved_prefixes'])
+    RULES = r
+
+
+RULES = None
+RULES_SRC = rules_path()
+if RULES_SRC:
+    apply_rules(RULES_SRC)
 
 
 def official_ids():
-    """Id game CHÍNH THỨC (không được trùng). Devkit: tools/official_ids.json. Kho: mọi games/<id>/ có store.json tier official hoặc
-    không có store.json (game nội bộ). Game cộng đồng đã nhận (tier community) không tính — tác giả gửi bản cập nhật cùng id."""
-    lst = os.path.join(HERE, 'official_ids.json')
-    if os.path.isfile(lst):
-        try:
-            with open(lst, encoding='utf-8') as f:
-                return set(str(x) for x in json.load(f).get('ids', []))
-        except (OSError, ValueError):
-            return set()
+    """Id CẤM dùng: ai-rules.json reserved_ids + tools/official_ids.json (devkit) + (trong kho, có releases/) mọi games/<id>/ hạng
+    official (store.json tier official hoặc không có store.json). Game cộng đồng đã nhận (tier community) không cấm — tác giả gửi bản
+    cập nhật cùng id."""
     ids = set()
+    if RULES:
+        ids |= set(RULES['id'].get('reserved_ids') or [])
+    try:
+        with open(os.path.join(HERE, 'official_ids.json'), encoding='utf-8') as f:
+            ids |= set(str(x) for x in json.load(f).get('ids', []))
+    except (OSError, ValueError):
+        pass
     gdir = os.path.join(ROOT, 'games')
-    if os.path.isdir(gdir):
+    if os.path.isdir(os.path.join(ROOT, 'releases')) and os.path.isdir(gdir):
         for g in os.listdir(gdir):
             if not os.path.isfile(os.path.join(gdir, g, 'manifest.json')):
                 continue
@@ -634,6 +684,8 @@ def official_ids():
                 pass
             if tier == 'official':
                 ids.add(g)
+            else:
+                ids.discard(g)
     return ids
 
 
@@ -669,18 +721,23 @@ def dir_to_zip(src, zip_path, rep):
     if skipped:
         rep.warn(G, 'Bỏ qua khi kiểm', 'không gửi kèm các tệp rác hệ điều hành', skipped)
     if bad:
-        rep.fail(G, 'Không symlink, không tệp chấm', '%d mục bị cấm' % len(bad), bad)
+        dots = [b for b in bad if 'chấm' in b]
+        links = [b for b in bad if b not in dots]
+        if dots:
+            rep.fail(G, 'Không tệp/thư mục chấm', '%d mục bị cấm' % len(dots), dots, code='E_DOTFILE')
+        if links:
+            rep.fail(G, 'Không symlink / tệp đặc biệt', '%d mục bị cấm' % len(links), links, code='E_SYMLINK')
         return False
     rep.ok(G, 'Không symlink, không tệp chấm', '%d tệp' % len(files))
     if len(files) > MAX_FILES + 60:
-        rep.fail(G, 'Số tệp', '%d tệp — tối đa %d' % (len(files), MAX_FILES))
+        rep.fail(G, 'Số tệp', '%d tệp — tối đa %d' % (len(files), MAX_FILES), code='E_SIZE')
         return False
     total = 0
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as z:
         for rel, p in files:
             total += os.path.getsize(p)
             if total > MAX_UNPACKED:
-                rep.fail(G, 'Tổng dung lượng', 'vượt %d MB' % (MAX_UNPACKED // 1048576))
+                rep.fail(G, 'Tổng dung lượng', 'vượt %d MB' % (MAX_UNPACKED // 1048576), code='E_SIZE')
                 return False
             z.write(p, rel)
     return True
@@ -692,24 +749,26 @@ def submission_rules(src, rep):
     gid = os.path.basename(os.path.normpath(src))
     errs = []
     if not ID_RE.match(gid):
-        errs.append('tên thư mục "%s" không phải id hợp lệ (^[a-z][a-z0-9-]{1,31}$)' % gid)
-    if gid.startswith(('local-', 'jg-')):
-        errs.append('id "%s" dùng tiền tố dành riêng (local-, jg-)' % gid)
+        errs.append(('E_ID_INVALID', 'tên thư mục "%s" không phải id hợp lệ (%s)' % (gid, ID_RE.pattern)))
+    if gid.startswith(tuple(RESERVED_PREFIXES)):
+        errs.append(('E_ID_RESERVED', 'id "%s" dùng tiền tố dành riêng (%s)' % (gid, ', '.join(RESERVED_PREFIXES))))
     if gid in official_ids():
-        errs.append('id "%s" trùng game chính thức của Jagame — đổi id khác' % gid)
+        errs.append(('E_ID_TAKEN', 'id "%s" trùng game chính thức / game mẫu của Jagame — đổi id khác' % gid))
     try:
         with open(os.path.join(src, 'manifest.json'), encoding='utf-8') as f:
             mid = json.load(f).get('id')
         if mid != gid:
-            errs.append('manifest.json "id" là "%s" nhưng thư mục là submissions/%s/' % (mid, gid))
+            errs.append(('E_ID_MISMATCH', 'manifest.json "id" là "%s" nhưng thư mục là submissions/%s/' % (mid, gid)))
     except (OSError, ValueError, AttributeError):
         pass    # thiếu / hỏng manifest: bước Cấu trúc + Manifest báo
     if not os.path.isfile(os.path.join(src, 'README.md')):
-        errs.append('thiếu README.md (mô tả, luật chơi, tác giả, giấy phép mã + tài sản)')
+        errs.append(('E_README_MISSING', 'thiếu README.md (mô tả, luật chơi, tác giả, giấy phép mã + tài sản)'))
     if not any(os.path.isfile(os.path.join(src, n)) for n in ('LICENSE', 'LICENSE.md', 'LICENSE.txt')):
-        errs.append('thiếu LICENSE (hoặc LICENSE.md / LICENSE.txt)')
+        errs.append(('E_LICENSE_MISSING', 'thiếu LICENSE (hoặc LICENSE.md / LICENSE.txt)'))
+    for code, msg in errs:
+        rep.fail(G, 'Đúng quy định bài gửi', msg, code=code)
     if errs:
-        rep.fail(G, 'Đúng quy định bài gửi', '%d lỗi' % len(errs), errs)
+        pass
     else:
         rep.ok(G, 'Đúng quy định bài gửi', 'submissions/%s/ — id hợp lệ, không trùng game chính thức, có README.md + LICENSE' % gid)
 
@@ -722,10 +781,15 @@ def print_report(res, title):
         if c['group'] != group:
             group = c['group']
             print('\n[%s]' % group)
-        print('  %s  %s%s' % (mark.get(c['status'], c['status']), c['title'], (' — ' + c['detail']) if c['detail'] else ''))
+        tag = (' [%s]' % c['code']) if c.get('code') else ''
+        print('  %s%s  %s%s' % (mark.get(c['status'], c['status']), tag, c['title'], (' — ' + c['detail']) if c['detail'] else ''))
         for it in c['items']:
             print('           · ' + it)
-    print('\nKẾT QUẢ: %s — %d lỗi, %d lưu ý' % ('ĐẠT' if res['ok'] else 'TRƯỢT', res['errors'], res['warnings']))
+    codes = sorted({c['code'] for c in res['checks'] if c['status'] == 'fail' and c.get('code')})
+    print('\nKẾT QUẢ: %s — %d lỗi, %d lưu ý%s' % ('ĐẠT' if res['ok'] else 'TRƯỢT', res['errors'], res['warnings'],
+                                                 (' · mã: ' + ' '.join(codes)) if codes else ''))
+    if codes:
+        print('Cách sửa từng mã: developers/AI-RULES.md mục "Mã lỗi" (hoặc ai-rules.json error_codes).')
 
 
 def main_dir(argv):
@@ -744,7 +808,7 @@ def main_dir(argv):
     root = os.path.realpath(tempfile.mkdtemp(prefix='jg_check_'))   # node --permission so khớp đường dẫn THẬT
     try:
         if os.path.islink(src) or not os.path.isdir(src):
-            rep.fail('Thư mục gửi', 'Là thư mục thường', '%s không phải thư mục (hoặc là symlink)' % a.dir)
+            rep.fail('Thư mục gửi', 'Là thư mục thường', '%s không phải thư mục (hoặc là symlink)' % a.dir, code='E_SYMLINK')
         else:
             submission_rules(src, rep)
             zp = os.path.join(root, 'submit.zip')
@@ -854,12 +918,12 @@ def check_source(jg, srcdir, work, a, rep, res):
             if os.path.isfile(p) and hashlib.sha256(open(p, 'rb').read()).hexdigest() != want:
                 mism.append(rel)
         if mism:
-            rep.fail(S, 'Biên nhận jagame-submit.json khớp mã', 'sha256 lệch ở %d tệp — gói bị sửa sau khi đóng' % len(mism), mism)
+            rep.fail(S, 'Biên nhận jagame-submit.json khớp mã', 'sha256 lệch ở %d tệp — gói bị sửa sau khi đóng' % len(mism), mism, code='E_RECEIPT')
         else:
             rep.ok(S, 'Biên nhận jagame-submit.json khớp mã', 'sha256 mọi tệp khớp biên nhận devkit')
     mpath = os.path.join(srcdir, 'manifest.json')
     if not os.path.isfile(mpath):
-        rep.fail(S, 'Có manifest.json ở gốc gói', 'thiếu manifest.json (nén THƯ MỤC GAME, không nén thư mục cha)')
+        rep.fail(S, 'Có manifest.json ở gốc gói', 'thiếu manifest.json (nén THƯ MỤC GAME, không nén thư mục cha)', code='E_MANIFEST_MISSING')
         return
     rep.ok(S, 'Có manifest.json ở gốc gói')
     try:
@@ -867,7 +931,7 @@ def check_source(jg, srcdir, work, a, rep, res):
         if not isinstance(m, dict):
             raise ValueError('manifest.json phải là object')
     except ValueError as e:
-        rep.fail('Manifest', 'manifest.json là JSON hợp lệ', str(e))
+        rep.fail('Manifest', 'manifest.json là JSON hợp lệ', str(e), code='E_MANIFEST_JSON')
         return
     res['manifest'] = {k: m.get(k) for k in ('id', 'name', 'version', 'group', 'players', 'age', 'author', 'license', 'desc', 'mode', 'api', 'sdk') if k in m}
     names = {r for r, _ in files}
@@ -882,7 +946,7 @@ def check_source(jg, srcdir, work, a, rep, res):
     if 'test/cases.json' not in names:
         missing.append('test/cases.json (bắt buộc — ca kiểm của bạn)')
     if missing:
-        rep.fail(S, 'Đủ tệp manifest trỏ tới', 'thiếu %d tệp' % len(missing), missing)
+        rep.fail(S, 'Đủ tệp manifest trỏ tới', 'thiếu %d tệp' % len(missing), missing, code='E_FILES_MISSING')
     else:
         rep.ok(S, 'Đủ tệp manifest trỏ tới', 'icon, client, server%s, test/cases.json' % (', style' if entry.get('style') else ''))
     shots = [r for r in names if r.startswith('screenshots/')]
@@ -909,7 +973,7 @@ def check_source(jg, srcdir, work, a, rep, res):
     if not str(m.get('license') or '').strip():
         errs.append('thiếu "license" (giấy phép mã, vd MIT — mã SPDX)')
     if errs:
-        rep.fail(M, 'Manifest đúng chuẩn giao thức', '%d lỗi' % len(errs), errs)
+        rep.fail(M, 'Manifest đúng chuẩn giao thức', '%d lỗi' % len(errs), errs, code='E_MANIFEST')
     else:
         rep.ok(M, 'Manifest đúng chuẩn giao thức', '%s %s' % (m.get('id'), m.get('version')))
     try:
@@ -917,7 +981,7 @@ def check_source(jg, srcdir, work, a, rep, res):
     except Exception as e:   # noqa: BLE001
         e2, w2 = ['không kiểm được schema v2: %s' % e], []
     if e2:
-        rep.fail(M, 'Schema manifest v2 + icon + ảnh chụp', '%d lỗi' % len(e2), e2)
+        rep.fail(M, 'Schema manifest v2 + icon + ảnh chụp', '%d lỗi' % len(e2), e2, code='E_MANIFEST_SCHEMA')
     else:
         rep.ok(M, 'Schema manifest v2 + icon + ảnh chụp')
     if w2:
@@ -948,7 +1012,7 @@ def check_source(jg, srcdir, work, a, rep, res):
                 shutil.rmtree(tmp, ignore_errors=True)
         rep.ok(P, 'Đóng gói .jgame tất định + kiểm lại theo luật máy hội quán', '%d tệp, %d byte, sha256 %s…' % (len(pf), len(data), res['sha256'][:12]))
     except jg.StoreError as e:
-        rep.fail(P, 'Đóng gói .jgame', str(e))
+        rep.fail(P, 'Đóng gói .jgame', str(e), code='E_PACKAGE')
         return
     if not isolation_limits(jg, m, pf, rep):
         return

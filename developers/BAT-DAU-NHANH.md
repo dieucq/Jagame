@@ -54,7 +54,8 @@ python3 check_submission.py ../submissions/bongbay --jgame bongbay.jgame
 ```
 
 ## 6. Gửi
-Commit **chỉ** thư mục `submissions/bongbay/`, push lên fork, mở Pull Request — chi tiết ở **[GUI-GAME.md](GUI-GAME.md)**.
+Tạo nhánh, commit **chỉ** thư mục `submissions/bongbay/`, chạy `python3 devkit/check_pr.py` (giống hệt máy kiểm trên GitHub), push lên fork,
+mở Pull Request — chi tiết ở **[GUI-GAME.md](GUI-GAME.md)**. Dùng AI agent viết game? Cho nó đọc **[AI-RULES.md](AI-RULES.md)**.
 
 ## Lỗi hay gặp
 | Báo lỗi | Sửa |

@@ -10,6 +10,7 @@ Ai cũng viết được game (và ứng dụng nhỏ chạy trong khung game) c
 | [GIAO-DIEN.md](GIAO-DIEN.md) | Giao diện: biến CSS, điện thoại trước, tín hiệu nước đi, chuyển động, âm thanh |
 | [NOI-DUNG.md](NOI-DUNG.md) | Quy tắc nội dung + bản quyền (không nhân vật/tài sản có bản quyền, không ROM, hợp gia đình) |
 | [GUI-GAME.md](GUI-GAME.md) | Gửi game qua Pull Request `submissions/<game-id>/`, duyệt, cập nhật, gỡ; bị từ chối tự động nếu… |
+| [AI-RULES.md](AI-RULES.md) + [ai-rules.json](ai-rules.json) | Luật dành cho AI agent (Claude Code, Codex, Cursor…): MUST/MUST NOT, cây thư mục, manifest mẫu, mã lỗi `E_…`, lệnh tự test |
 | [README.en.md](README.en.md) | English summary |
 
 Bộ công cụ: [`../devkit/`](../devkit/) — SDK, `manifest.schema.json`, `reasons.json`, `jagame.js` (new · check · play · pack · submit),

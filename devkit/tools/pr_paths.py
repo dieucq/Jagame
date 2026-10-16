@@ -16,6 +16,17 @@ import sys
 
 ID_RE = re.compile(r'^[a-z][a-z0-9-]{1,31}$')
 PART_RE = re.compile(r'^[A-Za-z0-9._@+-]+$')
+HERE = os.path.dirname(os.path.abspath(__file__))
+# ai-rules.json = nguồn sự thật (cạnh tệp này trong devkit, hoặc Script/publish/developers/ trong kho)
+for _p in (os.path.join(HERE, 'ai-rules.json'), os.path.join(HERE, '..', '..', 'developers', 'ai-rules.json'),
+           os.path.join(HERE, '..', '..', 'Script', 'publish', 'developers', 'ai-rules.json')):
+    if os.path.isfile(_p):
+        import json
+        with open(_p, encoding='utf-8') as _f:
+            _r = json.load(_f)
+        ID_RE = re.compile(_r['id']['regex'])
+        PART_RE = re.compile(_r['paths']['path_part_regex'])
+        break
 
 
 def git(repo, *args):
@@ -44,32 +55,32 @@ def changed(repo, base, head):
 
 
 def check(entries):
-    """entries: [(trạng thái, mode, đường dẫn)]. Trả (id | None, [lỗi])."""
+    """entries: [(trạng thái, mode, đường dẫn)]. Trả (id | None, [lỗi]); mỗi lỗi bắt đầu bằng mã ổn định [E_…] (ai-rules.json)."""
     errs = []
     ids = set()
     if not entries:
-        return None, ['Pull Request không đổi tệp nào']
+        return None, ['[E_PATH_OUTSIDE] Pull Request không đổi tệp nào']
     for st, mode, p in entries:
         parts = p.split('/')
         if len(parts) < 3 or parts[0] != 'submissions':
-            errs.append('%s: nằm ngoài submissions/<id>/ — bài gửi chỉ được thêm/sửa tệp trong thư mục game của mình' % p)
+            errs.append('[E_PATH_OUTSIDE] %s: nằm ngoài submissions/<id>/ — bài gửi chỉ được thêm/sửa tệp trong thư mục game của mình' % p)
             continue
         gid = parts[1]
         ids.add(gid)
         if not ID_RE.match(gid):
-            errs.append('%s: "%s" không phải id hợp lệ (^[a-z][a-z0-9-]{1,31}$)' % (p, gid))
+            errs.append('[E_ID_INVALID] %s: "%s" không phải id hợp lệ (%s)' % (p, gid, ID_RE.pattern))
         if '\\' in p or any(x in ('', '.', '..') for x in parts):
-            errs.append('%s: đường dẫn lạ' % p)
+            errs.append('[E_FILE_NAME] %s: đường dẫn lạ' % p)
         elif any(x.startswith('.') for x in parts):
-            errs.append('%s: tệp/thư mục chấm (ẩn) không được phép' % p)
+            errs.append('[E_DOTFILE] %s: tệp/thư mục chấm (ẩn) không được phép' % p)
         elif any(not PART_RE.match(x) for x in parts):
-            errs.append('%s: ký tự không cho phép trong tên (chỉ A-Z a-z 0-9 . _ - @ +)' % p)
+            errs.append('[E_FILE_NAME] %s: ký tự không cho phép trong tên (chỉ A-Z a-z 0-9 . _ - @ +)' % p)
         if st != 'D' and mode == '120000':
-            errs.append('%s: là symlink' % p)
+            errs.append('[E_SYMLINK] %s: là symlink' % p)
         if st != 'D' and mode == '160000':
-            errs.append('%s: là submodule' % p)
+            errs.append('[E_SYMLINK] %s: là submodule' % p)
     if len(ids) > 1:
-        errs.append('Pull Request đụng %d game (%s) — mỗi PR chỉ 1 game' % (len(ids), ', '.join(sorted(ids))))
+        errs.append('[E_MULTI_GAME] Pull Request đụng %d game (%s) — mỗi PR chỉ 1 game' % (len(ids), ', '.join(sorted(ids))))
     only = next(iter(ids)) if len(ids) == 1 else None
     return (only if not errs else None), errs
 
@@ -96,7 +107,7 @@ def main():
         print('\nBỊ CHẶN — Pull Request gửi game chỉ được thêm/sửa tệp trong ĐÚNG MỘT thư mục submissions/<id>/:')
         for e in errs:
             print('  ✗ ' + e)
-        print('Xem developers/GUI-GAME.md (mục "Bị từ chối tự động nếu").')
+        print('Cách sửa từng mã: developers/AI-RULES.md mục "Mã lỗi" · developers/GUI-GAME.md mục "Bị từ chối tự động nếu".')
         return 1
     if all(st == 'D' for st, _, _ in entries):
         print('\nPR chỉ XÓA tệp của submissions/%s/ — không có gì để kiểm (người duyệt xem tay).' % gid)

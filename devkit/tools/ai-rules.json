@@ -1,0 +1,513 @@
+{
+ "$comment": "Luật gửi game Jagame dạng máy đọc. NGUỒN SỰ THẬT: devkit/tools/check_submission.py + pr_paths.py đọc tệp này (bản sao devkit/tools/ai-rules.json). Bản người đọc: developers/AI-RULES.md.",
+ "version": 1,
+ "id": {
+  "regex": "^[a-z][a-z0-9-]{1,31}$",
+  "folder": "submissions/<id>/",
+  "folder_must_equal_manifest_id": true,
+  "reserved_prefixes": [
+   "local-",
+   "jg-"
+  ],
+  "reserved_ids": [
+   "bacay",
+   "baimau",
+   "banmaybay",
+   "baucua",
+   "bietdoi",
+   "cangua",
+   "caro",
+   "chimbay",
+   "chinquan",
+   "chuyentranh",
+   "cotuong",
+   "coup",
+   "covua",
+   "datbom",
+   "dovui",
+   "ganh",
+   "giaithe",
+   "loto",
+   "masoi",
+   "nhatque",
+   "oanquan",
+   "oantuti",
+   "phom",
+   "poker",
+   "tienlen",
+   "vehinh",
+   "xepgach",
+   "xetang",
+   "xidach",
+   "xucxac"
+  ]
+ },
+ "paths": {
+  "pr_allowed": "submissions/<id>/**",
+  "games_per_pr": 1,
+  "path_part_regex": "^[A-Za-z0-9._@+-]+$",
+  "max_path_len": 200,
+  "allowed_top": [
+   "<id>.jgame",
+   "CHANGELOG.md",
+   "LICENSE",
+   "LICENSE.md",
+   "LICENSE.txt",
+   "README.md",
+   "client",
+   "icon.png",
+   "icon.svg",
+   "jagame-submit.json",
+   "manifest.json",
+   "screenshots",
+   "server",
+   "test"
+  ],
+  "required": [
+   "manifest.json",
+   "icon.svg|icon.png",
+   "server/game.js",
+   "client/index.js",
+   "test/cases.json",
+   "README.md",
+   "LICENSE|LICENSE.md|LICENSE.txt"
+  ],
+  "optional": [
+   "client/style.css",
+   "client/assets/**",
+   "screenshots/*.png|jpg|webp",
+   "test/*.json",
+   "CHANGELOG.md",
+   "<id>.jgame"
+  ],
+  "forbidden": [
+   "tệp/thư mục bắt đầu bằng '.'",
+   "symlink",
+   "submodule",
+   "node_modules/",
+   "assets/ ở gốc",
+   "ROM / nhị phân lạ",
+   "đuôi ngoài allowed_ext"
+  ]
+ },
+ "allowed_ext": [
+  "css",
+  "gif",
+  "jpeg",
+  "jpg",
+  "js",
+  "json",
+  "m4a",
+  "md",
+  "mp3",
+  "ogg",
+  "png",
+  "svg",
+  "txt",
+  "webp",
+  "woff2"
+ ],
+ "server_ext": [
+  "js",
+  "json"
+ ],
+ "test_ext": [
+  "js",
+  "json",
+  "md",
+  "txt"
+ ],
+ "magic": {
+  "png": "89504E470D0A1A0A",
+  "jpg": "FFD8FF",
+  "jpeg": "FFD8FF",
+  "gif": "GIF87a|GIF89a",
+  "webp": "RIFF....WEBP",
+  "mp3": "ID3|FFEx",
+  "ogg": "OggS",
+  "m4a": "....ftyp",
+  "woff2": "wOF2"
+ },
+ "limits": {
+  "max_zip_bytes": 10485760,
+  "max_files": 300,
+  "max_unpacked_bytes": 31457280,
+  "icon_max_bytes": 204800,
+  "screenshot_max_bytes": 409600,
+  "screenshots_max": 6,
+  "server_bundled_max_bytes": 262144,
+  "state_view_max_bytes": 262144,
+  "call_ms": 150,
+  "bot_hint_ms": 250,
+  "runner_call_ms": 250,
+  "memory_mb": 64,
+  "min_tick_ms": 250,
+  "room_cpu_ms_per_10s": 1000,
+  "move_max_bytes": 8192,
+  "events_max_bytes": 16384,
+  "max_line_chars": 1000
+ },
+ "forbidden_server": [
+  {
+   "re": "\\b(?:async|await)\\b",
+   "label": "async/await (máy chủ từ chối nạp — kể cả trong chú thích)",
+   "even_in_comments": true
+  },
+  {
+   "re": "\\beval\\s*\\(",
+   "label": "eval()",
+   "even_in_comments": false
+  },
+  {
+   "re": "\\bnew\\s+Function\\b|(?<![\\w.])Function\\s*\\(",
+   "label": "Function(…) tạo mã từ chuỗi",
+   "even_in_comments": false
+  },
+  {
+   "re": "constructor\\s*\\.\\s*constructor",
+   "label": "constructor.constructor (đường thoát sandbox)",
+   "even_in_comments": false
+  },
+  {
+   "re": "__proto__",
+   "label": "__proto__",
+   "even_in_comments": false
+  },
+  {
+   "re": "\\bProxy\\b",
+   "label": "Proxy",
+   "even_in_comments": false
+  },
+  {
+   "re": "\\bReflect\\b",
+   "label": "Reflect",
+   "even_in_comments": false
+  },
+  {
+   "re": "\\bWebAssembly\\b",
+   "label": "WebAssembly",
+   "even_in_comments": false
+  },
+  {
+   "re": "\\b(?:SharedArrayBuffer|Atomics)\\b",
+   "label": "SharedArrayBuffer/Atomics",
+   "even_in_comments": false
+  },
+  {
+   "re": "\\bimport\\s*\\(|^\\s*import\\s+[\\w{*]",
+   "label": "import",
+   "even_in_comments": false
+  },
+  {
+   "re": "\\brequire\\b",
+   "label": "require (luật chơi không được nạp module)",
+   "even_in_comments": false
+  },
+  {
+   "re": "\\bprocess\\b",
+   "label": "process (đối tượng Node)",
+   "even_in_comments": false
+  },
+  {
+   "re": "\\bglobalThis\\s*\\[",
+   "label": "globalThis[…]",
+   "even_in_comments": false
+  },
+  {
+   "re": "\\bDate\\b",
+   "label": "Date (không tất định — dùng ctx.now)",
+   "even_in_comments": false
+  },
+  {
+   "re": "\\b(?:setTimeout|setInterval)\\b",
+   "label": "setTimeout/setInterval (dùng tick)",
+   "even_in_comments": false
+  },
+  {
+   "re": "\\bPromise\\b",
+   "label": "Promise (luật chơi chạy đồng bộ)",
+   "even_in_comments": false
+  },
+  {
+   "re": "\\b(?:ArrayBuffer|DataView|BigInt|(?:Ui|I)nt(?:8|16|32)Array|Uint8ClampedArray|Float(?:32|64)Array|Big(?:Ui|I)nt64Array)\\b",
+   "label": "ArrayBuffer/TypedArray/BigInt (khu cách ly không có)",
+   "even_in_comments": false
+  }
+ ],
+ "forbidden_client": [
+  {
+   "re": "\\bfetch\\s*\\(",
+   "label": "fetch() — game không được gọi mạng"
+  },
+  {
+   "re": "\\bXMLHttpRequest\\b",
+   "label": "XMLHttpRequest"
+  },
+  {
+   "re": "\\bWebSocket\\b",
+   "label": "WebSocket"
+  },
+  {
+   "re": "\\bEventSource\\b",
+   "label": "EventSource"
+  },
+  {
+   "re": "\\bRTCPeerConnection\\b",
+   "label": "RTCPeerConnection"
+  },
+  {
+   "re": "\\bsendBeacon\\b",
+   "label": "sendBeacon"
+  },
+  {
+   "re": "document\\s*\\.\\s*cookie",
+   "label": "document.cookie"
+  },
+  {
+   "re": "\\b(?:localStorage|sessionStorage|indexedDB)\\b",
+   "label": "localStorage/sessionStorage/indexedDB (dùng JG.storage)"
+  },
+  {
+   "re": "\\bwindow\\s*\\.\\s*(?:parent|top|opener)\\b|\\b(?:parent|top)\\s*\\.\\s*(?:location|document|postMessage)",
+   "label": "window.parent/top/opener"
+  },
+  {
+   "re": "\\bpostMessage\\b",
+   "label": "postMessage (chỉ khung jg-frame được dùng)"
+  },
+  {
+   "re": "\\beval\\s*\\(",
+   "label": "eval()"
+  },
+  {
+   "re": "\\bnew\\s+Function\\b|(?<![\\w.])Function\\s*\\(",
+   "label": "Function(…) tạo mã từ chuỗi"
+  },
+  {
+   "re": "\\b(?:setTimeout|setInterval)\\s*\\(\\s*[\"\\'`]",
+   "label": "setTimeout/setInterval với chuỗi (tương đương eval)"
+  },
+  {
+   "re": "\\bimport\\s*\\(|^\\s*import\\s+[\\w{*]",
+   "label": "import động / module"
+  },
+  {
+   "re": "\\b(?:Worker|SharedWorker)\\b",
+   "label": "Worker"
+  },
+  {
+   "re": "\\bserviceWorker\\b",
+   "label": "serviceWorker"
+  },
+  {
+   "re": "\\bimportScripts\\b",
+   "label": "importScripts"
+  },
+  {
+   "re": "\\bWebAssembly\\b",
+   "label": "WebAssembly"
+  },
+  {
+   "re": "<\\s*(?:iframe|object|embed)\\b",
+   "label": "<iframe>/<object>/<embed>"
+  }
+ ],
+ "external_url_re": "https?://(?!www\\.w3\\.org/)[^\\s\"\\'`<>)]+",
+ "manifest": {
+  "schema": "devkit/shared/sdk/manifest.schema.json",
+  "must": {
+   "manifest": 2,
+   "api": 1,
+   "sdk": "2"
+  },
+  "required_on_submit": [
+   "manifest",
+   "id",
+   "name",
+   "version",
+   "api",
+   "app_min",
+   "group",
+   "players",
+   "desc",
+   "age",
+   "icon",
+   "entry",
+   "changelog",
+   "author",
+   "license"
+  ],
+  "reasons_file": "devkit/shared/sdk/reasons.json"
+ },
+ "commands": [
+  {
+   "step": 1,
+   "cwd": "devkit",
+   "run": "node jagame.js new <id> --name \"<Tên>\" --author \"<Tác giả>\"",
+   "pass": "Đã tạo"
+  },
+  {
+   "step": 2,
+   "cwd": "devkit",
+   "run": "node jagame.js check <id>",
+   "pass": "KẾT QUẢ: ĐẠT — 0 lỗi"
+  },
+  {
+   "step": 3,
+   "cwd": "devkit",
+   "run": "node jagame.js play <id>",
+   "pass": "Chơi thử: http://127.0.0.1:7788/tools/play.html?game=<id>",
+   "optional": true
+  },
+  {
+   "step": 4,
+   "cwd": "devkit",
+   "run": "node jagame.js submit <id>",
+   "pass": "Đã chép sang"
+  },
+  {
+   "step": 5,
+   "cwd": ".",
+   "run": "python3 devkit/check_submission.py submissions/<id>",
+   "pass": "KẾT QUẢ: ĐẠT — 0 lỗi"
+  },
+  {
+   "step": 6,
+   "cwd": ".",
+   "run": "git add submissions/<id> && git commit -m \"Gửi game <id> <version>\"",
+   "pass": ""
+  },
+  {
+   "step": 7,
+   "cwd": ".",
+   "run": "python3 devkit/check_pr.py",
+   "pass": "PR ĐẠT — giống workflow GitHub"
+  }
+ ],
+ "error_codes": {
+  "E_PATH_OUTSIDE": {
+   "cause": "PR đổi tệp nằm ngoài submissions/<id>/ (kể cả README.md gốc, devkit/, .github/, submissions/README.md)",
+   "fix": "git restore/revert mọi tệp ngoài submissions/<id>/; chỉ commit thư mục game"
+  },
+  "E_MULTI_GAME": {
+   "cause": "PR đụng từ 2 thư mục submissions/<id>/ trở lên",
+   "fix": "mỗi PR đúng 1 game; tách thành nhiều nhánh/PR"
+  },
+  "E_ID_INVALID": {
+   "cause": "tên thư mục / manifest.id không khớp ^[a-z][a-z0-9-]{1,31}$",
+   "fix": "đổi id: chữ thường a-z, số, '-', bắt đầu bằng chữ, 2–32 ký tự"
+  },
+  "E_ID_RESERVED": {
+   "cause": "id bắt đầu bằng tiền tố dành riêng (local-, jg-)",
+   "fix": "đổi id khác"
+  },
+  "E_ID_TAKEN": {
+   "cause": "id trùng game chính thức hoặc game mẫu (danh sách reserved_ids)",
+   "fix": "đổi id khác, không có trong reserved_ids"
+  },
+  "E_ID_MISMATCH": {
+   "cause": "manifest.id khác tên thư mục submissions/<id>/",
+   "fix": "đặt manifest.id = tên thư mục"
+  },
+  "E_DOTFILE": {
+   "cause": "có tệp/thư mục bắt đầu bằng '.' (.DS_Store, .env, .git…)",
+   "fix": "xóa; không commit tệp chấm"
+  },
+  "E_SYMLINK": {
+   "cause": "có symlink hoặc submodule",
+   "fix": "thay bằng tệp thật"
+  },
+  "E_FILE_NAME": {
+   "cause": "tên/đường dẫn tệp sai (ký tự ngoài A-Z a-z 0-9 . _ - @ +, '..', mục gốc không cho phép như assets/, node_modules/)",
+   "fix": "đổi tên; chỉ dùng các mục gốc trong allowed_top; tài sản để ở client/assets/"
+  },
+  "E_FILE_TYPE": {
+   "cause": "đuôi tệp không cho phép (ROM .nes .sfc .gb…, .zip, .exe, .ts, .html…), hoặc server/ chứa tệp không phải .js/.json",
+   "fix": "chỉ dùng đuôi trong allowed_ext"
+  },
+  "E_FAKE_BINARY": {
+   "cause": "nội dung không khớp đuôi (png giả, ROM đổi đuôi) hoặc tệp chữ không phải UTF-8",
+   "fix": "dùng tệp đúng định dạng; tệp chữ lưu UTF-8"
+  },
+  "E_SIZE": {
+   "cause": "vượt giới hạn cỡ / số tệp (limits)",
+   "fix": "nén ảnh, bỏ tệp thừa"
+  },
+  "E_ZIP": {
+   "cause": "gói zip hỏng (chỉ đường gửi zip)",
+   "fix": "đóng gói lại bằng node jagame.js pack"
+  },
+  "E_README_MISSING": {
+   "cause": "thiếu README.md",
+   "fix": "thêm README.md: mô tả, luật chơi, tác giả, giấy phép mã + nguồn/giấy phép tài sản"
+  },
+  "E_LICENSE_MISSING": {
+   "cause": "thiếu LICENSE / LICENSE.md / LICENSE.txt",
+   "fix": "thêm LICENSE (vd MIT) khớp manifest.license"
+  },
+  "E_MANIFEST_MISSING": {
+   "cause": "không có manifest.json ở gốc thư mục game",
+   "fix": "tạo manifest.json"
+  },
+  "E_MANIFEST_JSON": {
+   "cause": "manifest.json không phải JSON object hợp lệ",
+   "fix": "sửa cú pháp JSON (không chú thích, không dấu phẩy thừa)"
+  },
+  "E_MANIFEST": {
+   "cause": "manifest sai luật: thiếu \"manifest\": 2, thiếu author/license, giá trị sai",
+   "fix": "sửa theo bảng manifest trong AI-RULES.md"
+  },
+  "E_MANIFEST_SCHEMA": {
+   "cause": "manifest sai JSON Schema v2 (trường lạ, sai kiểu, sai giới hạn), icon/ảnh chụp không hợp lệ",
+   "fix": "sửa theo devkit/shared/sdk/manifest.schema.json"
+  },
+  "E_FILES_MISSING": {
+   "cause": "thiếu tệp manifest trỏ tới (icon, entry.client, entry.server, entry.style) hoặc test/cases.json",
+   "fix": "tạo tệp hoặc sửa đường dẫn trong manifest"
+  },
+  "E_FORBIDDEN_API": {
+   "cause": "server/ dùng API cấm (require, import, process, Date, Promise, eval, Function, Proxy, Reflect, TypedArray, BigInt, WebAssembly, setTimeout, chữ async/await…)",
+   "fix": "bỏ API đó; dùng ctx.now, ctx.rng(), tick(); xóa chữ async/await kể cả trong chú thích"
+  },
+  "E_FORBIDDEN_API_CLIENT": {
+   "cause": "client/ dùng API cấm (fetch, XMLHttpRequest, WebSocket, localStorage, postMessage, parent/top, cookie, Worker, iframe, eval…)",
+   "fix": "bỏ API đó; lưu trữ dùng JG.storage; không gọi mạng"
+  },
+  "E_EXTERNAL_URL": {
+   "cause": "có địa chỉ http(s):// ngoài (trừ README.md, test/)",
+   "fix": "xóa liên kết / tài nguyên ngoài; tự chứa mọi tài sản"
+  },
+  "E_MINIFIED": {
+   "cause": "mã nén/làm rối (dòng > 1000 ký tự)",
+   "fix": "gửi mã nguồn đọc được"
+  },
+  "E_SVG": {
+   "cause": "SVG có <script>, on*=, <foreignObject>, href/url() ngoài, <!ENTITY>",
+   "fix": "vẽ lại SVG thuần hình"
+  },
+  "E_PACKAGE": {
+   "cause": "đóng gói .jgame thất bại (luật máy hội quán)",
+   "fix": "đọc chi tiết; thường là tên tệp / cấu trúc"
+  },
+  "E_ISOLATION": {
+   "cause": "vượt giới hạn khu cách ly (server/game.js sau gộp SDK > 256 KB, mode action)",
+   "fix": "thu gọn mã; không dùng mode action"
+  },
+  "E_RULES_TEST": {
+   "cause": "bộ chạy luật chơi trượt: ca kiểm sai, ván ngẫu nhiên lỗi/không tất định, view/result sai hợp đồng v2, lý do kết thúc lạ, lần gọi > 250 ms",
+   "fix": "chạy node devkit/jagame.js check <id> rồi sửa từng dòng TRƯỢT"
+  },
+  "E_TIMEOUT": {
+   "cause": "bộ chạy luật chơi quá thời gian (vòng lặp vô hạn / quá chậm)",
+   "fix": "sửa vòng lặp, giới hạn bot"
+  },
+  "E_RECEIPT": {
+   "cause": "jagame-submit.json không khớp mã (gói zip bị sửa sau khi đóng)",
+   "fix": "đóng gói lại"
+  },
+  "E_SYSTEM": {
+   "cause": "lỗi công cụ kiểm (không phải lỗi bài gửi)",
+   "fix": "chạy lại; báo chủ kho nếu lặp lại"
+  }
+ }
+}

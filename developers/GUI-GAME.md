@@ -54,6 +54,7 @@ do `node jagame.js pack <id>` tạo). Đường Issue chậm hơn vì chủ kho 
    git add submissions/<game-id>
    git status            # chỉ thấy submissions/<game-id>/…
    git commit -m "Gửi game <game-id> <version>"
+   python3 devkit/check_pr.py   # chạy y như máy kiểm trên GitHub — phải "PR ĐẠT — giống workflow GitHub"
    git push -u origin gui-<game-id>
    ```
    Trên GitHub bấm **Compare & pull request**, điền đủ mẫu (checklist hiện sẵn).
@@ -64,6 +65,8 @@ do `node jagame.js pack <id>` tạo). Đường Issue chậm hơn vì chủ kho 
    không bao giờ tự cài; đã cài thì tự cập nhật khi có bản mới.
 
 ## 3. Bị từ chối tự động nếu
+Mỗi lỗi in kèm mã ổn định `[E_…]` — bảng mã đầy đủ ở [AI-RULES.md](AI-RULES.md) mục 7.
+
 | Vi phạm | Cách sửa |
 |---|---|
 | PR đụng tệp ngoài `submissions/<game-id>/` (kể cả `README.md` gốc, `devkit/`, `.github/`) | tách thay đổi đó ra, PR chỉ chứa thư mục game |
