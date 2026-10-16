@@ -1,0 +1,20 @@
+Jagame — Giấy phép sử dụng / License
+Bản quyền (c) 2026 phamduybk (https://jagame.vn). Mọi quyền được bảo lưu. All rights reserved.
+
+1. PHẦN MỀM LÕI (mọi tệp ngoài các thư mục nêu ở mục 2: application/, Realtime/, assets/, system/ đã chỉnh sửa,
+   các script chạy, bản đóng gói) là phần mềm độc quyền, phát hành ở dạng đã mã hóa.
+   Bạn ĐƯỢC: tải về, cài và chạy miễn phí trên máy của mình để làm hội quán cho gia đình, bạn bè, cộng đồng của bạn.
+   Bạn KHÔNG ĐƯỢC: giải mã, dịch ngược, gỡ hoặc vượt qua lớp mã hóa; sửa đổi, sao chép để phân phối lại, bán, cho thuê,
+   cung cấp dưới dạng dịch vụ cho người khác (hosting/SaaS), hoặc dùng mã hay thiết kế để làm sản phẩm cạnh tranh —
+   trừ khi có văn bản đồng ý của chủ sở hữu.
+
+2. PHẦN DÀNH CHO NHÀ PHÁT TRIỂN GAME — devkit/, developers/ và game mẫu trong devkit/ — được cấp theo giấy phép MIT
+   (xem devkit/README.md). Game bạn tự viết là của bạn, theo giấy phép bạn ghi trong submissions/<id>/LICENSE.
+
+3. Thư viện bên thứ ba (CodeIgniter trong system/, node_modules/, assets/js/vendor/, PHP, Node.js, cloudflared...) giữ
+   giấy phép gốc của chúng.
+
+4. Phần mềm được cung cấp "NGUYÊN TRẠNG", không kèm bảo đảm. Chủ sở hữu không chịu trách nhiệm về thiệt hại phát sinh
+   từ việc sử dụng. Người cài đặt chịu trách nhiệm về nội dung (ảnh, nhạc, ROM...) mà mình đưa lên hội quán.
+
+Liên hệ cấp phép thương mại / commercial licensing: https://jagame.vn

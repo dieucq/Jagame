@@ -42,3 +42,6 @@ tools/                 bộ chạy kiểm (runner.js + sandbox.js), trang chơi 
 
 Trang chơi thử không có 20 giao diện màu của hội quán (chỉ 1 giao diện mặc định) — hãy dùng đúng biến CSS để game tự đổi màu theo
 hội quán. Thử khu cách ly thật: cài game vào hội quán của bạn bằng **Quản trị → Chợ game → Cài thủ công** (bật "Cho phép nhập game ngoài kho").
+
+## Giấy phép
+Bộ công cụ này (devkit/) và các game mẫu được cấp theo giấy phép **MIT**: dùng, sửa, chia sẻ tự do. Phần mềm lõi Jagame KHÔNG thuộc giấy phép này (xem LICENSE ở gốc repo).
