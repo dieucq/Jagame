@@ -1,0 +1,9 @@
+/* Jagame — khung cách ly game Cộng đồng / Tự cài (/gframe, controllers/Gframe.php): nạp SAU app/site/themes/play.css để bàn chơi
+   trong khung trông y như bàn chơi thật; ở đây chỉ bỏ nền/đệm của trang và để khung trong suốt (nền trang mẹ lộ ra). */
+html, body.jg-frame { background: transparent; min-height: 0; overflow-x: hidden; scroll-behavior: auto; }
+body.jg-frame { margin: 0; padding: 0; }
+body.jg-frame::before, body.jg-frame::after { content: none; display: none; }
+body.jg-frame .game-stage { position: relative; min-width: 0; }
+body.jg-frame .game-root { --jg-safe-bottom: 0px; --app-tabbar-h: 0px; }
+body.jg-frame .game-board { width: 100%; min-width: 0; }
+html.jg-reduced *, html.jg-reduced *::before, html.jg-reduced *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }

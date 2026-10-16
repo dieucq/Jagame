@@ -1,0 +1,58 @@
+{
+  "cases": [
+    {
+      "name": "khai cuộc: hiệp 1, chưa ai chọn, người xem không thấy tay",
+      "players": 2,
+      "steps": [],
+      "result": null,
+      "view": [
+        { "seat": 0, "match": { "proto": 2, "phase": "pick", "turn": null, "you": 0, "youDone": false, "round": 1, "target": 2, "mine": null, "picked": [false, false], "scores": [0, 0] } },
+        { "seat": -1, "match": { "you": -1, "mine": null } }
+      ]
+    },
+    {
+      "name": "chọn rồi: chỉ mình thấy tay mình (ẩn thông tin)",
+      "steps": [ { "seat": 0, "move": { "type": "pick", "hand": "bua" } } ],
+      "view": [
+        { "seat": 0, "match": { "mine": "bua", "picked": [true, false] } },
+        { "seat": 1, "match": { "mine": null, "picked": [true, false] } }
+      ]
+    },
+    {
+      "name": "búa thắng kéo: lộ cả hai tay, ghế 0 được 1 hiệp",
+      "steps": [ { "seat": 0, "move": { "type": "pick", "hand": "bua" } }, { "seat": 1, "move": { "type": "pick", "hand": "keo" } } ],
+      "view": [ { "seat": 1, "match": { "phase": "reveal", "scores": [1, 0], "last": { "round": 1, "hands": ["bua", "keo"], "winner": 0 } } } ]
+    },
+    {
+      "name": "thắng 2 hiệp là thắng ván (reason win)",
+      "steps": [
+        { "seat": 0, "move": { "type": "pick", "hand": "bao" } }, { "seat": 1, "move": { "type": "pick", "hand": "bua" } },
+        { "tick": 3000 },
+        { "seat": 0, "move": { "type": "pick", "hand": "keo" } }, { "seat": 1, "move": { "type": "pick", "hand": "bao" } }
+      ],
+      "result": { "winners": [0], "reason": "win" }
+    },
+    {
+      "name": "hết giờ: máy chọn giúp rồi lộ",
+      "steps": [ { "seat": 0, "move": { "type": "pick", "hand": "bua" } }, { "tick": 11000 } ],
+      "view": [ { "seat": 0, "match": { "phase": "reveal" } } ]
+    },
+    {
+      "name": "sai: chọn 2 lần, tay lạ, rác, chọn lúc đang lộ",
+      "steps": [
+        { "seat": 0, "move": { "type": "pick", "hand": "bua" } },
+        { "seat": 0, "move": { "type": "pick", "hand": "bao" }, "error": "đã chọn" },
+        { "seat": 1, "move": { "type": "pick", "hand": "dao" }, "error": "không hợp lệ" },
+        { "seat": 1, "move": { "type": "hack" }, "error": "không hợp lệ" },
+        { "seat": 5, "move": { "type": "pick", "hand": "bua" }, "error": "không ngồi" },
+        { "seat": 1, "move": { "type": "pick", "hand": "bua" } },
+        { "seat": 1, "move": { "type": "pick", "hand": "bao" }, "error": "Chưa tới lúc" }
+      ]
+    },
+    {
+      "name": "đầu hàng: người kia thắng, đi tiếp bị từ chối",
+      "steps": [ { "seat": 1, "move": { "type": "resign" } }, { "seat": 0, "move": { "type": "pick", "hand": "bua" }, "error": "kết thúc" } ],
+      "result": { "winners": [0], "reason": "resign" }
+    }
+  ]
+}

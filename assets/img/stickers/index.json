@@ -1,0 +1,1917 @@
+{
+ "packs": [
+  {
+   "key": "cam-xuc",
+   "label": "Cảm xúc"
+  },
+  {
+   "key": "choi-game",
+   "label": "Chơi game",
+   "icon": "gm-cup"
+  },
+  {
+   "key": "gia-dinh",
+   "label": "Gia đình & Tết",
+   "icon": "gd-den-long"
+  },
+  {
+   "key": "dong",
+   "label": "Động",
+   "anim": 1
+  },
+  {
+   "key": "classic",
+   "label": "Cổ điển"
+  },
+  {
+   "key": "hoi-ban",
+   "label": "Hội bạn"
+  },
+  {
+   "key": "meo-mum",
+   "label": "Mèo mũm mĩm"
+  },
+  {
+   "key": "cun-shiba",
+   "label": "Cún Shiba"
+  },
+  {
+   "key": "gau-truc-luoi",
+   "label": "Gấu trúc lười"
+  },
+  {
+   "key": "vit-vang",
+   "label": "Vịt vàng"
+  },
+  {
+   "key": "do-an-viet",
+   "label": "Đồ ăn Việt"
+  },
+  {
+   "key": "khung-long-con",
+   "label": "Khủng long con"
+  },
+  {
+   "key": "ma-nho",
+   "label": "Ma nhỏ"
+  },
+  {
+   "key": "may-blob",
+   "label": "Cục mây"
+  },
+  {
+   "key": "pixel-8bit",
+   "label": "Pixel 8-bit"
+  },
+  {
+   "key": "chu-tay-meme",
+   "label": "Chữ tay meme"
+  }
+ ],
+ "stickers": [
+  {
+   "id": "cx-vui-qua",
+   "label": "Vui quá",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "cuoi hihi happy",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-cuoi-tit",
+   "label": "Cười tít mắt",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "hehe vui",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-cuoi-ra-nuoc-mat",
+   "label": "Cười ra nước mắt",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "haha lol cuoi chay nuoc mat",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-cuoi-lan-lon",
+   "label": "Cười lăn lộn",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "haha xiu lol",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-yeu-thuong",
+   "label": "Yêu thương",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "thuong tim love",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-me-qua",
+   "label": "Mê quá",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "yeu tim mat love",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-hon-gio",
+   "label": "Hôn gió",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "thom chut moa kiss",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-ngai-ngung",
+   "label": "Ngại ngùng",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "mac co do mat blush",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-om-cai",
+   "label": "Ôm cái nào",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "om hug",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-nan-ni",
+   "label": "Năn nỉ",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "xin di please",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-cam-dong",
+   "label": "Cảm động",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "xuc dong rung rung",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-buon",
+   "label": "Buồn",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "khoc sad",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-khoc-to",
+   "label": "Khóc to",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "khoc hu hu sad",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-gian",
+   "label": "Giận",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "tuc do mat angry",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-tuc-qua",
+   "label": "Tức quá",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "gian hung hung",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-wow",
+   "label": "Wow",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "bat ngo ngac nhien",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-soc",
+   "label": "Sốc",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "no nao bat ngo",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-het-hon",
+   "label": "Hết hồn",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "so hoang",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-suy-nghi",
+   "label": "Suy nghĩ",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "hmm nghi",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-ngu",
+   "label": "Ngủ",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "ngu ngon zzz",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-buon-ngu",
+   "label": "Buồn ngủ",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "ngap met",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-chan",
+   "label": "Chán",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "liec mat",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-dac-y",
+   "label": "Đắc ý",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "nhech mep",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-nhay-mat",
+   "label": "Nháy mắt",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "wink",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-ngau",
+   "label": "Ngầu",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "kinh ram cool",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-ngam-nghia",
+   "label": "Ngưỡng mộ",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "mat sao",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-lay",
+   "label": "Lầy",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "nhay nho",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-che-mieng",
+   "label": "Che miệng cười",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "hihi",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-suyt",
+   "label": "Suỵt",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "bi mat im",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-tan-chay",
+   "label": "Tan chảy",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "nong ngai",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-lom-nhin",
+   "label": "Lén nhìn",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "nhin trom",
+   "src": "fluent"
+  },
+  {
+   "id": "cx-quay",
+   "label": "Quẩy",
+   "pack": "cam-xuc",
+   "ext": "webp",
+   "kw": "tiec party",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-thang-roi",
+   "label": "Thắng rồi!",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "cup vo dich win",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-gg",
+   "label": "GG",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "good game bat tay",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-thua-roi",
+   "label": "Thua rồi",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "chong mat lose",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-toang",
+   "label": "Toang",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "chet thua",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-cau-hoa",
+   "label": "Cầu hòa",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "hoa nhe bo cau",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-dau-hang",
+   "label": "Đầu hàng",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "co trang",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-van-nua",
+   "label": "Ván nữa!",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "choi lai",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-lac-xuc-xac",
+   "label": "Đổ xúc xắc",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "xuc xac do",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-nhanh-len",
+   "label": "Đi nhanh lên",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "le len cham",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-het-gio",
+   "label": "Hết giờ",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "dong ho bam gio",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-toi-luot",
+   "label": "Tới lượt bạn",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "luot",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-solo",
+   "label": "Solo không?",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "thach dau kiem",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-chay",
+   "label": "Cháy quá",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "lua hot",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-bum",
+   "label": "Bùm!",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "bom no",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-co-len",
+   "label": "Cố lên!",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "manh len",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-hay-qua",
+   "label": "Hay quá!",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "vo tay",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-cao-thu",
+   "label": "Cao thủ",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "nao thong minh",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-vua",
+   "label": "Vua",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "vuong mien",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-hang-nhat",
+   "label": "Hạng nhất",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "huy chuong vang top 1",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-cup",
+   "label": "Cúp",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "vo dich",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-xuc-xac",
+   "label": "Xúc xắc",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "do",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-trung-dich",
+   "label": "Trúng đích",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "chuan bia",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-100-diem",
+   "label": "100 điểm",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "tuyet doi",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-soi",
+   "label": "Soi",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "nhin mat",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-co-y",
+   "label": "Có ý!",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "bong den nghi ra",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-an-may",
+   "label": "Ăn may",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "hen xui may man",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-ok",
+   "label": "OK",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "like duoc",
+   "src": "fluent"
+  },
+  {
+   "id": "gm-chot",
+   "label": "Chốt!",
+   "pack": "choi-game",
+   "ext": "webp",
+   "kw": "chien thang",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-chao-ca-nha",
+   "label": "Chào cả nhà",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "xin chao",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-an-com-chua",
+   "label": "Ăn cơm chưa?",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "com an",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-chao-buoi-sang",
+   "label": "Chào buổi sáng",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "mat troi sang",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-ngu-ngon",
+   "label": "Chúc ngủ ngon",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "trang dem",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-cam-on",
+   "label": "Cảm ơn",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "cam on nhieu",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-thuong",
+   "label": "Thương lắm",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "yeu tim",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-goi-nhe",
+   "label": "Gọi nhé",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "dien thoai",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-ve-nha",
+   "label": "Về nhà",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "nha",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-ong",
+   "label": "Ông",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "ong noi ngoai",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-ba",
+   "label": "Bà",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "ba noi ngoai",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-mung-nam-moi",
+   "label": "Mừng năm mới",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "tet chuc tet phao hoa",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-li-xi",
+   "label": "Lì xì",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "tet bao li xi",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-phao-tet",
+   "label": "Pháo Tết",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "tet phao",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-den-long",
+   "label": "Đèn lồng",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "tet trung thu",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-hoa-dao",
+   "label": "Hoa đào",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "tet hoa",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-banh-trung-thu",
+   "label": "Bánh trung thu",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "trung thu",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-sinh-nhat",
+   "label": "Mừng sinh nhật",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "sinh nhat banh kem",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-qua",
+   "label": "Quà tặng",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "qua",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-bong-bay",
+   "label": "Bóng bay",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "tiec",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-tang-hoa",
+   "label": "Tặng hoa",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "bo hoa",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-hoa-tulip",
+   "label": "Hoa tulip",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "hoa",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-uong-tra",
+   "label": "Uống trà",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "tra nong",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-ca-phe",
+   "label": "Cà phê",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "cafe",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-pho",
+   "label": "Phở",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "bun mi an sang",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-banh-mi",
+   "label": "Bánh mì",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "an sang",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-dua-hau",
+   "label": "Dưa hấu",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "tet trai cay",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-xoai",
+   "label": "Xoài",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "trai cay",
+   "src": "fluent"
+  },
+  {
+   "id": "gd-thu-tay",
+   "label": "Thư tay",
+   "pack": "gia-dinh",
+   "ext": "webp",
+   "kw": "thu tinh",
+   "src": "fluent"
+  },
+  {
+   "id": "dg-cuoi-ra-nuoc-mat",
+   "label": "Cười ra nước mắt (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "haha lol",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-cuoi-lan-lon",
+   "label": "Cười lăn lộn (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "haha xiu",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-me-qua",
+   "label": "Mê quá (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "yeu tim",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-yeu-thuong",
+   "label": "Yêu thương (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "tim thuong",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-hon-gio",
+   "label": "Hôn gió (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "thom moa",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-khoc-to",
+   "label": "Khóc to (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "hu hu buon",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-gian",
+   "label": "Giận (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "tuc",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-wow",
+   "label": "Wow (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "ngac nhien",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-suy-nghi",
+   "label": "Suy nghĩ (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "hmm",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-ngu",
+   "label": "Ngủ (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "zzz",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-quay",
+   "label": "Quẩy (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "tiec party",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-vo-tay",
+   "label": "Vỗ tay (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "hay qua",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-chao",
+   "label": "Vẫy chào (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "xin chao",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-lua",
+   "label": "Cháy (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "lua hot",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-an-mung",
+   "label": "Ăn mừng (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "phao giay chuc mung",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "dg-tim",
+   "label": "Thả tim (động)",
+   "pack": "dong",
+   "ext": "webp",
+   "kw": "yeu thuong",
+   "src": "noto",
+   "anim": 1
+  },
+  {
+   "id": "gg",
+   "label": "GG",
+   "pack": "classic"
+  },
+  {
+   "id": "hay-qua",
+   "label": "Hay quá!",
+   "pack": "classic"
+  },
+  {
+   "id": "van-nua",
+   "label": "Ván nữa!",
+   "pack": "classic"
+  },
+  {
+   "id": "thua-roi",
+   "label": "Thua rồi",
+   "pack": "classic"
+  },
+  {
+   "id": "chao",
+   "label": "Chào cả nhà",
+   "pack": "classic"
+  },
+  {
+   "id": "haha",
+   "label": "Haha",
+   "pack": "classic"
+  },
+  {
+   "id": "dinh",
+   "label": "Đỉnh!",
+   "pack": "classic"
+  },
+  {
+   "id": "cho-ti",
+   "label": "Chờ tí",
+   "pack": "classic"
+  },
+  {
+   "id": "cam-on",
+   "label": "Cảm ơn",
+   "pack": "classic"
+  },
+  {
+   "id": "xin-loi",
+   "label": "Xin lỗi",
+   "pack": "classic"
+  },
+  {
+   "id": "ngu-ngon",
+   "label": "Ngủ ngon",
+   "pack": "classic"
+  },
+  {
+   "id": "thuong",
+   "label": "Thương!",
+   "pack": "classic"
+  },
+  {
+   "id": "ok",
+   "label": "OK",
+   "pack": "classic"
+  },
+  {
+   "id": "co-len",
+   "label": "Cố lên!",
+   "pack": "classic"
+  },
+  {
+   "id": "het-hon",
+   "label": "Hết hồn",
+   "pack": "classic"
+  },
+  {
+   "id": "toi-luot",
+   "label": "Tới lượt bạn",
+   "pack": "classic"
+  },
+  {
+   "id": "bo-tay",
+   "label": "Bó tay",
+   "pack": "classic"
+  },
+  {
+   "id": "an-mung",
+   "label": "Ăn mừng!",
+   "pack": "classic"
+  },
+  {
+   "id": "dau-hang",
+   "label": "Đầu hàng",
+   "pack": "classic"
+  },
+  {
+   "id": "kho-qua",
+   "label": "Khó quá",
+   "pack": "classic"
+  },
+  {
+   "id": "dang-toi",
+   "label": "Đang tới",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "cuoi-xiu",
+   "label": "Cười xỉu",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "buon-ngu",
+   "label": "Buồn ngủ",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "chao-hoi",
+   "label": "Chào hội!",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "quay-len",
+   "label": "Quẩy lên!",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "doi-qua",
+   "label": "Đói meo",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "met-xiu",
+   "label": "Mệt xỉu",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "qua-dinh",
+   "label": "Quá đỉnh",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "ghe-qua",
+   "label": "Ghê quá",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "ranh-khong",
+   "label": "Rảnh không?",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "di-an-khong",
+   "label": "Đi ăn không?",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "buon-xiu",
+   "label": "Buồn xỉu",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "yeu-lam",
+   "label": "Yêu lắm!",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "chuc-mung",
+   "label": "Chúc mừng!",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "mung-qua",
+   "label": "Mừng quá!",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "sap-den",
+   "label": "Sắp đến rồi",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "tha-tim",
+   "label": "Thả tim",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "mac-ke",
+   "label": "Mặc kệ đời",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "ngai-qua",
+   "label": "Ngại quá",
+   "pack": "hoi-ban"
+  },
+  {
+   "id": "meo-chao",
+   "label": "Chào!",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-cam-on",
+   "label": "Cảm ơn",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-xin-loi",
+   "label": "Xin lỗi",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-cuoi",
+   "label": "Cười",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-khoc",
+   "label": "Khóc",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-gian",
+   "label": "Hừm!",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-ngac-nhien",
+   "label": "Hả?",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-ok",
+   "label": "Ok",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-gg",
+   "label": "GG",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-thua",
+   "label": "Thua",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-toi-luot",
+   "label": "Tới!",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-nhanh-len",
+   "label": "Lẹ lên",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-ngu",
+   "label": "Ngủ",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-yeu-thuong",
+   "label": "Yêu!",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-an-mung",
+   "label": "Mừng!",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "meo-vui",
+   "label": "Meo!",
+   "pack": "meo-mum"
+  },
+  {
+   "id": "cun-chao",
+   "label": "Gâu!",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-cam-on",
+   "label": "Cảm ơn",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-xin-loi",
+   "label": "Xin lỗi",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-cuoi",
+   "label": "Cười",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-khoc",
+   "label": "Khóc",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-gian",
+   "label": "Gầm!",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-ngac-nhien",
+   "label": "Hả?",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-ok",
+   "label": "Ngoan",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-gg",
+   "label": "GG",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-thua",
+   "label": "Thua",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-toi-luot",
+   "label": "Tới!",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-nhanh-len",
+   "label": "Lẹ lên",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-ngu",
+   "label": "Ngủ",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-yeu-thuong",
+   "label": "Yêu!",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-an-mung",
+   "label": "Mừng!",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "cun-vui",
+   "label": "Gâu!",
+   "pack": "cun-shiba"
+  },
+  {
+   "id": "panda-chao",
+   "label": "Chào",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-cam-on",
+   "label": "Cảm ơn",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-xin-loi",
+   "label": "Lỡ tay",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-cuoi",
+   "label": "Cười",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-khoc",
+   "label": "Buồn",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-gian",
+   "label": "Hừm",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-ngac-nhien",
+   "label": "Hả?",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-ok",
+   "label": "Ừ...",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-gg",
+   "label": "GG",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-thua",
+   "label": "Thua",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-toi-luot",
+   "label": "Tới?",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-nhanh-len",
+   "label": "Từ từ",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-ngu",
+   "label": "Ngủ",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-yeu-thuong",
+   "label": "Yêu",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-an-mung",
+   "label": "Mừng",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "panda-vui",
+   "label": "Lười!",
+   "pack": "gau-truc-luoi"
+  },
+  {
+   "id": "vit-chao",
+   "label": "Cạc!",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-cam-on",
+   "label": "Cảm ơn",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-xin-loi",
+   "label": "Xin lỗi",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-cuoi",
+   "label": "Cười",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-khoc",
+   "label": "Khóc",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-gian",
+   "label": "Cạc cạc!",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-ngac-nhien",
+   "label": "Hả?",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-ok",
+   "label": "Ok",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-gg",
+   "label": "GG",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-thua",
+   "label": "Thua",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-toi-luot",
+   "label": "Tới!",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-nhanh-len",
+   "label": "Lẹ lên",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-ngu",
+   "label": "Ngủ",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-yeu-thuong",
+   "label": "Yêu!",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-an-mung",
+   "label": "Mừng!",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "vit-vui",
+   "label": "Cạc!",
+   "pack": "vit-vang"
+  },
+  {
+   "id": "banhbao-chao",
+   "label": "Chào!",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-cam-on",
+   "label": "Cảm ơn",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-xin-loi",
+   "label": "Xin lỗi",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-cuoi",
+   "label": "Cười no",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-khoc",
+   "label": "Đói",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-gian",
+   "label": "Hết!",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-ngac-nhien",
+   "label": "Ngon?",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-ok",
+   "label": "Ăn!",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-gg",
+   "label": "GG",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-thua",
+   "label": "Thua",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-toi-luot",
+   "label": "Tới!",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-nhanh-len",
+   "label": "Lẹ!",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-ngu",
+   "label": "No ngủ",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-yeu-thuong",
+   "label": "Yêu!",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-an-mung",
+   "label": "Mừng!",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "banhbao-vui",
+   "label": "Đói!",
+   "pack": "do-an-viet"
+  },
+  {
+   "id": "dino-chao",
+   "label": "Chào!",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-cam-on",
+   "label": "Cảm ơn",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-xin-loi",
+   "label": "Xin lỗi",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-cuoi",
+   "label": "Cười",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-khoc",
+   "label": "Khóc",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-gian",
+   "label": "Gầm!",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-ngac-nhien",
+   "label": "Hả?",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-ok",
+   "label": "Ok",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-gg",
+   "label": "GG",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-thua",
+   "label": "Thua",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-toi-luot",
+   "label": "Tới!",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-nhanh-len",
+   "label": "Lẹ lên",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-ngu",
+   "label": "Ngủ",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-yeu-thuong",
+   "label": "Yêu!",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-an-mung",
+   "label": "Mừng!",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "dino-vui",
+   "label": "Rawr!",
+   "pack": "khung-long-con"
+  },
+  {
+   "id": "ma-chao",
+   "label": "Hú!",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-cam-on",
+   "label": "Cảm ơn",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-xin-loi",
+   "label": "Xin lỗi",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-cuoi",
+   "label": "Cười",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-khoc",
+   "label": "Khóc",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-gian",
+   "label": "Hù dọa",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-ngac-nhien",
+   "label": "Hú?",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-ok",
+   "label": "Ok",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-gg",
+   "label": "GG",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-thua",
+   "label": "Tan",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-toi-luot",
+   "label": "Tới hù",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-nhanh-len",
+   "label": "Lẹ hú!",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-ngu",
+   "label": "Ngủ",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-yeu-thuong",
+   "label": "Yêu ma",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-an-mung",
+   "label": "Mừng!",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "ma-vui",
+   "label": "Hú hù!",
+   "pack": "ma-nho"
+  },
+  {
+   "id": "may-chao",
+   "label": "Chào",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-cam-on",
+   "label": "Cảm ơn",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-xin-loi",
+   "label": "Xin lỗi",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-cuoi",
+   "label": "Cười",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-khoc",
+   "label": "Mưa",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-gian",
+   "label": "Sấm!",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-ngac-nhien",
+   "label": "Mưa?",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-ok",
+   "label": "Quang",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-gg",
+   "label": "GG",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-thua",
+   "label": "Dầm",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-toi-luot",
+   "label": "Tới!",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-nhanh-len",
+   "label": "Bão!",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-ngu",
+   "label": "Ngủ",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-yeu-thuong",
+   "label": "Nắng",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-an-mung",
+   "label": "Vồng!",
+   "pack": "may-blob"
+  },
+  {
+   "id": "may-vui",
+   "label": "Lag!",
+   "pack": "may-blob"
+  },
+  {
+   "id": "pixel-chao",
+   "label": "Chào!",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-cam-on",
+   "label": "Cảm ơn",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-xin-loi",
+   "label": "Lỗi!",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-cuoi",
+   "label": "Cười",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-khoc",
+   "label": "Khóc",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-gian",
+   "label": "Tức!",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-ngac-nhien",
+   "label": "Hả?",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-ok",
+   "label": "Ok",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-gg",
+   "label": "GG",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-thua",
+   "label": "Thua",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-toi-luot",
+   "label": "Tới!",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-nhanh-len",
+   "label": "Lẹ!",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-ngu",
+   "label": "Ngủ",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-yeu-thuong",
+   "label": "Yêu nè",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-an-mung",
+   "label": "Cấp!",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "pixel-vui",
+   "label": "Load!",
+   "pack": "pixel-8bit"
+  },
+  {
+   "id": "meme-chao",
+   "label": "Alo!",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-cam-on",
+   "label": "Cảm ơn",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-xin-loi",
+   "label": "Cứu với",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-cuoi",
+   "label": "Xỉu!",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-khoc",
+   "label": "Thét!",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-gian",
+   "label": "Hết!",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-ngac-nhien",
+   "label": "Ủa alo",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-ok",
+   "label": "Ok la",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-gg",
+   "label": "Thua đẹp",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-thua",
+   "label": "Toang rồi",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-toi-luot",
+   "label": "Tới mày",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-nhanh-len",
+   "label": "Lẹ lên",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-ngu",
+   "label": "Ngủ",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-yeu-thuong",
+   "label": "Yêu xỉu",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-an-mung",
+   "label": "Đỉnh nóc",
+   "pack": "chu-tay-meme"
+  },
+  {
+   "id": "meme-vui",
+   "label": "Chill",
+   "pack": "chu-tay-meme"
+  }
+ ],
+ "credit": "Sticker 3D: Microsoft Fluent Emoji (MIT). Sticker động: Noto Animated Emoji của Google (CC BY 4.0), đã thu nhỏ + giảm khung."
+}

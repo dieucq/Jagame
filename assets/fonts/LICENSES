@@ -1,0 +1,27 @@
+Phông chữ tự host của Jagame (Web/assets/fonts, kể cả comic/ và pro/)
+=====================================================================
+
+Mọi phông trong thư mục này lấy từ Google Fonts (tệp woff2 tách theo bộ ký tự latin / latin-ext / vietnamese)
+và phát hành theo SIL Open Font License, Version 1.1 (https://openfontlicense.org). Được dùng, nhúng và phân phối lại
+kèm phần mềm; không được bán riêng tệp phông; tên phông dành riêng (Reserved Font Name) giữ nguyên.
+
+Bản quyền thuộc tác giả từng phông, gồm:
+- Be Vietnam Pro (300/400/600 + 700/800 thêm 12/10/2026 — UI-PRO G0): Copyright 2021 The Be Vietnam Pro Project Authors
+  (https://github.com/bettergui/BeVietnamPro)
+- Montserrat: Copyright 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)
+- Josefin Sans: Copyright 2010 The Josefin Sans Project Authors (https://github.com/ThomasJockin/JosefinSansFont-master)
+- Fraunces: Copyright 2020 The Fraunces Project Authors (https://github.com/undercasetype/Fraunces)
+- Lora: Copyright 2011 The Lora Project Authors (https://github.com/cyrealtype/Lora-Cyrillic)
+- Playfair Display, Playfair Display SC: Copyright 2017 The Playfair Display Project Authors
+- Dancing Script: Copyright 2016 The Dancing Script Project Authors
+- Cormorant Garamond: Copyright 2015 The Cormorant Project Authors
+- EB Garamond: Copyright 2017 The EB Garamond Project Authors
+- Prata, Philosopher, Great Vibes, Pinyon Script, Imperial Script, Lavishly Yours, Mea Culpa: Copyright tác giả tương ứng (TypeTogether,
+  Jovanny Lemonad, TypeSETit / Robert Leuschke, Nicole Fally)
+- Noto Serif Display: Copyright 2022 The Noto Project Authors
+- Yeseva One, Alegreya, Bona Nova, Crimson Pro, Faustina, Gowun Batang, Hanken Grotesk, Manrope, Newsreader, Oswald, Plus Jakarta Sans,
+  Spectral, Trirong: Copyright tác giả tương ứng (xem trang phông trên fonts.google.com)
+- Unbounded 700 (thêm 12/10/2026 — Bộ giao diện 2026): Copyright 2022 The Unbounded Project Authors (https://github.com/googlefonts/unbounded)
+- comic/: Anton, Baloo 2, Bangers, Bungee, Mali, Potta One, Sigmar One — Copyright tác giả tương ứng
+
+Toàn văn giấy phép: https://openfontlicense.org/open-font-license-official-text/

@@ -1,0 +1,91 @@
+/* Máy chơi game cổ điển (/may-co-dien, trang chơi, quản trị). Chỉ dùng biến của Jagame; điện thoại là chính. */
+.flash-warn { background: #8a5a00; }
+.retro-hub .retro-tools { display: grid; gap: var(--sp-3); }
+.retro-search input { width: 100%; min-height: 48px; font-size: 16px; padding: 0 16px; border-radius: var(--r-pill); background: var(--field); }
+.retro-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-3); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 640px) { .retro-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 960px) { .retro-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.retro-grid li[hidden] { display: none; }
+.retro-card { display: grid; gap: 6px; padding: 10px; min-height: 44px; color: var(--ink); text-decoration: none; background: var(--paper); border: var(--card-bw) solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--elev-1); transition: transform var(--t-tap) var(--ease); }
+.retro-card:active { transform: scale(.97); }
+@media (hover: hover) { .retro-card:hover { transform: translateY(-4px); box-shadow: var(--elev-2, 0 10px 22px rgba(0,0,0,.2)); } }
+.retro-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.retro-card b { font-size: var(--fs-md); line-height: 1.25; overflow-wrap: anywhere; }
+.retro-card small { color: var(--muted); font-size: var(--fs-xs); }
+.retro-cardcover, .retro-cover { display: grid; place-items: center; overflow: hidden; background: var(--soft); border-radius: var(--r-row, 12px); color: var(--muted); font-style: normal; font-weight: 800; }
+.retro-cardcover { aspect-ratio: 4 / 5; font-size: var(--fs-lg); position: relative; }
+.retro-cardcover img, .retro-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.retro-cardcover i, .retro-cover i { font-style: normal; }
+.retro-empty { display: grid; justify-items: center; gap: var(--sp-3); text-align: center; padding: var(--sp-8) var(--sp-4); }
+.retro-empty h2 { margin: 0; }
+.retro-empty p { margin: 0; max-width: 36ch; }
+.retro-empty-ico { font-size: 56px; line-height: 1; }
+.retro-hubcard { display: flex; align-items: center; gap: var(--sp-3); padding: 14px var(--sp-4); min-height: 64px; color: var(--ink); text-decoration: none; background: var(--paper);
+  border: var(--card-bw) solid var(--line); border-radius: var(--radius); box-shadow: var(--elev-1); }
+.retro-hubico { font-size: 28px; }
+.retro-hubtxt { flex: 1; display: grid; min-width: 0; } .retro-hubtxt small { color: var(--muted); }
+/* trang chơi */
+.retro-play { display: grid; gap: var(--sp-3); padding: var(--sp-2) var(--gutter) var(--sp-6); max-width: 960px; margin: 0 auto; }
+.retro-playhead { display: flex; align-items: center; gap: var(--sp-3); }
+.retro-playhead h1 { margin: 0; font-size: var(--fs-lg); } .retro-playhead small { color: var(--muted); }
+.retro-root { min-height: 240px; display: grid; place-items: center; background: #000; color: #9aa; border-radius: var(--radius); overflow: hidden; }
+/* quản trị */
+.retro-legal { padding: 12px 14px; border-radius: var(--r-row, 12px); background: color-mix(in srgb, var(--warn, #e7a412) 16%, var(--paper)); border: 1px solid color-mix(in srgb, var(--warn, #e7a412) 55%, transparent);
+  line-height: 1.5; margin-bottom: var(--sp-3); }
+.retro-install, .retro-editform { display: grid; gap: var(--sp-3); }
+.retro-two { display: grid; gap: var(--sp-3); } @media (min-width: 640px) { .retro-two { grid-template-columns: 1fr 1fr; } }
+.retro-own { align-items: flex-start; }
+.retro-row { align-items: center; } .retro-row.is-off { opacity: .7; }
+.retro-cover { flex: none; width: 48px; height: 48px; font-size: var(--fs-xs); }
+.retro-bad { color: var(--danger); }
+.retro-edit { padding: 0 var(--sp-4) var(--sp-4); } .retro-edit > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; }
+.retro-edit > summary::-webkit-details-marker { display: none; }
+.retro-edit[open] > summary { margin-bottom: var(--sp-3); } .retro-delform { margin-top: var(--sp-3); }
+.retro-adm-empty { margin-bottom: 0; }
+/* hướng dẫn (JG.sheet) */
+.retro-guide { padding: 0 var(--sp-4) var(--sp-4); max-height: 70vh; overflow: auto; }
+.rg-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-3); }
+.rg-step { display: flex; gap: var(--sp-3); align-items: flex-start; }
+.rg-step > span:last-child { display: grid; gap: 2px; min-width: 0; line-height: 1.4; } .rg-step small { font-size: var(--fs-sm); color: var(--muted); overflow-wrap: anywhere; }
+.rg-step a { color: var(--accent-text); }
+.rg-ico { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--soft); font-size: 22px; }
+.rg-legal { margin: var(--sp-4) 0 0; font-size: var(--fs-xs); color: var(--muted); line-height: 1.5; }
+
+/* ── Bìa mặc định + thẻ kệ băng ── */
+.retro-hub { --rc-nes1: color-mix(in srgb, var(--accent) 35%, #e8584a); --rc-nes2: color-mix(in srgb, var(--ink) 80%, #3a1a5a);
+  --rc-snes1: color-mix(in srgb, var(--accent) 30%, #6b63ff); --rc-snes2: color-mix(in srgb, var(--ink) 80%, #1a2a5a); }
+.retro-cardcover.is-default { border-radius: 10px 10px 4px 4px; color: #fff; box-shadow: inset 0 -3px 0 rgba(0,0,0,.25), inset 0 0 0 2px rgba(255,255,255,.12); }
+.retro-cardcover.rc-nes { background: linear-gradient(150deg, var(--rc-nes1), var(--rc-nes2)); }
+.retro-cardcover.rc-snes { background: linear-gradient(150deg, var(--rc-snes1), var(--rc-snes2)); }
+.retro-art { position: absolute; inset: 0; width: 100%; height: 100%; }
+.retro-covertitle { position: absolute; left: 8px; right: 8px; bottom: 7px; height: 33%; display: flex; align-items: center; justify-content: center; text-align: center;
+  font: 800 clamp(.78rem, 3.4vw, .95rem)/1.15 var(--f-head, inherit); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); overflow: hidden; overflow-wrap: anywhere; }
+.retro-sys, .retro-pl, .retro-recentflag { position: absolute; font: 800 11px/1 var(--f-body, inherit); font-style: normal; letter-spacing: .04em; padding: 4px 7px; border-radius: 999px; z-index: 1; }
+.retro-sys { top: 6px; left: 6px; background: rgba(0,0,0,.55); color: #fff; }
+.retro-pl { top: 6px; right: 6px; background: var(--paper); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+.retro-recentflag { left: 6px; bottom: 6px; background: var(--accent); color: var(--on-accent, #fff); }
+.retro-recentflag[hidden] { display: none; }
+.retro-cardcover:not(.is-default) .retro-recentflag { bottom: 6px; }
+/* tiêu đề gọn ở dọc: nút ? 44px */
+.retro-help { min-width: 44px; min-height: 44px; padding: 0; border-radius: 50%; font-weight: 800; font-size: var(--fs-lg); }
+.retro-help em { display: none; font-style: normal; font-size: var(--fs-md); }
+@media (min-width: 640px) { .retro-help { border-radius: var(--r-pill); padding: 0 16px; } .retro-help span { display: none; } .retro-help em { display: inline; } }
+.retro-hub .pg-head.is-wrap { flex-wrap: nowrap; }
+.retro-hub .pg-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 639px) { .retro-hub .pg-sub { display: none; } .retro-hub .pg-head { min-height: 48px; } }
+/* Phòng đang mở */
+.retro-roomlist { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-2); }
+.retro-roomrow { display: flex; align-items: center; gap: var(--sp-3); padding: 10px 12px; background: var(--paper); border: var(--card-bw) solid var(--line); border-radius: var(--radius); box-shadow: var(--elev-1); }
+.retro-roominfo { flex: 1; min-width: 0; display: grid; line-height: 1.3; } .retro-roominfo b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.retro-roominfo small { color: var(--muted); font-size: var(--fs-sm); }
+.retro-roomrow .btn { min-height: 44px; flex: none; }
+.retro-live { width: 10px; height: 10px; border-radius: 50%; background: #2fbf71; flex: none; animation: retro-pulse 1.6s ease-in-out infinite; }
+.retro-live.is-wait { background: #e7a412; }
+@keyframes retro-pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .retro-live { animation: none; } .retro-card, .retro-card:hover { transition: none; transform: none; } }
+@media (min-width: 960px) { .retro-roomlist { grid-template-columns: 1fr 1fr; } }
+.retro-hub [data-retro-recent], .retro-hub .retro-rooms, .retro-hub .retro-tools { margin-bottom: var(--sp-4); }
+.retro-hub .retro-tools { margin-top: var(--sp-3); }
+.retro-covertitle { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; align-content: center; padding-top: 2px; }
+.retro-covertitle { font-size: clamp(.72rem, 3vw, .9rem); }

@@ -1,0 +1,468 @@
+/* Jagame — 10 GIAO DIỆN (<html data-theme="…">, danh sách + thứ tự ở config/content.php `themes`; cái đầu là mặc định).
+   Đối tượng: người trẻ 8–25 tuổi, hội bạn — tươi, đậm, chất game. Ý tưởng từng giao diện: Docs/design/THEMES.md.
+   Quy ước:
+   - Khối [data-theme="x"] CHỈ đặt biến (site.css) — áp cho <html> và ô xem trước .ed-swatch[data-theme] trong thanh sửa.
+   - Nét trang trí riêng viết html[data-theme="x"] … để không lọt vào ô xem trước.
+   - Màu phụ suy ra từ --bg/--ink/--accent bằng color-mix(): admin đặt màu riêng (style inline trên <html>) vẫn hài hòa.
+   - Hình trang trí: SVG tự vẽ ở assets/img/themes/ (đa số dùng làm mask, màu do CSS tô). Phông: chỉ phông tự host (fonts.css). */
+
+/* ═══ 1. STICKER VUI (mặc định) — giấy chấm bi, viền mực đen, bóng cứng, thẻ dán màu kẹo, gạch chân nguệch ngoạc ═══ */
+[data-theme="sticker"] {
+  --bg: #fff6d6; --ink: #17142b; --accent: #2f54eb;
+  --yel: #ffd23f; --pink: #ff6fae; --mint: #3ddc97; --sky: #5cc8ff; --org: #ff8a3d;
+  --paper: #fff; --soft: color-mix(in srgb, var(--yel) 45%, var(--bg)); --line: var(--ink);
+  --muted: color-mix(in srgb, var(--ink) 78%, var(--bg));
+  --sec-alt: color-mix(in srgb, var(--yel) 72%, var(--bg));
+  --f-head: "Montserrat", "Be Vietnam Pro", sans-serif; --head-w: 600; --head-stroke: .02em; --head-track: -.02em;
+  --radius: 18px; --r-btn: 14px; --r-icon: 16px; --r-img: 22px; --r-field: 14px; --card-bw: 2.5px; --btn-bw: 2.5px;
+  --card-shadow: 5px 5px 0 var(--ink); --btn-shadow: 4px 4px 0 var(--ink);
+  --hero-bg: var(--bg);
+  --hero-pattern: radial-gradient(color-mix(in srgb, var(--ink) 16%, transparent) 1.3px, transparent 1.8px) 0 0 / 22px 22px;
+  --hl: var(--pink); --badge-bg: var(--ink); --badge-ink: var(--yel);
+  --icon-bg: var(--sky);
+  --orn: url(../img/themes/sticker-orn.svg); --ph: url(../img/themes/sticker-ph.svg);
+}
+html[data-theme="sticker"] body.site, html[data-theme="sticker"] body.adm { background-image: var(--hero-pattern); }
+html[data-theme="sticker"] .topbar { border-bottom: 2.5px solid var(--ink); }
+/* G2: nút nhỏ (.btn-sm) không mang bóng cứng — ngân sách chữ ký (UI-PRO 2.4) */
+html[data-theme="sticker"] :is(.btn-accent, .btn-guest):not(.btn-sm) { border-color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+html[data-theme="sticker"] .btn-ghost:not(.btn-sm) { box-shadow: 4px 4px 0 var(--ink); }
+html[data-theme="sticker"] body.site .btn:not(:disabled):not(.btn-sm):hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
+html[data-theme="sticker"] body.site .btn:not(:disabled):not(.btn-sm):active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
+html[data-theme="sticker"] .hero-title::after { content: ""; display: block; width: min(70%, 340px); height: 18px; margin-top: 8px; background: var(--hl);
+  -webkit-mask: url(../img/themes/sticker-squiggle.svg) left center / 100% 100% no-repeat; mask: url(../img/themes/sticker-squiggle.svg) left center / 100% 100% no-repeat; }
+html[data-theme="sticker"] .eyebrow { background: var(--ink); color: var(--yel); padding: 6px 12px; border-radius: 8px; transform: rotate(-2deg); }
+html[data-theme="sticker"] .hero-img { border: 3px solid var(--ink); box-shadow: 9px 9px 0 var(--ink); transform: rotate(2deg); }
+html[data-theme="sticker"] .sec-hero .slot-empty { background: var(--sky); }
+html[data-theme="sticker"] .sec-hero .slot-ph { background: var(--ink); opacity: .85; }
+html[data-theme="sticker"] .sec:nth-of-type(even):not(.sec-hero) { border-top: 2.5px solid var(--ink); border-bottom: 2.5px solid var(--ink); }
+html[data-theme="sticker"] .game-grid > :nth-child(odd) { transform: rotate(-1deg); }
+html[data-theme="sticker"] .game-grid > :nth-child(even) { transform: rotate(1deg); }
+html[data-theme="sticker"] .game-grid > .game-card:hover { transform: translate(-2px, -5px) rotate(0); box-shadow: 8px 8px 0 var(--ink); border-color: var(--ink); }
+html[data-theme="sticker"] .game-icon { border: 2.5px solid var(--ink); }
+html[data-theme="sticker"] .game-grid > :nth-child(5n+1) .game-icon { background: var(--pink); }
+html[data-theme="sticker"] .game-grid > :nth-child(5n+2) .game-icon { background: var(--sky); }
+html[data-theme="sticker"] .game-grid > :nth-child(5n+3) .game-icon { background: var(--mint); }
+html[data-theme="sticker"] .game-grid > :nth-child(5n+4) .game-icon { background: var(--yel); }
+html[data-theme="sticker"] .game-grid > :nth-child(5n+5) .game-icon { background: var(--org); }
+html[data-theme="sticker"] .game-group::after { height: 2.5px; background: var(--ink); }
+html[data-theme="sticker"] .notice-board { background: var(--yel); color: #17142b; transform: rotate(-1deg); }
+html[data-theme="sticker"] .sec:nth-of-type(even) .notice-board { background: var(--paper); color: var(--ink); }
+html[data-theme="sticker"] .notice-pin { width: 96px; height: 28px; top: -15px; left: 50%; margin-left: -48px; border-radius: 3px; transform: rotate(-4deg);
+  background: color-mix(in srgb, var(--sky) 75%, transparent); box-shadow: none; }
+html[data-theme="sticker"] :is(.bare-card, .quick-play:not(.quick-page)) { border: 2.5px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }   /* G2: .board-row/.soon-box -> bề mặt yên (site.css) */
+html[data-theme="sticker"] .soon-box span { border: 2.5px solid var(--ink); background: var(--pink); }
+html[data-theme="sticker"] .about-img { outline: 3px solid var(--ink); outline-offset: 8px; }
+html[data-theme="sticker"] .quick-dice { background: var(--yel); border-color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+
+/* ═══ 2. NEON ĐÊM — nền đen tím, sàn lưới phối cảnh, chữ in hoa phát sáng (tối) ═══ */
+[data-theme="neon"] {
+  --bg: #0c0a1a; --ink: #f0ecff; --ink: oklch(from var(--bg) clamp(.2, (.6 - l) * 999, .955) .025 296); --accent: #8f63ff; --cyan: #22e1ff; --magenta: #ff3fd2;
+  --paper: color-mix(in srgb, var(--bg) 88%, var(--accent));
+  --soft: color-mix(in srgb, var(--accent) 18%, var(--bg));
+  --line: color-mix(in srgb, var(--accent) 30%, var(--bg));
+  --muted: color-mix(in srgb, var(--ink) 74%, var(--bg));
+  --sec-alt: color-mix(in srgb, var(--bg) 92%, var(--cyan));
+  --accent-text: color-mix(in oklab, var(--accent) 45%, var(--ink));
+  --f-head: "Montserrat", "Be Vietnam Pro", sans-serif; --head-w: 600; --head-case: uppercase; --head-track: .04em;
+  --radius: 12px; --r-btn: 10px; --r-icon: 12px; --r-img: 14px;
+  --shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 16px 40px rgba(0, 0, 0, .5);
+  --card-line: color-mix(in srgb, var(--accent) 38%, var(--bg));
+  --hero-bg: radial-gradient(circle at 18% 22%, color-mix(in srgb, var(--accent) 36%, transparent), transparent 42%),
+    radial-gradient(circle at 88% 70%, color-mix(in srgb, var(--magenta) 24%, transparent), transparent 42%),
+    linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--bg) 80%, var(--accent)));
+  --hero-pattern: linear-gradient(color-mix(in srgb, var(--cyan) 45%, transparent) 1.5px, transparent 1.5px) 0 0 / 60px 44px,
+    linear-gradient(90deg, color-mix(in srgb, var(--cyan) 45%, transparent) 1.5px, transparent 1.5px) 0 0 / 60px 44px;
+  --hero-muted: color-mix(in srgb, var(--ink) 86%, var(--bg));
+  --icon-bg: color-mix(in srgb, var(--accent) 22%, var(--bg));
+  --hl: var(--cyan); --badge-bg: var(--cyan); --badge-ink: #04121a;
+  --orn: url(../img/themes/neon-orn.svg); --ph: url(../img/themes/neon-ph.svg);
+}
+html[data-theme="neon"] .sec-hero::before { top: 58%; left: -40%; right: -40%; transform: perspective(320px) rotateX(62deg); transform-origin: 50% 0;
+  -webkit-mask: linear-gradient(transparent, #000 45%); mask: linear-gradient(transparent, #000 45%); opacity: .55; }
+html[data-theme="neon"] .hero-title { text-shadow: 0 0 22px color-mix(in srgb, var(--accent) 75%, transparent), 0 0 2px #fff; }
+html[data-theme="neon"] .eyebrow { color: color-mix(in oklab, var(--cyan) 38%, var(--ink)); text-shadow: 0 0 12px color-mix(in srgb, var(--cyan) 60%, transparent); }
+html[data-theme="neon"] .sec-title { text-shadow: 0 0 18px color-mix(in srgb, var(--accent) 55%, transparent); }
+html[data-theme="neon"] .sec-title::before { background: var(--cyan); filter: drop-shadow(0 0 6px var(--cyan)); }
+html[data-theme="neon"] .btn-accent { box-shadow: 0 0 0 1px color-mix(in srgb, #fff 30%, transparent) inset, 0 0 26px color-mix(in srgb, var(--accent) 60%, transparent); }
+html[data-theme="neon"] .hero-img { box-shadow: 0 0 0 2px var(--accent), 0 0 46px color-mix(in srgb, var(--accent) 55%, transparent); }
+html[data-theme="neon"] .game-card:hover, html[data-theme="neon"] .game-card:focus-within { box-shadow: 0 0 0 1px var(--cyan), 0 0 28px color-mix(in srgb, var(--cyan) 40%, transparent); }
+html[data-theme="neon"] .game-icon { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cyan) 55%, transparent), 0 0 18px color-mix(in srgb, var(--accent) 35%, transparent); }
+html[data-theme="neon"] .game-name { font-size: 1.08rem; }
+html[data-theme="neon"] .badge-soon { box-shadow: 0 0 12px color-mix(in srgb, var(--cyan) 60%, transparent); }
+html[data-theme="neon"] .sec:nth-of-type(even):not(.sec-hero) { box-shadow: inset 0 1px 0 color-mix(in srgb, var(--cyan) 45%, transparent), inset 0 -1px 0 color-mix(in srgb, var(--magenta) 40%, transparent); }
+html[data-theme="neon"] .board-val { color: color-mix(in oklab, #ff7be0 55%, var(--ink)); text-shadow: 0 0 10px color-mix(in srgb, var(--magenta) 60%, transparent); }
+html[data-theme="neon"] .slot-ph { background: var(--cyan); opacity: .6; }
+html[data-theme="neon"] .quick-play:not(.quick-page) { box-shadow: 0 0 0 1px var(--accent), 0 0 34px color-mix(in srgb, var(--accent) 35%, transparent); }
+
+/* ═══ 3. PIXEL 8-BIT — màn hình máy game thùng: ô vuông, viền răng cưa, sao pixel, 3 mạng ♥ ═══ */
+[data-theme="pixel"] {
+  --bg: #fff1e8; --ink: #1d2b53; --accent: #d9003c;
+  --navy: #1d2b53; --yel: #ffec27; --blu: #29adff; --grn: #00e436; --org: #ffa300; --pnk: #ff77a8;
+  --paper: #fff; --soft: color-mix(in srgb, var(--blu) 16%, var(--bg)); --line: var(--ink);
+  --sec-alt: color-mix(in srgb, var(--blu) 18%, var(--bg));
+  --f-head: "Josefin Sans", "Be Vietnam Pro", sans-serif; --head-w: 600; --head-case: uppercase; --head-track: .05em;
+  --radius: 0; --r-btn: 0; --r-icon: 0; --r-img: 0; --r-field: 0; --card-bw: 0; --btn-bw: 0;
+  --px: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink), -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink);
+  --card-shadow: var(--px), 8px 8px 0 0 color-mix(in srgb, var(--ink) 25%, transparent);
+  --e-1: 3px 3px 0 color-mix(in srgb, var(--ink) 16%, transparent);   /* G1: độ nổi yên kiểu pixel (bóng khối nhạt, không mờ) */
+  --hero-bg: var(--navy); --hero-ink: #fff1e8; --hero-muted: #c9cbd6; --hero-eyebrow: var(--yel);
+  --hero-pattern: conic-gradient(at 4px 4px, transparent 75%, #fff1e8 0) 30px 26px / 140px 110px, conic-gradient(at 4px 4px, transparent 75%, var(--yel) 0) 96px 70px / 190px 150px,
+    conic-gradient(at 4px 4px, transparent 75%, var(--blu) 0) 10px 90px / 230px 170px, repeating-linear-gradient(rgba(0, 0, 0, .18) 0 2px, transparent 2px 4px);
+  --icon-bg: var(--yel);
+  --hl: var(--accent); --badge-bg: var(--ink); --badge-ink: var(--yel); --badge-r: 0;
+  --edge-on: ""; --edge: url(../img/themes/pixel-band.svg); --edge-h: 16px;
+  --orn: url(../img/themes/pixel-orn.svg); --ph: url(../img/themes/pixel-ph.svg);
+}
+html[data-theme="pixel"] .btn { box-shadow: 0 -3px 0 0 var(--ink), 0 3px 0 0 var(--ink), -3px 0 0 0 var(--ink), 3px 0 0 0 var(--ink); text-transform: uppercase; letter-spacing: .04em; }
+html[data-theme="pixel"] .sec-hero .btn { --ink: #000; }
+html[data-theme="pixel"] .sec-hero .btn-ghost { background: var(--yel); color: var(--navy); }
+html[data-theme="pixel"] .hero-title { text-shadow: 5px 5px 0 var(--accent); font-size: clamp(2.4rem, 8.4vw, 4.6rem); line-height: 1.15; }
+@media (min-width: 761px) { html[data-theme="pixel"] .sec-hero::before { -webkit-mask: linear-gradient(90deg, rgba(0,0,0,.35) 0 48%, #000 62%); mask: linear-gradient(90deg, rgba(0,0,0,.35) 0 48%, #000 62%); } }
+html[data-theme="pixel"] .hero-img { box-shadow: 0 -6px 0 0 #fff1e8, 0 6px 0 0 #fff1e8, -6px 0 0 0 #fff1e8, 6px 0 0 0 #fff1e8, 14px 14px 0 0 #000; image-rendering: pixelated; }
+html[data-theme="pixel"] .sec-hero .slot-empty { background: var(--blu); }
+html[data-theme="pixel"] .sec-hero .slot-ph { background: var(--navy); opacity: .9; }
+html[data-theme="pixel"] .slot-ph { opacity: .8; }
+html[data-theme="pixel"] :is(.notice-board, .board-row, .soon-box, .bare-card, .panel, .quick-play:not(.quick-page), .game-toggle) { border: 0; box-shadow: var(--card-shadow); }
+html[data-theme="pixel"] .game-card { margin: 4px; }
+html[data-theme="pixel"] .game-icon { box-shadow: 0 -3px 0 0 var(--ink), 0 3px 0 0 var(--ink), -3px 0 0 0 var(--ink), 3px 0 0 0 var(--ink); }
+html[data-theme="pixel"] .game-grid > :nth-child(5n+2) .game-icon { background: var(--blu); }
+html[data-theme="pixel"] .game-grid > :nth-child(5n+3) .game-icon { background: var(--grn); }
+html[data-theme="pixel"] .game-grid > :nth-child(5n+4) .game-icon { background: var(--org); }
+html[data-theme="pixel"] .game-grid > :nth-child(5n+5) .game-icon { background: var(--pnk); }
+html[data-theme="pixel"] .game-card:hover { transform: translate(-4px, -4px); }
+html[data-theme="pixel"] .game-card:hover .game-icon { transform: translateY(-4px); }
+html[data-theme="pixel"] .badge-soon { transform: none; }
+html[data-theme="pixel"] .notice-pin { width: 16px; height: 16px; border-radius: 0; background: var(--accent); box-shadow: 4px 4px 0 var(--ink); }
+html[data-theme="pixel"] :is(input, textarea, select):not([type=checkbox]):not([type=radio]):not([type=color]) { border: 0;
+  box-shadow: 0 -3px 0 0 var(--ink), 0 3px 0 0 var(--ink), -3px 0 0 0 var(--ink), 3px 0 0 0 var(--ink); }
+html[data-theme="pixel"] .about-img { border-radius: 0; outline: 4px solid var(--ink); outline-offset: 6px; }
+html[data-theme="pixel"] .online-item .ava { border-radius: 0; }
+
+/* ═══ 4. TRUYỆN TRANH — giấy trắng, nét mực đậm, chấm tram, đường tốc độ, tiêu đề như ô lời dẫn ═══ */
+[data-theme="manga"] {
+  --bg: #fbfaf6; --ink: #111; --accent: #d10f27;
+  --paper: #fff; --soft: color-mix(in srgb, var(--ink) 7%, var(--bg)); --line: var(--ink);
+  --muted: color-mix(in srgb, var(--ink) 76%, var(--bg));
+  --sec-alt: color-mix(in srgb, var(--ink) 6%, var(--bg));
+  --f-head: "Be Vietnam Pro", system-ui, sans-serif; --head-w: 600; --head-style: italic; --head-case: uppercase; --head-stroke: .03em; --head-track: -.01em;
+  --radius: 3px; --r-btn: 4px; --r-icon: 50%; --r-img: 0; --r-field: 4px; --card-bw: 3px; --btn-bw: 3px;
+  --sig-shadow: 5px 5px 0 var(--ink);   /* G1: chữ ký = bóng mực lệch (giao diện không đặt --card-shadow) */
+  --hero-bg: #fff;
+  --hero-pattern: repeating-conic-gradient(from 0deg at 78% 46%, var(--ink) 0 .7deg, transparent .7deg 5deg);
+  --icon-bg: #fff;
+  --hl: var(--accent); --badge-bg: var(--accent); --badge-ink: var(--accent-ink);
+  --orn: none; --ph: url(../img/themes/manga-ph.svg);
+}
+html[data-theme="manga"] .sec-hero::before { opacity: .38; -webkit-mask: radial-gradient(ellipse at 78% 46%, transparent 0 30%, #000 75%); mask: radial-gradient(ellipse at 78% 46%, transparent 0 30%, #000 75%); }
+html[data-theme="manga"] .sec-hero { border-bottom: 4px solid var(--ink); }
+html[data-theme="manga"] .hero-title { text-shadow: 4px 4px 0 #fff, 7px 7px 0 var(--accent); }
+html[data-theme="manga"] .eyebrow { background: var(--accent); color: var(--accent-ink); padding: 6px 12px; transform: skew(-8deg); }
+html[data-theme="manga"] .hero-tagline { background: #fff; border: 3px solid var(--ink); border-radius: 22px; padding: 12px 18px; position: relative; color: var(--ink); }
+html[data-theme="manga"] .hero-img { border: 4px solid var(--ink); box-shadow: 10px 10px 0 var(--ink); transform: rotate(-1.5deg); }
+html[data-theme="manga"] .slot-empty { background: radial-gradient(color-mix(in srgb, var(--ink) 22%, transparent) 1.6px, transparent 2px) 0 0 / 8px 8px, #fff; }
+html[data-theme="manga"] .slot-ph { background: var(--accent); opacity: 1; }
+html[data-theme="manga"] .sec-title::before { display: none; }
+html[data-theme="manga"] .sec-title { display: inline-block; background: var(--ink); color: var(--paper); padding: .12em .5em .16em; transform: skew(-6deg); -webkit-text-stroke: 0; }
+html[data-theme="manga"] .sec:nth-of-type(even):not(.sec-hero) { background: radial-gradient(color-mix(in srgb, var(--ink) 9%, transparent) 1.4px, transparent 1.8px) 0 0 / 9px 9px, var(--sec-alt);
+  border-top: 3px solid var(--ink); border-bottom: 3px solid var(--ink); }
+html[data-theme="manga"] .game-card { overflow: hidden; }
+html[data-theme="manga"] .game-card::after { content: ""; position: absolute; right: 0; bottom: 0; width: 70px; height: 70px; z-index: -1;
+  background: radial-gradient(color-mix(in srgb, var(--ink) 30%, transparent) 1.5px, transparent 2px) 0 0 / 7px 7px; -webkit-mask: linear-gradient(135deg, transparent 50%, #000 50%); mask: linear-gradient(135deg, transparent 50%, #000 50%); }
+html[data-theme="manga"] .game-card:hover { box-shadow: 6px 6px 0 var(--accent); border-color: var(--ink); }
+html[data-theme="manga"] .game-icon { border: 3px solid var(--ink); }
+html[data-theme="manga"] .badge-soon { transform: skew(-8deg) rotate(3deg); }
+html[data-theme="manga"] .notice-board { border-radius: 40px; box-shadow: none; }
+html[data-theme="manga"] .notice-board::after { content: ""; position: absolute; left: 56px; bottom: -22px; width: 34px; height: 34px; background: #fff;
+  border-right: 3px solid var(--ink); border-bottom: 3px solid var(--ink); transform: skew(20deg) rotate(45deg); }
+html[data-theme="manga"] .notice-pin { display: none; }
+html[data-theme="manga"] :is(.bare-card, .quick-play:not(.quick-page)) { border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
+html[data-theme="manga"] :is(.board-row, .soon-box) { border: 2px solid var(--ink); box-shadow: none; }   /* G2: khung mực mảnh, không bóng */
+html[data-theme="manga"] .btn-ghost { border-color: var(--ink); }
+html[data-theme="manga"] .btn-accent:not(.btn-sm) { border-color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+html[data-theme="manga"] .about-img { outline: 3px solid var(--ink); outline-offset: 7px; }
+html[data-theme="manga"] .game-group::after { height: 3px; background: var(--ink); }
+
+/* ═══ 5. ESPORTS — đầu trang đen than vát chéo, xanh chanh điện, góc vát, sọc cảnh báo ═══ */
+[data-theme="cyber"] {
+  --bg: #eef0f4; --ink: #0b0f19; --accent: #ff4a1c; --lime: #c6ff1a;
+  --paper: #fff; --soft: color-mix(in srgb, var(--ink) 6%, var(--bg)); --line: color-mix(in srgb, var(--ink) 18%, var(--bg));
+  --sec-alt: #fff;
+  --f-head: "Be Vietnam Pro", system-ui, sans-serif; --head-w: 600; --head-case: uppercase; --head-stroke: .02em; --head-track: -.015em;
+  --radius: 4px; --r-btn: 0; --r-icon: 6px; --r-img: 0; --r-field: 4px;
+  --sig-shadow: inset 5px 0 0 var(--ink), var(--e-2);   /* G1: chữ ký = vạch trái kiểu bảng đấu */
+  --cut: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  --hero-bg: linear-gradient(115deg, var(--ink) 0 58%, color-mix(in srgb, var(--ink) 88%, #4a5878) 58% 100%);
+  --hero-ink: #fff; --hero-muted: #b8bfcd; --hero-eyebrow: var(--lime);
+  --hero-pattern: repeating-linear-gradient(115deg, transparent 0 22px, color-mix(in srgb, var(--lime) 10%, transparent) 22px 24px);
+  --icon-bg: var(--soft);
+  --hl: var(--accent); --badge-bg: var(--lime); --badge-ink: var(--ink); --badge-r: 0;
+  --edge-on: ""; --edge: url(../img/themes/cyber-band.svg); --edge-h: 10px;
+  --orn: url(../img/themes/cyber-orn.svg); --ph: url(../img/themes/cyber-ph.svg);
+}
+html[data-theme="cyber"] .sec-hero { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 44px), 0 100%); padding-bottom: clamp(80px, 11vw, 140px); }
+html[data-theme="cyber"] .sec-hero::before { -webkit-mask: linear-gradient(90deg, transparent 40%, #000); mask: linear-gradient(90deg, transparent 40%, #000); }
+html[data-theme="cyber"] .btn { clip-path: var(--cut); }
+html[data-theme="cyber"] .btn:focus-visible { outline-offset: -5px; outline-color: var(--ink); }
+html[data-theme="cyber"] .sec-hero .btn-accent, html[data-theme="cyber"] .quick-go { background: var(--lime); color: var(--ink); }
+html[data-theme="cyber"] .sec-hero .btn-ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .4); }
+html[data-theme="cyber"] .hero-title { font-style: italic; }
+html[data-theme="cyber"] .hero-title::after { content: ""; display: block; width: 120px; height: 8px; margin-top: 14px; background: var(--lime); transform: skew(-30deg); }
+html[data-theme="cyber"] .hero-img { clip-path: polygon(0 0, calc(100% - 36px) 0, 100% 36px, 100% 100%, 36px 100%, 0 calc(100% - 36px)); box-shadow: none; }
+html[data-theme="cyber"] .sec-hero .slot-empty { background: linear-gradient(135deg, #1d2436, #0b0f19); }
+html[data-theme="cyber"] .sec-hero .slot-ph { background: var(--lime); opacity: .9; }
+html[data-theme="cyber"] .sec:nth-of-type(even)::before { top: 0; background: var(--accent); }
+html[data-theme="cyber"] .sec:nth-of-type(even)::after { bottom: 0; background: var(--ink); }
+html[data-theme="cyber"] .game-card { clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%); border: 0; box-shadow: inset 0 0 0 1px var(--line), inset 5px 0 0 var(--ink); }
+html[data-theme="cyber"] .game-card:hover { box-shadow: inset 0 0 0 2px var(--accent), inset 5px 0 0 var(--accent); }
+html[data-theme="cyber"] .badge-soon { transform: skew(-12deg); top: 26px; }
+html[data-theme="cyber"] .notice-board { clip-path: var(--cut); border: 0; box-shadow: inset 0 0 0 2px var(--ink), inset 0 6px 0 var(--accent); }
+html[data-theme="cyber"] .notice-pin { display: none; }
+html[data-theme="cyber"] :is(.board-row, .quick-play:not(.quick-page)) { clip-path: var(--cut); border: 0; box-shadow: inset 0 0 0 1.5px var(--line); }
+html[data-theme="cyber"] .sec-hero .quick-play { background: color-mix(in srgb, #fff 8%, transparent); color: #fff; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .25); }
+html[data-theme="cyber"] .sec-hero .quick-play label { color: #fff; }
+html[data-theme="cyber"] .quick-dice { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .35); }
+html[data-theme="cyber"] .board-row.top1 { box-shadow: inset 0 0 0 2px var(--accent); }
+html[data-theme="cyber"] .board-rank { font-style: italic; }
+
+/* ═══ 6. KẸO NGỌT — pastel tươi, bo tròn, nút nảy; mỗi thẻ một màu kẹo (cho các bạn nhỏ) ═══ */
+[data-theme="keongot"] {
+  --bg: #fff4f8; --ink: #3a2452; --accent: #ff5d9e;
+  --mint: #c4f1e1; --sky: #cfe9ff; --lemon: #fff0a6; --lilac: #e6dbff;
+  --paper: #fff; --soft: color-mix(in srgb, var(--accent) 12%, #fff);
+  --sec-alt: color-mix(in srgb, var(--lilac) 55%, var(--bg));
+  --f-head: "Josefin Sans", "Be Vietnam Pro", sans-serif; --head-w: 600; --head-track: 0;
+  --radius: 28px; --r-icon: 22px; --r-img: 46px; --r-field: 18px; --card-bw: 0;
+  --btn-shadow: 0 5px 0 color-mix(in srgb, var(--accent) 50%, var(--ink));
+  --card-shadow: 0 6px 0 color-mix(in srgb, var(--ink) 10%, transparent);
+  --hero-bg: radial-gradient(circle at 3% 8%, var(--sky) 0 64px, transparent 66px), radial-gradient(circle at 94% 8%, var(--lemon) 0 54px, transparent 56px),
+    radial-gradient(circle at 70% 96%, var(--mint) 0 90px, transparent 92px), linear-gradient(170deg, color-mix(in srgb, var(--accent) 16%, #fff), var(--bg) 70%);
+  --hero-pattern: radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent) 2.5px, transparent 3px) 0 0 / 34px 34px;
+  --hl: var(--accent); --badge-bg: #fff; --badge-ink: var(--ink);
+  --edge-on: ""; --edge: url(../img/themes/keongot-band.svg); --edge-h: 16px;
+  --orn: url(../img/themes/keongot-orn.svg); --ph: url(../img/themes/keongot-ph.svg);
+}
+html[data-theme="keongot"] .hero-title { line-height: 1.12; }
+html[data-theme="keongot"] .hero-img { border: 6px solid #fff; box-shadow: 14px 14px 0 var(--sky), 0 18px 40px rgba(90, 40, 120, .14); transform: rotate(1.5deg); }
+html[data-theme="keongot"] .game-grid > :nth-child(5n+1) { --card-bg: color-mix(in srgb, var(--accent) 13%, #fff); }
+html[data-theme="keongot"] .game-grid > :nth-child(5n+2) { --card-bg: color-mix(in srgb, var(--mint) 70%, #fff); }
+html[data-theme="keongot"] .game-grid > :nth-child(5n+3) { --card-bg: color-mix(in srgb, var(--sky) 75%, #fff); }
+html[data-theme="keongot"] .game-grid > :nth-child(5n+4) { --card-bg: color-mix(in srgb, var(--lemon) 70%, #fff); }
+html[data-theme="keongot"] .game-grid > :nth-child(5n+5) { --card-bg: color-mix(in srgb, var(--lilac) 80%, #fff); }
+html[data-theme="keongot"] .game-icon { background: #fff; box-shadow: 0 3px 0 color-mix(in srgb, var(--ink) 10%, transparent); }
+html[data-theme="keongot"] .game-card:hover { transform: translateY(-5px) rotate(-1.5deg); }
+html[data-theme="keongot"] .badge-soon { box-shadow: 0 2px 0 color-mix(in srgb, var(--ink) 12%, transparent); }
+html[data-theme="keongot"] .sec-title::before { -webkit-mask: none; mask: none; height: 16px; width: 66px;
+  background: radial-gradient(circle at 8px 8px, var(--accent) 7px, transparent 7.5px), radial-gradient(circle at 33px 8px, #63c9a8 7px, transparent 7.5px),
+    radial-gradient(circle at 58px 8px, #5aa9ea 7px, transparent 7.5px); }
+html[data-theme="keongot"] .notice-board { border: 3px dashed color-mix(in srgb, var(--accent) 45%, #fff); box-shadow: none; }
+html[data-theme="keongot"] .soon-box { border-color: color-mix(in srgb, var(--accent) 35%, #fff); background: #fff; }
+
+/* ═══ 7. MÙA HÈ BIỂN — trời biển ngọc, nắng vàng, san hô, sóng ở mép; ảnh như bưu thiếp ═══ */
+[data-theme="bienxanh"] {
+  --bg: #effafc; --ink: #08303e; --accent: #0a7aa3; --sand: #ffe6a8; --coral: #ff6b4a; --sun: #ffd23a;
+  --paper: #fff; --soft: color-mix(in srgb, var(--accent) 10%, #fff);
+  --sec-alt: color-mix(in srgb, #19c3d6 16%, #fff);
+  --f-head: "Be Vietnam Pro", system-ui, sans-serif; --head-w: 600; --head-track: -.03em;
+  --radius: 22px; --r-icon: 50% 50% 50% 14px; --r-img: 22px;
+  --card-shadow: 0 10px 26px color-mix(in srgb, var(--accent) 14%, transparent);
+  --card-line: color-mix(in srgb, var(--accent) 14%, #fff);
+  --hero-bg: linear-gradient(180deg, #7fdcec 0%, #c9f1f7 55%, color-mix(in srgb, var(--sand) 80%, #fff) 100%);
+  --hero-pattern: radial-gradient(circle at 55% 13%, var(--sun) 0 46px, color-mix(in srgb, var(--sun) 35%, transparent) 48px 74px, transparent 76px);
+  --icon-bg: linear-gradient(180deg, color-mix(in srgb, #19c3d6 22%, #fff) 0 55%, var(--sand) 55%);
+  --hl: var(--coral); --badge-bg: var(--coral); --badge-ink: #2b0a02;
+  --edge-on: ""; --edge: url(../img/themes/bienxanh-band.svg); --edge-h: 22px;
+  --orn: url(../img/themes/bienxanh-orn.svg); --ph: url(../img/themes/bienxanh-ph.svg);
+}
+html[data-theme="bienxanh"] .hero-img { border: 8px solid #fff; box-shadow: 0 24px 50px rgba(8, 60, 80, .22); transform: rotate(-2deg); }
+html[data-theme="bienxanh"] .eyebrow { background: var(--coral); color: #2b0a02; padding: 6px 12px; border-radius: 999px; }
+html[data-theme="bienxanh"] .board-val { color: color-mix(in srgb, var(--coral) 60%, var(--ink)); }
+html[data-theme="bienxanh"] .game-card:hover { border-color: var(--coral); }
+html[data-theme="bienxanh"] .site-foot { background: color-mix(in srgb, var(--sand) 55%, #fff); }
+html[data-theme="bienxanh"][data-cc] .site-foot { background: var(--bg); }   /* màu riêng: chữ theo --ink nên nền phải theo --bg */
+
+/* ═══ 8. TẾT RỰC RỠ — poster Tết đồ họa phẳng: nền đỏ tươi, mặt trời vàng, hoa mai, viền mây ═══ */
+[data-theme="tet"] {
+  --bg: #fff4e0; --ink: #2b0d0d; --accent: #d71f2b; --gold: #ffcc1f;
+  --paper: #fff; --soft: color-mix(in srgb, var(--gold) 30%, var(--bg));
+  --sec-alt: color-mix(in srgb, var(--gold) 38%, var(--bg));
+  --f-head: "Be Vietnam Pro", system-ui, sans-serif; --head-w: 600; --head-stroke: .02em; --head-track: -.025em;
+  --radius: 20px; --r-icon: 50%; --r-img: 50% 50% 24px 24px / 38% 38% 24px 24px;
+  --hero-bg: radial-gradient(circle at 84% 34%, var(--gold) 0 150px, transparent 151px),
+    radial-gradient(circle at 84% 34%, transparent 0 172px, color-mix(in srgb, var(--gold) 55%, transparent) 173px 178px, transparent 179px), var(--accent);
+  --hero-pattern: radial-gradient(circle, color-mix(in srgb, var(--gold) 40%, transparent) 3px, transparent 3.5px) 0 0 / 44px 44px;
+  --hero-ink: #fff6e0; --hero-muted: #fff6ea; --hero-eyebrow: var(--gold);
+  --card-line: color-mix(in srgb, var(--accent) 22%, var(--bg)); --card-shadow: 0 5px 0 color-mix(in srgb, var(--accent) 22%, var(--bg));
+  --icon-bg: var(--gold);
+  --hl: var(--accent); --badge-bg: var(--accent); --badge-ink: var(--accent-ink);
+  --edge-on: ""; --edge: url(../img/themes/tet-band.svg); --edge-h: 18px;
+  --orn: url(../img/themes/tet-orn.svg); --ph: url(../img/themes/tet-ph.svg);
+}
+html[data-theme="tet"] .eyebrow { font: 700 clamp(1.7rem, 4vw, 2.1rem)/1.2 "Dancing Script", cursive; text-transform: none; letter-spacing: 0; transform: rotate(-3deg); }
+html[data-theme="tet"] .hero-title { text-shadow: 5px 5px 0 #8f0c14; }
+html[data-theme="tet"] .sec-hero .btn-accent, html[data-theme="tet"] .sec-hero .quick-go { background: var(--gold); color: #3a0a0a; box-shadow: 0 5px 0 #8f0c14; }
+html[data-theme="tet"] .sec-hero .btn-ghost { background: transparent; color: var(--hero-ink); border-color: color-mix(in srgb, var(--hero-ink) 50%, transparent); }
+html[data-theme="tet"] .hero-img { border: 5px solid #fff6e0; box-shadow: 0 0 0 5px var(--gold), 0 24px 50px rgba(80, 0, 0, .35); }
+html[data-theme="tet"] .sec-hero .slot-empty { background: #fff6e0; }
+html[data-theme="tet"] .sec-hero .slot-ph { background: var(--accent); opacity: .85; }
+html[data-theme="tet"] .game-card:hover .game-icon { transform: rotate(14deg) scale(1.12); }
+html[data-theme="tet"] .notice-board { border: 3px solid var(--accent); }
+html[data-theme="tet"] .about-img { outline-color: var(--accent); }
+
+/* ═══ 9. TRUNG THU NEON — đêm tím thẫm, dải đèn lồng phát sáng, trăng tròn, chữ ấm (tối) ═══ */
+[data-theme="trungthu"] {
+  --bg: #150d36; --ink: #fff3e3; --ink: oklch(from var(--bg) clamp(.2, (.6 - l) * 999, .965) .03 75); --accent: #ff9a3c; --pink: #ff4fa3;
+  --paper: color-mix(in srgb, var(--bg) 84%, #8b6cff);
+  --soft: color-mix(in srgb, var(--accent) 16%, var(--paper));
+  --line: color-mix(in srgb, var(--ink) 18%, var(--bg));
+  --muted: color-mix(in srgb, var(--ink) 74%, var(--bg));
+  --sec-alt: color-mix(in srgb, var(--bg) 86%, var(--pink));
+  --accent-text: color-mix(in oklab, var(--accent) 45%, var(--ink));
+  --f-head: "Josefin Sans", "Be Vietnam Pro", sans-serif; --head-w: 600; --head-track: .01em;
+  --radius: 20px; --r-icon: 50%; --r-img: 50%;
+  --shadow: 0 14px 36px rgba(0, 0, 0, .45);
+  --card-line: color-mix(in srgb, var(--pink) 30%, var(--bg));
+  --hero-bg: radial-gradient(circle at 75% 48%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 46%),
+    radial-gradient(circle at 10% 90%, color-mix(in srgb, var(--pink) 25%, transparent), transparent 40%), linear-gradient(180deg, #0a0524, #150d36); /* cố định: đầu trang luôn là đêm (màu nền riêng sáng không làm chữ sáng mất tương phản) */
+  --hero-pattern: url(../img/themes/trungthu-lanterns.svg) right 3% top -10px / 280px auto no-repeat,
+    radial-gradient(1.4px 1.4px at 18px 26px, #fff 60%, transparent) 0 0 / 190px 150px, radial-gradient(1px 1px at 96px 70px, #fff 60%, transparent) 0 0 / 230px 170px,
+    radial-gradient(1.8px 1.8px at 150px 18px, #ffe7b0 60%, transparent) 0 0 / 310px 260px;
+  --icon-bg: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--accent) 55%, transparent), color-mix(in srgb, var(--pink) 18%, transparent) 72%);
+  --hero-ink: #fff3e3; --hero-muted: #ddd2ea;
+  --hl: var(--pink); --badge-bg: var(--pink); --badge-ink: #2a0418;
+  --orn: url(../img/themes/trungthu-orn.svg); --ph: url(../img/themes/trungthu-ph.svg);
+}
+html[data-theme="trungthu"], html[data-theme="neon"] { color-scheme: dark; }
+html[data-theme="trungthu"] .hero-title { text-shadow: 0 0 26px color-mix(in srgb, var(--accent) 70%, transparent), 0 0 3px #fff; }
+html[data-theme="trungthu"] .eyebrow { color: color-mix(in oklab, var(--pink) 45%, #fff3e3); text-shadow: 0 0 12px color-mix(in srgb, var(--pink) 70%, transparent); }
+html[data-theme="trungthu"] .hero-img { box-shadow: 0 0 0 4px color-mix(in srgb, var(--pink) 60%, transparent), 0 0 0 12px color-mix(in srgb, var(--accent) 18%, transparent), 0 0 80px color-mix(in srgb, var(--accent) 50%, transparent); }
+html[data-theme="trungthu"] .sec-hero .slot-empty { background: radial-gradient(circle at 42% 38%, #fff6d6, #ffc86b 65%, #f08a2c); }
+html[data-theme="trungthu"] .sec-hero .slot-ph { background: #7a2a05; opacity: .6; }
+html[data-theme="trungthu"] .btn-accent { box-shadow: 0 0 26px color-mix(in srgb, var(--accent) 50%, transparent); }
+html[data-theme="trungthu"] .game-card:hover { box-shadow: 0 0 0 1px var(--pink), 0 0 30px color-mix(in srgb, var(--pink) 35%, transparent); }
+html[data-theme="trungthu"] .sec-title::before { filter: drop-shadow(0 0 6px var(--accent)); }
+@media (max-width: 760px) {
+  html[data-theme="trungthu"] .sec-hero { --hero-pattern: url(../img/themes/trungthu-lanterns.svg) right -40px top -14px / 220px auto no-repeat,
+    radial-gradient(1.4px 1.4px at 18px 26px, #fff 60%, transparent) 0 0 / 190px 150px; }
+}
+
+/* ═══ 10. BÀN CỜ — vân gỗ sáng, kẻ ô bàn cờ, quân cờ tròn đỏ/đen, thẻ như ô cờ nổi ═══ */
+[data-theme="gocco"] {
+  --bg: #fbf1df; --ink: #24160c; --accent: #c8331f; --wood: #e0a660;
+  --paper: #fffaf1; --soft: color-mix(in srgb, var(--wood) 26%, var(--bg));
+  --line: color-mix(in srgb, var(--ink) 22%, var(--bg));
+  --sec-alt: color-mix(in srgb, var(--wood) 32%, var(--bg));
+  --f-head: "Fraunces", Georgia, serif; --head-w: 600; --head-track: -.02em;
+  --radius: 14px; --r-btn: 12px; --r-icon: 50%; --r-img: 12px; --card-bw: 2px;
+  --card-line: var(--ink); --card-shadow: 0 5px 0 var(--ink); --btn-shadow: 0 4px 0 color-mix(in srgb, var(--accent) 45%, #000);
+  --hero-bg: repeating-linear-gradient(93deg, rgba(110, 60, 20, .07) 0 2px, transparent 2px 9px, rgba(110, 60, 20, .05) 9px 10px, transparent 10px 23px),
+    linear-gradient(160deg, var(--wood), color-mix(in srgb, var(--wood) 55%, var(--bg)));
+  --hero-pattern: radial-gradient(circle at 36px 36px, var(--accent) 0 15px, #fff3 15.5px 17px, transparent 17.5px) 0 0 / 216px 216px,
+    radial-gradient(circle at 144px 108px, var(--ink) 0 15px, #fff3 15.5px 17px, transparent 17.5px) 0 0 / 216px 216px,
+    linear-gradient(color-mix(in srgb, var(--ink) 30%, transparent) 2px, transparent 2px) 35px 35px / 72px 72px,
+    linear-gradient(90deg, color-mix(in srgb, var(--ink) 30%, transparent) 2px, transparent 2px) 35px 35px / 72px 72px;
+  --hero-muted: color-mix(in srgb, var(--ink) 90%, var(--wood)); --hero-eyebrow: color-mix(in oklab, var(--accent-text) 55%, var(--ink));
+  --icon-bg: radial-gradient(circle at 50% 40%, #fffaf0, #f3e2c4 70%);
+  --hl: var(--accent); --badge-bg: var(--accent); --badge-ink: var(--accent-ink);
+  --edge-on: ""; --edge: url(../img/themes/gocco-band.svg); --edge-h: 12px;
+  --orn: url(../img/themes/gocco-orn.svg); --ph: url(../img/themes/gocco-ph.svg);
+}
+html[data-theme="gocco"] .sec-hero::before { -webkit-mask: linear-gradient(100deg, transparent 38%, #000 70%); mask: linear-gradient(100deg, transparent 38%, #000 70%); }
+html[data-theme="gocco"] .sec:nth-of-type(even)::before { top: 0; background: color-mix(in srgb, var(--ink) 80%, transparent); }
+html[data-theme="gocco"] .sec:nth-of-type(even)::after { bottom: 0; background: color-mix(in srgb, var(--ink) 80%, transparent); }
+html[data-theme="gocco"] .hero-img { border: 12px solid color-mix(in srgb, var(--wood) 45%, var(--ink)); box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .25), 0 22px 44px rgba(70, 35, 10, .35); }
+html[data-theme="gocco"] .game-card:hover { transform: translateY(-5px); box-shadow: 0 10px 0 var(--ink); }
+html[data-theme="gocco"] .game-icon { box-shadow: inset 0 0 0 3px #fffaf0, inset 0 0 0 5px var(--accent), 0 4px 0 color-mix(in srgb, var(--wood) 55%, var(--ink)); }
+html[data-theme="gocco"] .game-grid > :nth-child(even) .game-icon { box-shadow: inset 0 0 0 3px #fffaf0, inset 0 0 0 5px var(--ink), 0 4px 0 color-mix(in srgb, var(--wood) 55%, var(--ink)); }
+html[data-theme="gocco"] .game-card:hover .game-icon { transform: translateY(-6px) rotate(0); }
+html[data-theme="gocco"] :is(.notice-board, .quick-play:not(.quick-page)) { border: 2px solid var(--ink); box-shadow: 0 5px 0 var(--ink); }   /* G2: .board-row -> bề mặt yên */
+
+/* Giao diện tối: vòng online */
+html:is([data-theme="trungthu"], [data-theme="neon"]) .online-item .ava { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5.5px #3fd27f; }
+
+/* ── Điện thoại: họa tiết nền đầu trang chỉ đậm quanh ảnh bìa (trên cùng), nhạt dần sau lưng chữ ── */
+@media (max-width: 760px) {
+  html:is([data-theme="pixel"], [data-theme="gocco"], [data-theme="manga"]) .sec-hero::before {
+    -webkit-mask: linear-gradient(180deg, #000 0 26%, rgba(0, 0, 0, .08) 40%); mask: linear-gradient(180deg, #000 0 26%, rgba(0, 0, 0, .08) 40%); }
+  html[data-theme="tet"] { --hero-bg: radial-gradient(circle at 92% 6%, var(--gold) 0 90px, transparent 91px), var(--accent); }
+}
+html[data-theme="cyber"] .sec-hero .quick-alt { color: #c3c9d6; }
+html[data-theme="cyber"] .sec-hero .quick-alt a { color: #fff; }
+
+/* Màu riêng: đầu trang Tết dùng --accent làm nền — ép tối vừa đủ (L ≤ .5) để chữ sáng luôn đọc được với màu chính sáng (xanh lá…). */
+@supports (color: oklch(from red l c h)) {
+  [data-theme="tet"] { --tet-red: oklch(from var(--accent) min(l, .5) c h);
+    --hero-bg: radial-gradient(circle at 84% 34%, var(--gold) 0 150px, transparent 151px),
+      radial-gradient(circle at 84% 34%, transparent 0 172px, color-mix(in srgb, var(--gold) 55%, transparent) 173px 178px, transparent 179px), var(--tet-red); }
+  @media (max-width: 760px) { html[data-theme="tet"] { --hero-bg: radial-gradient(circle at 92% 6%, var(--gold) 0 90px, transparent 91px), var(--tet-red); } }
+}
+
+/* ═══ Màu ngữ nghĩa cho giao diện nền TỐI (POLISH-2 1.1): sáng hơn để đạt tương phản trên --bg tối ═══ */
+[data-theme="neon"], [data-theme="trungthu"] { --ok: #4ade80; --warn: #fbbf24; --danger: #f87171; --live: #ff6b6b; --on-danger: #2a0a0a; --on-live: #2a0a0a; --gold: #ffc53d; --silver: #c3cad3; --bronze: #d8926a; }
+/* Token v3 bản tối (UI-PRO 2.4–2.5, G1): màu ngữ nghĩa sáng hơn, độ nổi = vành sáng mảnh thay bóng (bóng không thấy trên nền tối),
+   chữ ký = viền phát sáng màu nhấn. kiemsi (nhóm comic) ở cuối themes-comic.css. */
+[data-theme="neon"], [data-theme="trungthu"] {
+  --info: #7cb3ff; --heart: #ff5c8d; --streak: #ff9a4a; --online: #3fd47e;
+  --s-sunk: color-mix(in srgb, var(--ink) 9%, var(--bg));
+  --hair: color-mix(in srgb, var(--ink) 14%, transparent);
+  --hair-strong: color-mix(in srgb, var(--ink) 24%, transparent);
+  --field-line: color-mix(in srgb, var(--ink) 30%, transparent);
+  --e-1: 0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent);
+  --e-2: 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent), 0 14px 32px -12px rgba(0, 0, 0, .6);
+  --e-3: 0 0 0 1px color-mix(in srgb, var(--ink) 12%, transparent), 0 24px 60px -16px rgba(0, 0, 0, .7);
+  --scrim: rgba(0, 0, 0, .62);
+  --sig-line: color-mix(in srgb, var(--accent) 70%, var(--ink));
+  --sig-shadow: 0 0 0 1px var(--sig-line), 0 0 32px -6px color-mix(in srgb, var(--accent) 55%, transparent);
+  --sig-btn-shadow: 0 0 24px -2px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+/* ═══ G11. CHẾ ĐỘ TỐI do NGƯỜI CHƠI chọn (UI-PRO 2.6) — <html data-mode="dark"> do script đầu <head> đặt (views/partials/head.php, jg_mode).
+   Chỉ có mặt khi giao diện KHÔNG vốn tối và chủ nhà KHÔNG đặt màu riêng nền/chữ (data-cc) — việc đó do head.php quyết; :not() dưới đây chỉ là dây an toàn.
+   Chỉ ghi đè TOKEN (mọi thứ còn lại suy ra từ --bg/--ink/--accent bằng color-mix): nền/thẻ ám ~7% màu nhấn của giao diện → tối mà vẫn "là" giao diện đó.
+   Độ ưu tiên (0,3,1) thắng khối giao diện (0,1,0) và html[data-theme] (0,2,1). Nét trang trí riêng từng giao diện giữ nguyên; chỗ nào cứng màu sáng
+   thì vá ở khối "vá" cuối. Đo: node Script/dev/contrast_sweep.js --mode dark. ═══ */
+html[data-mode="dark"]:not([data-theme="neon"], [data-theme="trungthu"], [data-theme="kiemsi"], [data-theme="cucquang"], [data-theme="huyenthoai"]) {
+  color-scheme: dark;
+  --bg: color-mix(in oklab, var(--accent) 7%, #121117);
+  --ink: #f1eff6;
+  --paper: color-mix(in oklab, var(--accent) 6%, #1c1b23);
+  --soft: color-mix(in oklab, var(--accent) 16%, #1c1b23);
+  --field: color-mix(in oklab, var(--accent) 4%, #24232c);
+  --sec-alt: color-mix(in oklab, var(--accent) 5%, #18171e);
+  --muted: color-mix(in srgb, var(--ink) 72%, var(--bg));
+  --accent-text: color-mix(in oklab, var(--accent) 52%, #fff);
+  --hero-pattern: none;
+  --hero-bg: linear-gradient(170deg, var(--soft), var(--bg) 70%);   /* nhiều giao diện cứng nền hero sáng; chữ hero lấy --ink sáng nên phải đổi nền */
+  --hero-ink: var(--ink); --hero-muted: var(--muted); --hero-eyebrow: var(--accent-text);
+  /* màu ngữ nghĩa sáng hơn (như neon/kiemsi); tim + lửa là hằng số thương hiệu */
+  --ok: #4ade80; --warn: #fbbf24; --danger: #f87171; --live: #ff6b6b; --on-danger: #2a0a0a; --on-live: #2a0a0a;
+  --gold: #ffc53d; --silver: #c3cad3; --bronze: #d8926a;
+  --info: #7cb3ff; --heart: #ff5c8d; --streak: #ff9a4a; --online: #3fd47e;
+  /* bề mặt + độ nổi: vành sáng mảnh thay bóng (bóng không thấy trên nền tối) */
+  --s-sunk: color-mix(in srgb, var(--ink) 9%, var(--bg));
+  --hair: color-mix(in srgb, var(--ink) 14%, transparent);
+  --hair-strong: color-mix(in srgb, var(--ink) 24%, transparent);
+  --field-line: color-mix(in srgb, var(--ink) 30%, transparent);
+  --e-1: 0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent);
+  --e-2: 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent), 0 14px 32px -12px rgba(0, 0, 0, .6);
+  --e-3: 0 0 0 1px color-mix(in srgb, var(--ink) 12%, transparent), 0 24px 60px -16px rgba(0, 0, 0, .7);
+  --scrim: rgba(0, 0, 0, .62);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px rgba(0, 0, 0, .35);
+}
+/* màu nhấn riêng (chỉ accent, không data-cc) + chế độ tối: color_helper.php cc_vars() in --accent-text-d tính cho nền tối; style inline thắng stylesheet nên cần !important */
+html[data-mode="dark"][style*="--accent-text-d"] { --accent-text: var(--accent-text-d) !important; --hero-eyebrow: var(--accent-text-d) !important; }
+/* vá chế độ tối: chỗ giao diện cứng màu sáng/tối */
+html[data-mode="dark"][data-theme="win98"] .tabbar { --bar-ink: #000; --ink: #000; --muted: #3d3d3d; }   /* thanh tab xám cổ điển giữ nguyên, chữ đen */
+html[data-mode="dark"][data-theme="riso"] .qp { background: var(--paper); color: var(--ink); border-color: var(--ink); }   /* thẻ Chơi nhanh: nền ink/chữ paper sẽ thành thẻ trắng */
+/* — chữ nằm trên nền MÀU CỐ ĐỊNH (vàng/cam/lime) vốn dùng var(--ink): ink đã sáng nên giữ chữ tối; khung cứng nền trắng chuyển sang --paper — */
+html[data-mode="dark"][data-theme="sticker"] .eyebrow { background: var(--yel); color: #17142b; }
+html[data-mode="dark"][data-theme="batquai"] .eyebrow { background: var(--yel); color: #12241a; }
+html[data-mode="dark"][data-theme="ninja"] .eyebrow { color: #1a1410; }
+html[data-mode="dark"][data-theme="butchi"] .eyebrow { color: #23232b; }
+html[data-mode="dark"][data-theme="riso"] .eyebrow { color: #111; }
+html[data-mode="dark"][data-theme="thandong"] .eyebrow { color: color-mix(in srgb, var(--cham) 35%, #fff); }
+html[data-mode="dark"][data-theme="cyber"] :is(.sec-hero .btn-accent, .quick-go) { color: #0b0f19; }
+html[data-mode="dark"][data-theme="ngocrong"] .hero-title { -webkit-text-stroke-color: #241300; }
+html[data-mode="dark"]:is([data-theme="manga"], [data-theme="meomay"], [data-theme="ngocrong"], [data-theme="batquai"], [data-theme="ninja"]) .hero-tagline { background: var(--paper); }
+html[data-mode="dark"][data-theme="batquai"] .hero-tagline { box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 5px var(--ink); }
+html[data-mode="dark"][data-theme="win98"] :is(input, textarea, select):not([type=checkbox]):not([type=radio]):not([type=color]):not(.cx-input), html[data-mode="dark"][data-theme="win98"] .cx-field { color: #000; }

@@ -1,0 +1,105 @@
+/* Chuông thông báo 🔔 (assets/js/notify.js): nút ở topbar, bảng thả xuống (máy tính), trang /thong-bao (điện thoại), nút Bật/Tắt
+   thông báo đẩy. POLISH-2 2.8 (Instagram Activity): danh sách nhóm theo thời gian = .pg-h2 + .list/.row của site.css; dòng = avatar 44 có ô
+   loại 20px góc dưới phải (không lặp icon cột phải), chưa đọc = nền --accent 14% + chấm 8px + chữ 600. Mọi màu qua token của site.css. */
+.topnav, .adm-top { position: relative; }   /* mốc cho bảng thả xuống .nt-pop */
+.notify-link { position: relative; flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--paper); color: var(--ink); text-decoration: none; transition: transform var(--t-tap) var(--ease); }
+.notify-link:hover { transform: translateY(-1px); }
+.notify-link.is-here { background: var(--soft); }
+.notify-badge { position: absolute; top: -4px; right: -6px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; display: grid;
+  place-items: center; font-size: var(--fs-xs); font-weight: 700; line-height: 1; background: var(--live); color: var(--on-live, #fff); box-shadow: 0 0 0 2px var(--paper); }
+.notify-badge[hidden] { display: none; }
+.notify-badge.is-bump { animation: jg-bump 240ms var(--ease-pop); }
+.adm-top .notify-link { margin-left: auto; margin-right: 10px; }
+.adm-top .notify-link + .adm-menu-btn { margin-left: 0; }
+.notify-link svg { transition: transform .25s var(--ease); }
+.notify-link.is-ring svg { animation: nt-ring .9s var(--ease); transform-origin: 50% 4px; }
+@keyframes nt-ring { 0%, 100% { transform: rotate(0); } 15% { transform: rotate(16deg); } 30% { transform: rotate(-14deg); } 45% { transform: rotate(10deg); }
+  60% { transform: rotate(-7deg); } 75% { transform: rotate(3deg); } }
+
+/* Bảng thả xuống (≥ 761px) */
+.nt-wrap { position: relative; display: contents; }
+.nt-pop { position: absolute; right: 0; top: calc(100% + 8px); width: min(380px, calc(100vw - 32px)); max-height: min(70vh, 560px); overflow: auto;
+  background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--elev-2); z-index: 41;
+  display: grid; grid-template-rows: auto 1fr auto; padding: 0; }
+.nt-pop[hidden] { display: none; }
+.nt-pop-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 14px 8px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--paper); z-index: 1; }
+.nt-pop-head b { font-size: var(--fs-md); }
+.nt-pop-head button { background: none; border: 0; color: var(--accent-text); font: 600 var(--fs-sm) var(--f-body); cursor: pointer; min-height: 36px; padding: 0 8px; border-radius: 8px; }
+.nt-pop-head button:hover { background: var(--soft); }
+.nt-pop-foot { padding: 8px 14px 12px; text-align: center; border-top: 1px solid var(--line); }
+.nt-pop-foot a { color: var(--accent-text); font-weight: 600; text-decoration: none; min-height: 40px; display: inline-flex; align-items: center; }
+.nt-pop .nt-list { padding: 4px 6px; }
+.nt-pop .nt-item + .nt-item { border-top: 1px solid color-mix(in srgb, var(--ink) 9%, transparent); }
+.nt-pop .nt-item .row { min-height: 60px; border-radius: var(--r-row); }
+.nt-pop .sc-empty, .nt-pop .nt-loading { padding: 28px 16px; text-align: center; color: var(--muted); }
+
+/* Dòng thông báo (chung cho bảng thả xuống + trang /thong-bao) */
+.nt-list { list-style: none; margin: 0; padding: 0; }
+.nt-groups { display: grid; gap: var(--sp-6); }
+.nt-group .pg-h2 { margin-bottom: var(--sp-2); }
+.nt-item .row { padding: 10px var(--sp-4) 10px 12px; gap: 12px; }
+.nt-item .row:hover { background: var(--soft); }
+.nt-item.is-new .row { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.nt-item.is-new .nt-text { font-weight: 600; }
+.nt-ava { position: relative; flex: none; width: 44px; height: 44px; }
+.nt-ava .ava { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; display: block; }
+.nt-ava .ava-letter { display: grid; place-items: center; }   /* QA37: chữ cái giữa vòng tròn (trước bị display:block đẩy lên góc) */
+.nt-kind { position: absolute; right: -6px; bottom: -5px; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--soft); color: var(--ink);
+  border: 2px solid var(--paper); font-size: var(--fs-xs); line-height: 1; }
+.nt-kind.is-heart { background: var(--live); color: #fff; }
+.nt-kind.is-blue { background: #2f7fe0; color: #fff; }
+.nt-kind.is-gold { background: var(--gold); color: #fff; }
+.nt-sys { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--gold) 20%, var(--paper)); font-size: 22px; line-height: 1; }
+.nt-sys.is-badge { background: color-mix(in srgb, var(--gold) 28%, var(--paper)); font-size: 26px; }
+.nt-body { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.nt-text { font-size: var(--fs-md); line-height: 1.35; overflow-wrap: anywhere; }
+.nt-body .row-meta { font-size: var(--fs-xs); color: var(--muted); }
+.nt-act { flex: none; display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: var(--r-pill); background: var(--accent); color: var(--accent-ink); font: 700 var(--fs-sm) var(--f-body); }
+.nt-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); transition: opacity 600ms var(--ease) 1.2s; }
+.nt-item:not(.is-new) .nt-dot { display: none; }
+.nt.is-seen .nt-dot { opacity: 0; }   /* mở trang = đã đọc: chấm mờ dần sau 1,2 s, không biến mất tức thì (2.8-5) */
+.nt-readall { white-space: nowrap; }
+.nt-readall[hidden] { display: none; }
+.nt .sc-empty { text-align: center; padding: 40px 16px; color: var(--muted); }
+.nt .sc-empty-ic { font-size: 2.6rem; display: block; margin-bottom: 8px; }
+
+/* Toast chuông: dùng chung AC.toast (.flash, app.css) — dòng có link "Chạm để xem". */
+.flash .nt-ava { width: 34px; height: 34px; }
+.flash .nt-kind { display: none; }
+
+/* Nút Bật/Tắt thông báo đẩy (menu tên + /ho-so) */
+.push-toggle[hidden] { display: none; }
+.push-box { display: grid; gap: 6px; margin: 14px 0; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); }
+.push-box .small { margin: 0; }
+.push-box button { justify-self: start; }
+@media (prefers-reduced-motion: reduce) { .nt-dot { transition: none; } .notify-link.is-ring svg, .notify-badge.is-bump { animation: none; } }
+
+/* R4: hộp hỏi bật thông báo (cùng mẫu .cx-notify-ask của chat.css — chép lại để các trang không nạp chat.css cũng có) */
+.cx-notify-ask { position: fixed; left: 50%; bottom: max(90px, calc(env(safe-area-inset-bottom) + 90px)); z-index: 300; display: flex; flex-wrap: wrap; align-items: center;
+  gap: 8px 10px; width: min(92vw, 420px); padding: 12px 14px; border-radius: 18px; background: var(--paper); color: var(--ink);
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); box-shadow: 0 14px 36px color-mix(in srgb, #000 28%, transparent);
+  transform: translate(-50%, 20px); opacity: 0; transition: transform .25s ease, opacity .25s; }
+.cx-notify-ask.is-in { transform: translate(-50%, 0); opacity: 1; }
+.cx-notify-ask-ic { font-size: 1.3rem; }
+.cx-notify-ask-tx { flex: 1; min-width: 180px; font-size: .9rem; font-weight: 600; }
+.cx-notify-ask-acts { display: flex; gap: 6px; margin-left: auto; }
+
+/* R2: thanh "Mở bằng Chrome/Safari" cho trình duyệt nhúng (inapp.js) — nhỏ, đóng được, không tràn ở 360px */
+.ia-bar { position: fixed; left: 50%; bottom: calc(var(--app-tabbar-h, 0px) + max(8px, env(safe-area-inset-bottom))); z-index: 290; width: min(94vw, 460px);
+  box-sizing: border-box; padding: 10px 12px; border-radius: 16px; background: var(--paper); color: var(--ink);
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); box-shadow: 0 10px 28px color-mix(in srgb, #000 26%, transparent);
+  transform: translate(-50%, 20px); opacity: 0; transition: transform .25s ease, opacity .25s; }
+.ia-bar.is-in { transform: translate(-50%, 0); opacity: 1; }
+.ia-top { display: flex; align-items: flex-start; gap: 8px; }
+.ia-tx { flex: 1; font-size: .92rem; font-weight: 700; line-height: 1.3; }
+.ia-x { flex: none; width: 44px; height: 44px; margin: -10px -8px -10px 0; border: 0; background: none; color: inherit; font-size: 1rem; cursor: pointer; }
+.ia-guest { margin: 4px 0 0; font-size: .82rem; line-height: 1.35; }
+.ia-guest a { color: var(--accent); font-weight: 700; }
+.ia-steps { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+.ia-steps li { display: flex; align-items: center; gap: 10px; font-size: .86rem; line-height: 1.3; }
+.ia-ic { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); }
+.ia-ic svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ia-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.ia-acts .btn { min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
+.ia-ic svg circle[r="1.8"] { fill: currentColor; stroke: none; }

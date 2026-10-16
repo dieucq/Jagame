@@ -1,0 +1,51 @@
+/* Trang /huong-dan (views/site/help.php) — POLISH-2 2.11: khung .pg.is-wide (960), h1 .pg-title (phông tiêu đề giao diện), mục lục .chips dính
+   dưới thanh trên (điện thoại) / cột trái dính (≥ 961px: 220px + nội dung), tiêu đề phần = ô icon SVG 40×40, thẻ gom thành nhóm .list.
+   Chỉ dùng biến của site.css. */
+.hd-head { min-height: 0; }
+.hd-grid { display: grid; gap: var(--sp-4); }
+.hd-side { display: grid; gap: var(--sp-2); }
+.hd-search input { width: 100%; min-height: 48px; margin: 0; padding: 0 16px; font-size: 16px; border: var(--card-bw, 1px) solid var(--line); border-radius: var(--r-btn); background: var(--field); color: var(--ink); }
+/* mục lục: chip cuộn ngang, dính ngay dưới thanh trên khi cuộn (nền --bg che chữ phía dưới) */
+.hd-toc { position: sticky; top: calc(64px + env(safe-area-inset-top)); z-index: 5; margin: 0 calc(-1 * var(--gutter)); padding: 8px var(--gutter) 10px; background: var(--bg); }
+.hd-toc > a { min-height: 40px; padding: 0 14px; font-weight: 600; font-size: var(--fs-sm); }
+.hd-toc a[hidden], .hd-sec[hidden], .hd-card[hidden] { display: none; }
+.hd-body { min-width: 0; }
+.hd-body > * + * { margin-top: var(--gap-sec); }
+.hd-sec { scroll-margin-top: calc(64px + 56px + env(safe-area-inset-top)); }
+.hd-h2 { display: flex; align-items: center; gap: var(--sp-3); margin: 0 0 var(--sp-3); font: var(--head-style) var(--head-w) 1.3rem/1.25 var(--f-head); text-transform: var(--head-case); letter-spacing: var(--head-track); }
+.hd-ic { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: var(--r-icon); background: var(--soft); color: var(--accent-text); }
+.hd-ic svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+/* thẻ hướng dẫn = dòng trong nhóm .list (không bóng cứng từng thẻ) */
+.hd-card { margin: 0; padding: 14px 16px 16px; }
+.hd-card h3 { margin: 0 0 8px; font: 700 1.05rem/1.3 var(--f-body); }
+.hd-card p { margin: 0; line-height: 1.55; }
+.hd-card ol, .hd-card ul { margin: 0; padding-left: 0; list-style: none; counter-reset: hp; }
+.hd-card ol li, .hd-card ul li { position: relative; margin: 0 0 8px; padding-left: 36px; line-height: 1.5; overflow-wrap: anywhere; }
+.hd-card ol li { counter-increment: hp; }
+.hd-card ol li::before { content: counter(hp); position: absolute; left: 0; top: 0; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: var(--fs-xs); font-weight: 700; }
+.hd-card ul li::before { content: "●"; position: absolute; left: 8px; top: 0; color: var(--accent-text); font-size: .8rem; }
+.hd-tip { margin-top: 10px !important; padding: 10px 12px; border-radius: var(--r-row); background: var(--soft); font-size: .95rem; }
+.hd-art { display: block; margin: 0 0 10px; max-width: 100%; height: auto; }
+.hd-game { padding: 0; }
+.hd-game summary { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 10px 16px; cursor: pointer; list-style: none; }
+.hd-game summary::-webkit-details-marker { display: none; }
+.hd-game summary::after { content: "▾"; margin-left: auto; color: var(--muted); transition: transform .2s var(--ease); }
+.hd-game[open] summary::after { transform: rotate(180deg); }
+.hd-game img, .hd-gico { flex: none; width: 36px; height: 36px; border-radius: 10px; object-fit: cover; display: grid; place-items: center; background: var(--soft); }
+.hd-game ul { padding: 0 16px 6px; }
+.hd-game > p { padding: 0 16px 14px; }
+.hd-owner { padding: var(--sp-4); border: 2px dashed color-mix(in srgb, var(--accent) 55%, var(--line)); border-radius: var(--radius); }
+.hd-owner-note { margin: 0 0 var(--sp-3); font-size: var(--fs-sm); }
+.hd-owner > .hd-sec + .hd-sec { margin-top: var(--sp-6); }
+.hd-none, .hd-end { margin: 0; text-align: center; }
+.hd-end .btn { margin-left: 6px; }
+/* máy tính rộng: 2 cột — mục lục dọc bên trái dính, nội dung bên phải */
+@media (min-width: 961px) {
+  .hd-grid { grid-template-columns: 220px minmax(0, 1fr); gap: var(--sp-10); align-items: start; }
+  .hd-side { position: sticky; top: calc(64px + var(--sp-4)); }
+  .hd-toc { position: static; flex-direction: column; align-items: stretch; margin: 0; padding: 0; overflow: visible; background: none; gap: 4px; -webkit-mask-image: none; mask-image: none; contain: none; }
+  .hd-toc > a { justify-content: flex-start; min-height: 40px; border: 0; background: none; border-radius: var(--r-row); font-weight: 600; color: var(--muted); padding: 0 12px; white-space: normal; }
+  .hd-toc > a.is-on, .hd-toc > a:hover { background: var(--soft); color: var(--ink); }
+  .hd-sec { scroll-margin-top: calc(64px + var(--sp-4)); }
+}
+@media (prefers-reduced-motion: reduce) { .hd-game summary::after { transition: none; } }

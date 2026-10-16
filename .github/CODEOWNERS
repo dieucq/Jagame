@@ -1,0 +1,5 @@
+# Mọi thay đổi cần chủ dự án duyệt (bật "Require review from Code Owners" trong branch protection của main).
+*                 @phamduybk
+/submissions/     @phamduybk
+/.github/         @phamduybk
+/devkit/          @phamduybk

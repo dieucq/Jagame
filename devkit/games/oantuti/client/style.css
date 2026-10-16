@@ -1,0 +1,13 @@
+/* Oẳn tù tì — chỉ dùng biến CSS của khung (đẹp ở mọi giao diện); tiền tố riêng ott- để không đụng game khác. */
+.ott { display: grid; gap: 12px; max-width: 520px; margin: 0 auto; padding: 8px 4px; color: var(--ink); }
+.ott-meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 15px; color: var(--muted); }
+.ott-arena { display: grid; justify-items: center; gap: 8px; min-height: 180px; padding: 16px 8px; border-radius: var(--radius, 16px);
+  background: var(--soft); border: 2px solid var(--line); }
+.ott-vs { display: flex; align-items: center; gap: 16px; }
+.ott-vs > b { font-family: var(--f-head, inherit); font-size: 20px; color: var(--accent); }
+.ott-vs small { display: block; text-align: center; font-size: 12px; color: var(--muted); }
+.ott-hand { display: grid; place-items: center; width: 96px; height: 96px; font-size: 56px; line-height: 1; border-radius: 50%;
+  background: var(--jg-obj-paper, #fffdf6); border: 3px solid var(--jg-obj-ink, #17142b); }
+.ott-hand.is-hidden { opacity: .6; }
+.ott-say { margin: 0; font-size: 17px; font-weight: 700; text-align: center; }
+@media (max-width: 360px) { .ott-hand { width: 76px; height: 76px; font-size: 44px; } }

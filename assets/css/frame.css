@@ -1,0 +1,27 @@
+/* Jagame — khung avatar mùa giải (UI-PRO v3). MỘT thiết kế cho mọi giao diện: 2 vòng viền quanh avatar tròn (box-shadow, không ảnh):
+   vòng trong = màu kim loại, vòng ngoài = màu kim loại pha với --ink nên luôn đủ tương phản ≥ 3:1 với nền sáng LẪN tối; khe giữa = --paper.
+   Hạng tham gia ("finisher") lấy --accent của giao diện, các hạng vàng/bạc/đồng giữ màu huy chương. Phần tử: [data-frame] (JG.frame / avatar_html()). */
+[data-frame] {
+  --fr-a: var(--accent, #6a5acd);
+  --fr-b: color-mix(in srgb, var(--fr-a) 52%, var(--ink, #111));
+  --fr-gap: var(--paper, #fff);
+  box-shadow: 0 0 0 2px var(--fr-gap), 0 0 0 4.5px var(--fr-a), 0 0 0 6px var(--fr-b);
+  border-radius: 50%;
+}
+[data-frame$="-gold"]   { --fr-a: #f0b90b; }
+[data-frame$="-silver"] { --fr-a: #c3ccd6; }
+[data-frame$="-bronze"] { --fr-a: #d98a4a; }
+/* QA46 BUG-2: hồ sơ /nguoi đặt box-shadow riêng cho avatar lớn -> giữ khung mùa */
+.pf-hero > .ava[data-frame] { box-shadow: 0 0 0 2px var(--fr-gap), 0 0 0 4.5px var(--fr-a), 0 0 0 6px var(--fr-b), var(--elev-1); }
+/* chừa chỗ cho vòng ngoài ở vài khung cắt tràn */
+.me-ava[data-frame], .cp-ava [data-frame] { margin: 6px; }
+/* màn kết thúc ván: người thắng có vòng vàng riêng (play.css) — xếp thêm vòng ngoài cùng, không mất khung mùa */
+.jg-end-p.is-win .jg-end-ava[data-frame] { box-shadow: 0 0 0 2px var(--fr-gap), 0 0 0 4.5px var(--fr-a), 0 0 0 6px var(--fr-b), 0 0 0 9px var(--gold, #f0b90b); }
+@media (forced-colors: active) { [data-frame] { outline: 3px solid CanvasText; outline-offset: 2px; } }
+
+/* /ho-so: lưới chọn khung đang đeo */
+.fr-pick { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: var(--sp-3, 12px); }
+.fr-opt { display: grid; justify-items: center; gap: 8px; min-height: 44px; padding: 14px 8px 10px; border-radius: var(--r-btn, 12px); border: 1px solid var(--line); background: var(--paper); color: var(--ink);
+  font: 600 13px/1.25 var(--f-body); text-align: center; cursor: pointer; }
+.fr-opt.is-on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--paper)); }
+.fr-sample { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: color-mix(in srgb, var(--ink) 12%, var(--paper)); color: var(--muted); font-weight: 700; }

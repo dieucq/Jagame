@@ -1,0 +1,38 @@
+{
+  "manifest": 2,
+  "id": "nhatque",
+  "name": "Nhặt que",
+  "version": "1.0.0",
+  "api": 1,
+  "sdk": "2",
+  "app_min": "0.1.0",
+  "group": "dangian",
+  "color": "#e07a3f",
+  "players": { "min": 2, "max": 2 },
+  "spectators": true,
+  "desc": "Hai người lần lượt nhặt 1–3 que, ai phải nhặt que cuối cùng là thua",
+  "tags": ["2 người", "trí tuệ", "nhanh"],
+  "age": 6,
+  "languages": ["vi"],
+  "icon": "icon.svg",
+  "entry": { "client": "client/index.js", "server": "server/game.js", "style": "client/style.css" },
+  "mode": "turn",
+  "session": { "minutes": [1, 3] },
+  "needs": { "sound": true, "vibrate": false, "storage": false, "user_text": false },
+  "bot": true,
+  "hint": true,
+  "options": [
+    { "key": "sticks", "label": "Số que", "choices": [15, 21, 31], "default": 15 },
+    { "key": "bot_level", "label": "Máy chơi", "choices": ["Thường", "Dễ"], "default": "Thường" }
+  ],
+  "reasons": { "que-cuoi": { "text": "phải nhặt que cuối cùng", "by": "loser" } },
+  "howto": [
+    "Trên bàn có một đống que. Hai người lần lượt nhặt 1, 2 hoặc 3 que.",
+    "Ai phải nhặt que CUỐI CÙNG là thua.",
+    "Mẹo: cố để lại cho bạn kia số que chia 4 dư 1."
+  ],
+  "news": "Bản đầu tiên — game mẫu của bộ công cụ phát triển Jagame.",
+  "author": "Jagame",
+  "license": "MIT",
+  "changelog": "1.0.0: bản đầu tiên (game mẫu devkit theo lượt, có máy chơi + gợi ý)."
+}

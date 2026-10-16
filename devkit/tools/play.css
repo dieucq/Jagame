@@ -1,0 +1,39 @@
+:root { --bg: #fff6d6; --ink: #17142b; --muted: #4a4560; --line: rgba(23, 20, 43, .14); }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.pl-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;
+  padding: 10px 16px; border-bottom: 2px solid var(--ink); background: #fff; }
+.pl-title small { font-weight: 400; color: var(--muted); }
+.pl-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; }
+.pl-ctl select, .pl-ctl button { font: inherit; font-size: 16px; min-height: 40px; padding: 4px 10px; border: 2px solid var(--ink);
+  border-radius: 10px; background: #fff; color: var(--ink); }
+.pl-ctl button { cursor: pointer; font-weight: 600; }
+.pl-chk { display: inline-flex; align-items: center; gap: 4px; }
+.pl-main { display: grid; gap: 16px; padding: 16px; max-width: 1100px; margin: 0 auto; }
+@media (min-width: 900px) { .pl-main { grid-template-columns: minmax(0, 1fr) 280px; } }
+.pl-stage { min-width: 0; position: relative; }
+/* game.highlight(): vòng sáng đè lên ô/quân (như .jg-hl của khung Jagame) */
+.pl-hl-layer { position: absolute; inset: 0; z-index: 8; pointer-events: none; }
+.pl-hl { position: absolute; left: 0; top: 0; border-radius: 10px; border: 3px solid var(--accent, #e0457b); box-shadow: 0 0 0 2px #fff, 0 0 16px rgba(224, 69, 123, .6); }
+.pl-hl[hidden] { display: none; }
+.pl-hl::after { content: ""; position: absolute; inset: -3px; border-radius: inherit; border: 3px solid var(--accent, #e0457b); animation: pl-hl-ring 1.3s ease-out infinite; }
+.pl-hl-label { position: absolute; left: 50%; top: -8px; transform: translate(-50%, -100%); font-size: 1.35rem; line-height: 1; }
+@keyframes pl-hl-ring { from { opacity: .8; transform: scale(1); } to { opacity: 0; transform: scale(1.45); } }
+.pl-root { max-width: 720px; margin: 0 auto; }
+.pl-banner { margin: 0 auto 12px; max-width: 720px; padding: 10px 14px; border: 2px solid var(--ink); border-radius: 12px;
+  background: #ffd23f; font-weight: 700; text-align: center; }
+.pl-side h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .08em; margin: 0 0 8px; }
+.pl-log { list-style: none; margin: 0; padding: 0; font: 12px/1.45 ui-monospace, Menlo, monospace; max-height: 50vh; overflow: auto;
+  border-top: 1px solid var(--line); }
+.pl-log li { padding: 4px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.pl-log .err { color: #b3123f; }
+.pl-log .res { font-weight: 700; }
+.pl-log .snd { color: var(--muted); }
+.pl-toast { position: fixed; left: 50%; bottom: 20px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+  background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 12px; transition: .2s; max-width: calc(100vw - 32px); }
+.pl-toast.on { opacity: 1; transform: translate(-50%, 0); }
+/* ?theme=…: khung thử mặc màu giao diện trang (đầu trang + nhật ký theo biến của giao diện) */
+.pl-themed .pl-head { background: var(--paper); color: var(--ink); border-bottom-color: var(--line); }
+.pl-themed .pl-ctl select, .pl-themed .pl-ctl button { background: var(--paper); color: var(--ink); border-color: var(--line); }
+.pl-themed .pl-banner { color: #17142b; }

@@ -1,0 +1,91 @@
+/* Mạng LAN ảo (/mang-lan + Quản trị → Mạng LAN). Chỉ dùng biến của Jagame; điện thoại là chính, vùng bấm ≥ 44px. */
+.lan-me { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; }
+.lan-me > div { display: grid; gap: 2px; }
+.lan-ip { font: 800 clamp(1.6rem, 6vw, 2.2rem)/1.1 var(--f-head); letter-spacing: .02em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.lan-state { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border-radius: var(--r-pill);
+  background: var(--soft); color: var(--muted); font-weight: 700; font-size: var(--fs-sm); }
+.lan-state::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--muted); }
+.lan-state.is-on { color: var(--ok); }
+.lan-state.is-on::before { background: var(--ok); }
+.lan-peers { margin: 0; }
+.lan-peers .row { min-height: 52px; gap: var(--sp-3); }
+.lan-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; }
+.lan-dot.is-on { background: var(--ok); }
+.lan-ipc { font-size: var(--fs-sm); padding: 2px 8px; border-radius: var(--r-xs); background: var(--soft); color: var(--ink); white-space: nowrap; }
+.lan-pempty { padding: var(--sp-3) 0; list-style: none; }
+.lan-rtt.is-good { color: var(--ok); } .lan-rtt.is-mid { color: var(--warn); } .lan-rtt.is-bad { color: var(--danger); }
+.lan-live .btn { min-height: 44px; flex: none; }
+.lan-empty { display: grid; justify-items: center; gap: var(--sp-3); text-align: center; padding: var(--sp-8) var(--sp-4); }
+.lan-empty h2, .lan-empty p { margin: 0; } .lan-empty p { max-width: 40ch; }
+.lan-empty-ic .ic { width: 48px; height: 48px; color: var(--accent-text); }
+.lan-dl { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-3); }
+.lan-dl .btn { min-height: 48px; }
+.lan-steps { margin: 0; padding-left: 1.4em; line-height: 1.55; min-width: 0; }
+.lan-steps li { overflow-wrap: anywhere; min-width: 0; }
+.lan-steps li + li { margin-top: var(--sp-3); }
+.lan-guide { min-width: 0; overflow-wrap: anywhere; }
+.lan-cmd { display: block; margin-top: 6px; padding: 10px 12px; border-radius: var(--r-row); background: var(--soft); color: var(--ink);
+  font-size: var(--fs-sm); overflow-x: auto; white-space: nowrap; max-width: 100%; }
+.lan-set { display: grid; gap: var(--sp-4); }
+.lan-set .check { min-height: 44px; }
+.lan-who { border: 0; margin: 0; padding: 0; display: grid; gap: var(--sp-2); }
+.lan-who legend { font-weight: 700; margin-bottom: var(--sp-2); }
+.lan-pick > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+.lan-picklist { display: grid; gap: 2px; max-height: 320px; overflow-y: auto; padding: var(--sp-2) 0; }
+@media (min-width: 720px) { .lan-picklist { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.lan-two { display: grid; gap: var(--sp-3); }
+@media (min-width: 560px) { .lan-two { grid-template-columns: 1fr 1fr; } }
+.lan-two input { width: 100%; min-height: 48px; font-size: 16px; }
+.lan-hist .row { min-height: 0; }
+.lan-adm .pg-head { flex-wrap: wrap; } .lan-adm .pg-head .pg-titlebox { flex: 1 1 240px; min-width: 0; }
+.lan-acts { display: flex; gap: var(--sp-2); flex-wrap: wrap; justify-content: flex-end; flex: none; }
+.lan-acts .btn { min-height: 44px; }
+.lan-host { display: inline-block; margin-left: 4px; padding: 1px 8px; border-radius: var(--r-pill); background: var(--soft); color: var(--accent-text); font-size: var(--fs-xs); font-weight: 700; }
+.lan-total { margin-bottom: var(--sp-3); }
+.lan-meter { height: 10px; border-radius: var(--r-pill); background: var(--soft); overflow: hidden; }
+.lan-meter i { display: block; height: 100%; width: 0; background: var(--ok); transition: width var(--t-fast, .2s) ease; }
+.lan-total.is-warn .lan-meter i { background: var(--danger); }
+.lan-total.is-warn p { color: var(--danger); font-weight: 600; }
+.lan-total p { margin: 6px 0 0; }
+.lan-tip h2 { display: flex; align-items: center; gap: 8px; }
+.lan-tip h2 .ic { color: var(--accent-text); }
+.lan-tip p { margin: 0 0 var(--sp-2); }
+.lan-max input { width: 100%; min-height: 48px; font-size: 16px; }
+@media (max-width: 560px) { .lan-live { flex-wrap: wrap; } .lan-acts { width: 100%; justify-content: flex-start; } }
+/* bảng điều khiển trực tiếp + chất lượng đường (ping: good < 60 · mid < 120 · bad ≥ 120 ms) */
+.lan-ping { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.lan-ping.is-good, .lan-dot.is-good { color: var(--ok); } .lan-ping.is-mid, .lan-dot.is-mid { color: var(--warn); } .lan-ping.is-bad, .lan-dot.is-bad { color: var(--danger); }
+.lan-ping.is-none { color: var(--muted); font-weight: 500; }
+.lan-dot.is-good { background: var(--ok); } .lan-dot.is-mid { background: var(--warn); } .lan-dot.is-bad { background: var(--danger); } .lan-dot.is-none { background: var(--muted); }
+.lan-peers .row .lan-ping { flex: none; margin-left: auto; }
+.lan-myq { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-2) var(--sp-4); margin: var(--sp-3) 0 0; width: 100%; }
+@media (min-width: 640px) { .lan-myq { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.lan-myq dt { font-size: var(--fs-xs); color: var(--muted); } .lan-myq dd { margin: 0; font-weight: 700; }
+.lan-hostping { margin: var(--sp-2) 0 0; width: 100%; }
+.lan-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2); margin-bottom: var(--sp-3); }
+.lan-tile { display: flex; align-items: center; gap: var(--sp-2); padding: 10px; border-radius: var(--r-row); background: var(--soft); min-width: 0; }
+.lan-tile > span:last-child { display: grid; min-width: 0; }
+.lan-tile b { font: 800 1.25rem/1.1 var(--f-head); font-variant-numeric: tabular-nums; }
+.lan-tile small { color: var(--muted); font-size: var(--fs-xs); line-height: 1.2; }
+.lan-tile-ic .ic { width: 22px; height: 22px; color: var(--accent-text); }
+@media (max-width: 420px) { .lan-tile { flex-direction: column; align-items: flex-start; } .lan-tile-ic { display: none; } }
+.lan-bars { display: grid; gap: var(--sp-2); margin-bottom: var(--sp-3); }
+.lan-bar-l { display: flex; justify-content: space-between; gap: 8px; font-size: var(--fs-sm); margin-bottom: 4px; }
+.lan-bar.is-warn .lan-meter i { background: var(--danger); } .lan-bar.is-warn .lan-bar-l b { color: var(--danger); }
+.lan-warn { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: var(--r-row); background: var(--soft); color: var(--danger); font-weight: 600; margin: 0 0 var(--sp-3); }
+.lan-warn .ic { flex: none; width: 20px; height: 20px; }
+.lan-spark { margin: 0 0 var(--sp-3); }
+.lan-spark svg { display: block; width: 100%; height: 64px; background: var(--soft); border-radius: var(--r-row); }
+.lan-spark path { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.lan-sp-out { stroke: var(--accent); } .lan-sp-in { stroke: var(--ok); }
+.lan-key { display: inline-block; width: 12px; height: 3px; border-radius: 2px; vertical-align: middle; }
+.lan-key.is-out { background: var(--accent); } .lan-key.is-in { background: var(--ok); }
+.lan-live .row-main { min-width: 0; }
+.lan-live .row-meta { overflow-wrap: anywhere; }
+.lan-netrow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-2); margin-bottom: var(--sp-2); }
+@media (min-width: 720px) { .lan-netrow { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.lan-netv { padding: 10px; border-radius: var(--r-row); background: var(--soft); display: grid; }
+.lan-netv small { color: var(--muted); font-size: var(--fs-xs); } .lan-netv b { font: 800 1.15rem/1.2 var(--f-head); font-variant-numeric: tabular-nums; }
+.lan-net .btn { min-height: 48px; }
+.lan-h3 { margin: var(--sp-4) 0 var(--sp-2); font-size: var(--fs-md); }
+.lan-capn { flex: none; margin-left: auto; font-size: 1.1rem; color: var(--accent-text); white-space: nowrap; }

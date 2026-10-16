@@ -1,0 +1,20 @@
+{
+  "_": "Nhiệm vụ hằng ngày + bảng thưởng chuỗi ngày (Docs/spec/P3-nhiem-vu-giai-dau-kiem-duyet.md mục 1.2). PHP (Quest_model, quests_registry()) và Node (Realtime/lib/social/quests.js) cùng đọc — thêm nhiệm vụ = thêm mục, không cần migration. title/desc có {game} = tên trò (param). group: mỗi ngày tối đa 1 nhiệm vụ/nhóm, luôn có ≥ 1 nhóm play. action.kind: play | chat | heart | photo (nút hành động gần nhất). Cách đo tiến độ + điều kiện hiện (cond) nằm trong mã Node (một nguồn logic), tên cond chỉ để đọc.",
+  "quests": [
+    {"id": "play_any",      "group": "play",    "title": "Chơi 2 ván bất kỳ",                   "desc": "Mở bàn hoặc vào phòng đang chờ — chỉ tính ván với người (ván với máy không tính).", "icon": "🎲", "goal": 2, "reward": 1, "action": {"kind": "play"},  "cond": "always"},
+    {"id": "play_game",     "group": "play",    "title": "Chơi 2 ván {game}",                    "desc": "Hai ván {game} với người trong hôm nay (ván với máy không tính).",                       "icon": "🎯", "goal": 2, "reward": 1, "action": {"kind": "play"},  "cond": "game_on"},
+    {"id": "win_any",       "group": "win",     "title": "Thắng 1 ván",                          "desc": "Thắng một ván với người, trò nào cũng được (ván với máy không tính).",                               "icon": "🏆", "goal": 1, "reward": 2, "action": {"kind": "play"},  "cond": "always"},
+    {"id": "win_game",      "group": "win",     "title": "Thắng 1 ván {game}",                   "desc": "Thắng một ván {game} với người (ván với máy không tính).",                               "icon": "🥇", "goal": 1, "reward": 2, "action": {"kind": "play"},  "cond": "game_on_2p"},
+    {"id": "new_game",      "group": "explore", "title": "Thử 1 trò chưa chơi bao giờ",          "desc": "Chơi một ván với người ở trò bạn chưa từng chơi (ván với máy không tính).",             "icon": "🧭", "goal": 1, "reward": 2, "action": {"kind": "play"},  "cond": "has_unplayed_game"},
+    {"id": "play_new_mate", "group": "explore", "title": "Chơi với người chưa từng chung bàn",   "desc": "Một ván với người bạn chưa gặp ở bàn chơi (ván với máy không tính).",         "icon": "🤝", "goal": 1, "reward": 2, "action": {"kind": "play"},  "cond": "members_4"},
+    {"id": "dm_friend",     "group": "social",  "title": "Nhắn tin cho 1 bạn",                   "desc": "Gửi một tin nhắn riêng cho bạn nào đó.",                       "icon": "✉️", "goal": 1, "reward": 1, "action": {"kind": "chat"},  "cond": "always"},
+    {"id": "chat_general",  "group": "social",  "title": "Nói 3 câu ở kênh chung",               "desc": "Ba tin nhắn ở phòng chat chung.",                              "icon": "💬", "goal": 3, "reward": 1, "action": {"kind": "chat"},  "cond": "always"},
+    {"id": "give_heart",    "group": "heart",   "title": "Tặng 1 tim cho bạn",                   "desc": "Tặng tim ở hồ sơ, chat, phòng chơi hoặc bài ảnh.",             "icon": "💝", "goal": 1, "reward": 1, "action": {"kind": "heart"}, "cond": "heart_quota_1"},
+    {"id": "give_heart_3",  "group": "heart",   "title": "Tặng tim cho 3 người khác nhau",       "desc": "Ba người, mỗi người ít nhất một tim.",                         "icon": "💞", "goal": 3, "reward": 2, "action": {"kind": "heart"}, "cond": "heart_quota_3"},
+    {"id": "post_photo",    "group": "photo",   "title": "Đăng 1 ảnh vui",                       "desc": "Một bài ảnh vui lên bảng tin.",                                "icon": "📸", "goal": 1, "reward": 2, "action": {"kind": "photo"}, "cond": "can_post"},
+    {"id": "comment_post",  "group": "photo",   "title": "Bình luận 1 bài ảnh",                  "desc": "Để lại một bình luận ở bài ảnh bất kỳ.",                       "icon": "💭", "goal": 1, "reward": 1, "action": {"kind": "photo"}, "cond": "can_comment"}
+  ],
+  "all_done_reward": 2,
+  "streak_rewards": [1, 1, 2, 1, 2, 2, 5],
+  "streak_freeze_day": 7
+}

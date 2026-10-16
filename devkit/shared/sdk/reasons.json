@@ -1,0 +1,161 @@
+{
+ "$comment": "Lý do kết thúc CHUẨN (result.reason) — GAME-PROTOCOL.md mục 6. by: winner = việc của người thắng, loser = việc của người thua (khung gắn tên người thua), none = hòa/trung tính. Game có lý do riêng khai manifest \"reasons\". Bản sao trong jg-core.js REASONS phải khớp (runner tự kiểm).",
+ "reasons": {
+  "resign": {
+   "text": "đầu hàng",
+   "by": "loser"
+  },
+  "disconnect": {
+   "text": "mất kết nối quá lâu",
+   "by": "loser"
+  },
+  "leave": {
+   "text": "rời phòng",
+   "by": "loser"
+  },
+  "het-gio": {
+   "text": "hết giờ",
+   "by": "loser"
+  },
+  "win": {
+   "text": "thắng theo luật",
+   "by": "winner"
+  },
+  "score": {
+   "text": "điểm cao nhất khi hết ván",
+   "by": "winner"
+  },
+  "finish": {
+   "text": "về đích / hết bài trước",
+   "by": "winner"
+  },
+  "het-nguoi": {
+   "text": "là người ở lại cuối cùng",
+   "by": "winner"
+  },
+  "het-van": {
+   "text": "hết số ván, nhiều đậu nhất",
+   "by": "winner"
+  },
+  "sach-dau": {
+   "text": "mọi người khác hết đậu",
+   "by": "winner"
+  },
+  "het-luot": {
+   "text": "hết lượt, hòa",
+   "by": "none"
+  },
+  "draw": {
+   "text": "hòa",
+   "by": "none"
+  },
+  "checkmate": {
+   "text": "chiếu bí",
+   "by": "winner"
+  },
+  "stalemate": {
+   "text": "hết nước đi",
+   "by": "none"
+  },
+  "five": {
+   "text": "5 quân liền",
+   "by": "winner"
+  },
+  "draw-agree": {
+   "text": "hai bên đồng ý hòa",
+   "by": "none"
+  },
+  "draw-50": {
+   "text": "nhiều nửa nước không ăn quân",
+   "by": "none"
+  },
+  "repetition": {
+   "text": "lặp lại thế cờ 3 lần",
+   "by": "none"
+  },
+  "full": {
+   "text": "kín bàn",
+   "by": "none"
+  },
+  "tan-cuoc": {
+   "text": "tàn cuộc",
+   "by": "winner"
+  },
+  "all-home": {
+   "text": "đủ 4 ngựa về đích",
+   "by": "winner"
+  },
+  "low-beans": {
+   "text": "hết đậu",
+   "by": "winner"
+  },
+  "het-dan": {
+   "text": "hết dân, không đủ quân rải lại",
+   "by": "loser"
+  },
+  "all-down": {
+   "text": "hạ hết máy bay",
+   "by": "winner"
+  },
+  "general": {
+   "text": "bắn trúng tướng",
+   "by": "winner"
+  },
+  "all-soldiers": {
+   "text": "hạ hết quân",
+   "by": "winner"
+  },
+  "kinh": {
+   "text": "KINH đúng",
+   "by": "winner"
+  },
+  "het-so": {
+   "text": "hết 90 số",
+   "by": "none"
+  },
+  "het-cau": {
+   "text": "điểm cao nhất khi hết câu hỏi",
+   "by": "winner"
+  },
+  "het-quan": {
+   "text": "hết quân",
+   "by": "winner"
+  },
+  "draw-200": {
+   "text": "200 nước không quân nào đổi màu",
+   "by": "none"
+  },
+  "poker-bust": {
+   "text": "gom hết đậu cả bàn",
+   "by": "winner"
+  },
+  "poker-hands": {
+   "text": "nhiều đậu nhất sau số tay đã chọn",
+   "by": "winner"
+  },
+  "ve-xong": {
+   "text": "điểm cao nhất",
+   "by": "winner"
+  },
+  "bai-diem": {
+   "text": "nhiều điểm nhất sau 3 ván",
+   "by": "winner"
+  },
+  "het-soi": {
+   "text": "diệt hết Sói",
+   "by": "winner"
+  },
+  "soi-thang": {
+   "text": "Sói chiếm làng",
+   "by": "winner"
+  },
+  "whitewin": {
+   "text": "tới trắng",
+   "by": "winner"
+  },
+  "phom-diem": {
+   "text": "điểm cao nhất sau số ván đã chọn",
+   "by": "winner"
+  }
+ }
+}

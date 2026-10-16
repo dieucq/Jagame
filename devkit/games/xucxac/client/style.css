@@ -1,0 +1,16 @@
+/* Xúc xắc may rủi — chỉ biến CSS của khung; tiền tố xx-. Mặt xúc xắc là đồ vật thật → --jg-obj-*. */
+.xx { display: grid; gap: 12px; max-width: 520px; margin: 0 auto; padding: 8px 4px; color: var(--ink); }
+.xx-board { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px 12px; border-radius: var(--radius, 16px);
+  background: var(--soft); border: 2px solid var(--line); }
+.xx-die { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 96px; height: 96px; padding: 12px; box-sizing: border-box;
+  border-radius: 20px; background: var(--jg-obj-paper, #fffdf6); border: 3px solid var(--jg-obj-ink, #17142b); }
+.xx-die i { border-radius: 50%; }
+.xx-die i.on { background: var(--jg-obj-ink, #17142b); }
+.xx-die.is-bust i.on { background: #d93a3a; }
+.xx-die.is-roll { animation: xx-roll .4s ease; }
+@keyframes xx-roll { 0% { transform: rotate(-25deg) scale(.85); } 60% { transform: rotate(12deg) scale(1.06); } 100% { transform: none; } }
+.xx-info { display: grid; gap: 6px; min-width: 0; }
+.xx-pts { font-family: var(--f-head, inherit); font-size: 22px; color: var(--accent); }
+.xx-say { font-size: 16px; font-weight: 700; }
+.xx-goal { margin: 0; text-align: center; font-size: 14px; color: var(--muted); }
+@media (max-width: 360px) { .xx-board { gap: 12px; } .xx-die { width: 80px; height: 80px; padding: 10px; } }

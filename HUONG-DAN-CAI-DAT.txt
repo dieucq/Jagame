@@ -1,0 +1,65 @@
+==============================================================
+  JAGAME - HỘI QUÁN GAME CỦA RIÊNG TỤI MÌNH · HƯỚNG DẪN CÀI ĐẶT
+==============================================================
+
+Cài xong là có ngay trang game riêng dạng https://xxxx.jagame.vn
+để gửi bạn bè. Dữ liệu nằm trên máy của bạn. Miễn phí.
+
+--------------------------------------------------------------
+ macOS / LINUX
+--------------------------------------------------------------
+ 1. Giải nén ra một thư mục (KHÔNG chạy trực tiếp trong .zip).
+ 2. Mở Terminal trong thư mục đó, chạy:
+        bash run_mac.sh
+    Lần đầu máy tự tải PHP + Node chính thức (~70 MB, 1 lần).
+    Không phải cài gì thêm.
+ 3. Trình duyệt tự mở http://localhost:6969
+    Đặt tên hội quán, biệt danh, tài khoản chủ phòng -> "Tạo hội quán".
+ 4. Chờ khoảng 1 phút: link https://xxxx.jagame.vn hiện ở
+    Quản trị -> "Mời bạn bè" (kèm mã QR).
+
+--------------------------------------------------------------
+ WINDOWS (10/11)
+--------------------------------------------------------------
+ 1. Giải nén ra một thư mục (KHÔNG chạy trực tiếp trong .zip).
+ 2. Bấm đúp run_window.bat (Windows cảnh báo: "More info" ->
+    "Run anyway"). Lần đầu máy tự tải PHP + Node chính thức
+    (~70 MB, 1 lần, cần Internet) và có thể hỏi cài "Microsoft
+    Visual C++" (bấm Yes). Không phải cài gì thêm.
+ 3. Windows Defender Firewall hỏi quyền mạng: bấm "Allow"
+    (để bạn bè trong mạng nhà vào được).
+ 4. Trình duyệt tự mở http://localhost:6969
+    Đặt tên hội quán, biệt danh, tài khoản chủ phòng -> "Tạo hội quán".
+ 5. Chờ khoảng 1 phút: link https://xxxx.jagame.vn hiện ở
+    Quản trị -> "Mời bạn bè" (kèm mã QR).
+ Đóng cửa sổ đen là dừng. Cổng 6969 bận thì tự dùng 6970 / 6971.
+ Muốn mở cho máy khác trong mạng nhà: mở Command Prompt trong thư
+ mục, gõ  set JAGAME_BIND=0.0.0.0  rồi  run_window.bat
+
+--------------------------------------------------------------
+ DÙNG
+--------------------------------------------------------------
+ - Sửa trang: đăng nhập chủ phòng, mở trang chủ, bấm vào chữ / ảnh
+   có viền nét đứt; nút "Giao diện" để đổi giao diện, màu; bấm
+   "Xuất bản" để mọi người thấy.
+ - Bạn bè: mở link, gõ biệt danh, bấm "Chơi ngay" — không cần đăng ký.
+ - Trò chơi tự về từ kho game.jagame.vn và tự cập nhật.
+ - Máy phải BẬT và chương trình phải ĐANG CHẠY thì bạn bè mới vào được.
+ - Chat: nhắn chung, nhắn riêng, lập nhóm, gửi ảnh / file, sticker,
+   BUZZ, ghim bạn thân. Tặng tim, đăng "Ảnh vui", xem "Xếp hạng".
+ - Chuông thông báo + thông báo đẩy; bạn bè có thể "Cài app" ra màn
+   hình chính điện thoại (menu tên -> Cài app).
+ - Mời người thân: Quản trị -> "Mời bạn bè" (link + mã QR). Cấm chat,
+   khóa, duyệt thành viên: Quản trị -> "Thành viên".
+ - Sao lưu: Quản trị -> Cài đặt -> "Tải bản sao lưu đầy đủ", hoặc
+   chép thư mục database/ và uploads/ khi chương trình đang tắt.
+ - Mọi người (và bạn) đọc "Hướng dẫn" ngay trong app: menu tên ->
+   Hướng dẫn (địa chỉ /huong-dan), có cả phần riêng cho chủ phòng.
+
+ Quên mật khẩu chủ phòng: trong thư mục chương trình chạy
+     php index.php cli doi_mat_khau
+ (Windows: runtime\php\php.exe hoặc php\php.exe, tùy gói)
+
+ Cập nhật: tải bản mới, chép đè (GIỮ database/, uploads/,
+ cloudflared/), chạy lại.
+==============================================================

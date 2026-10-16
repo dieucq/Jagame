@@ -1,0 +1,25 @@
+# Dữ liệu sinh ra khi chạy trên máy người dùng — không bao giờ đưa lên repo
+database/*
+!database/.gitkeep
+!database/sessions/
+database/sessions/*
+!database/sessions/.gitkeep
+cloudflared/*
+!cloudflared/.gitkeep
+!cloudflared/cloudflared.exe
+uploads/photos/*
+uploads/media/*
+!uploads/**/index.html
+# Neo "/" = CHỈ thư mục ở gốc (không chặn nhầm Realtime/lib/games/ — mã phòng chơi)
+/games/
+/runtime/
+application/logs/*
+!application/logs/index.html
+# devkit: game người viết tạo ra khi thử (chỉ giữ game mẫu) + gói đóng ra — bài gửi nằm ở submissions/<id>/
+/devkit/dist/
+/devkit/games/*
+!/devkit/games/oantuti/
+!/devkit/games/nhatque/
+!/devkit/games/xucxac/
+.DS_Store
+__pycache__/

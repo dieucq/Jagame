@@ -1,0 +1,71 @@
+/* Cờ thư (R14): /co-thu, /co-thu/<id>, khối "Ván cờ thư đến lượt bạn" ở trang chủ + hub. Mọi màu qua biến giao diện; điện thoại trước (dòng ≥ 56px, nút ≥ 44px). */
+.as-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-2, 8px); }
+.as-list + .as-list { margin-top: var(--sp-3, 12px); }
+.as-row, .as-card { display: flex; align-items: center; gap: var(--sp-3, 12px); min-height: 56px; padding: 8px 14px; border-radius: var(--r-row, 14px);
+  background: var(--paper); border: var(--card-bw, 1px) solid var(--line); box-shadow: var(--elev-1, none); color: var(--ink); text-decoration: none; }
+.as-row:active { transform: scale(.99); }
+.as-row.is-wait { opacity: .72; }
+.as-row.is-invite { border-color: var(--accent); }
+.as-ico { flex: none; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: var(--soft); font-size: 1.1rem; }
+.as-txt { flex: 1 1 auto; min-width: 0; display: grid; gap: 2px; }
+.as-txt b { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.as-txt small { color: var(--muted); font-size: var(--fs-sm, 14px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.as-due.is-urgent, .as-status .is-urgent { color: var(--danger, #c0392b); font-weight: 700; }
+.as-go { flex: none; min-height: 36px; padding: 0 14px; display: inline-flex; align-items: center; border-radius: var(--r-pill, 999px); background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: var(--fs-sm, 14px); }
+.as-unread { flex: none; min-width: 22px; height: 22px; padding: 0 6px; display: inline-grid; place-items: center; border-radius: 11px; background: var(--live, #e5484d); color: #fff; font-size: 12px; }
+.as-btns { flex: none; display: flex; gap: 6px; }
+.as-card { flex-wrap: wrap; }
+.as-card .as-btns { margin-left: auto; }
+.as-row.is-done.is-win .as-ico { background: color-mix(in srgb, var(--gold, #e7a412) 30%, var(--paper)); }
+.as-page .pg-h2 small { color: var(--muted); font-weight: 600; }
+.as-intro { color: var(--muted); margin: 0 0 var(--sp-3, 12px); }
+.as-msg { margin: var(--sp-3, 12px) 0; padding: 12px 14px; border-radius: var(--r-row, 12px); background: var(--soft); font-weight: 600; }
+.as-msg.is-bad { color: var(--danger, #c0392b); }
+.as-sk { min-height: 56px; }
+.as-stat { margin: 0 0 var(--sp-2, 8px); color: var(--muted); }
+.as-rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.as-rank li { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: var(--r-row, 12px); background: var(--paper); border: var(--card-bw, 1px) solid var(--line); }
+.as-rank li.is-me { border-color: var(--accent); }
+.as-rank a { flex: 1; color: var(--ink); text-decoration: none; font-weight: 600; }
+.as-rk { width: 24px; text-align: center; font-weight: 800; color: var(--muted); }
+/* sheet thách người */
+.as-new { display: grid; gap: 12px; padding: 4px 2px 12px; }
+.as-new label { display: grid; gap: 4px; font-weight: 600; font-size: var(--fs-sm, 14px); }
+.as-new input[type="search"], .as-new select, .as-chat-form input { min-height: 44px; padding: 0 12px; font-size: 16px; border-radius: var(--r-row, 12px); border: 1px solid var(--line); background: var(--field); color: var(--ink); }
+.as-people { list-style: none; margin: 0; padding: 0; max-height: 200px; overflow: auto; display: grid; gap: 4px; }
+.as-person { display: flex !important; grid-template-columns: none; align-items: center; gap: 10px; min-height: 44px; padding: 0 10px; border-radius: var(--r-row, 12px); background: var(--soft); font-weight: 600; }
+.as-person input { width: 20px; height: 20px; accent-color: var(--accent); }
+.as-none, .as-hint { color: var(--muted); margin: 0; font-size: var(--fs-sm, 14px); }
+.as-hint { color: var(--danger, #c0392b); min-height: 1em; }
+/* trang 1 ván */
+.as-game .as-status { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 8px 0; padding: 10px 14px; border-radius: var(--r-row, 14px); background: var(--soft); }
+.as-game .as-status.is-mine { background: var(--accent); color: var(--accent-ink); }
+.as-game .as-status.is-mine small { color: inherit; opacity: .9; }
+.as-game .as-status.is-mine .is-urgent { color: inherit; text-decoration: underline; }
+.as-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; }
+.as-status.is-mine .as-dot { background: var(--accent-ink); animation: as-pulse 1.4s ease-in-out infinite; }
+@keyframes as-pulse { 50% { transform: scale(1.5); opacity: .6; } }
+@media (prefers-reduced-motion: reduce) { .as-status.is-mine .as-dot { animation: none; } }
+.as-invite { margin: 8px 0; padding: 14px; border-radius: var(--r-row, 14px); background: var(--paper); border: var(--card-bw, 1px) solid var(--accent); }
+.as-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.as-body { display: grid; gap: 8px; min-width: 0; }
+.as-stage { min-height: 200px; }
+.as-msgs { list-style: none; margin: 0 0 8px; padding: 8px; max-height: 220px; overflow-y: auto; display: grid; gap: 6px; border-radius: var(--r-row, 12px); background: var(--soft); }
+.as-msgs:empty { display: none; }
+.as-msgs li { display: flex; }
+.as-msgs li.is-me { justify-content: flex-end; }
+.as-bubble { max-width: 80%; padding: 8px 12px; border-radius: 16px; background: var(--paper); overflow-wrap: anywhere; }
+.is-me .as-bubble { background: var(--accent); color: var(--accent-ink); }
+.as-chat-form { display: flex; gap: 8px; }
+.as-chat-form input { flex: 1; min-width: 0; }
+
+.as-page .pg-h2 { margin-top: var(--sp-5, 24px); }
+
+.as-vac { color: var(--accent-text, var(--ink)); font-weight: 600; white-space: nowrap; }
+.as-vacbox { margin: 8px 0; }
+.as-vacbox p { margin: 0 0 8px; }
+.as-vacbox > p { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; padding: 12px; border-radius: var(--r-row, 14px); background: var(--soft); }
+.as-vacd { padding: 10px 12px; border-radius: var(--r-row, 14px); background: var(--soft); }
+.as-vacd summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+.as-vacform { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.as-vacform select { font-size: 16px; min-height: 44px; }

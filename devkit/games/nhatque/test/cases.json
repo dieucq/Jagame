@@ -1,0 +1,200 @@
+{
+  "cases": [
+    {
+      "name": "khai cuộc: 15 que, đúng 1 người tới lượt",
+      "players": 2,
+      "steps": [],
+      "result": null,
+      "view": [
+        {
+          "seat": 0,
+          "match": {
+            "proto": 2,
+            "phase": "play",
+            "you": 0,
+            "youDone": false,
+            "total": 15,
+            "left": 15,
+            "last": null,
+            "turn": 0
+          }
+        },
+        {
+          "seat": -1,
+          "match": {
+            "you": -1,
+            "left": 15
+          }
+        }
+      ]
+    },
+    {
+      "name": "tùy chọn 21 que",
+      "options": {
+        "sticks": 21
+      },
+      "steps": [],
+      "view": [
+        {
+          "seat": 0,
+          "match": {
+            "total": 21,
+            "left": 21
+          }
+        }
+      ]
+    },
+    {
+      "name": "sai: nhặt 0, nhặt 4, nước rác, ghế lạ",
+      "steps": [
+        {
+          "seat": 0,
+          "move": {
+            "type": "take",
+            "n": 0
+          },
+          "error": "không hợp lệ"
+        },
+        {
+          "seat": 1,
+          "move": {
+            "type": "take",
+            "n": 4
+          },
+          "error": "không hợp lệ"
+        },
+        {
+          "seat": 0,
+          "move": {
+            "type": "hack"
+          },
+          "error": "không hợp lệ"
+        },
+        {
+          "seat": 7,
+          "move": {
+            "type": "take",
+            "n": 1
+          },
+          "error": "không ngồi"
+        }
+      ],
+      "view": [
+        {
+          "seat": 0,
+          "match": {
+            "left": 15
+          }
+        }
+      ]
+    },
+    {
+      "name": "sai lượt: ghế 1 đi trước bị từ chối",
+      "steps": [
+        {
+          "seat": 1,
+          "move": {
+            "type": "take",
+            "n": 1
+          },
+          "error": "Chưa tới lượt"
+        }
+      ]
+    },
+    {
+      "name": "cả ván: ghế 1 phải nhặt que cuối → ghế 0 thắng (que-cuoi)",
+      "steps": [
+        {
+          "seat": 0,
+          "move": {
+            "type": "take",
+            "n": 3
+          }
+        },
+        {
+          "seat": 1,
+          "move": {
+            "type": "take",
+            "n": 3
+          }
+        },
+        {
+          "seat": 0,
+          "move": {
+            "type": "take",
+            "n": 3
+          }
+        },
+        {
+          "seat": 1,
+          "move": {
+            "type": "take",
+            "n": 3
+          }
+        },
+        {
+          "seat": 0,
+          "move": {
+            "type": "take",
+            "n": 2
+          }
+        },
+        {
+          "seat": 1,
+          "move": {
+            "type": "take",
+            "n": 2
+          },
+          "error": "Chỉ còn 1 que"
+        },
+        {
+          "seat": 1,
+          "move": {
+            "type": "take",
+            "n": 1
+          }
+        }
+      ],
+      "result": {
+        "winners": [
+          0
+        ],
+        "reason": "que-cuoi"
+      },
+      "view": [
+        {
+          "seat": -1,
+          "match": {
+            "left": 0,
+            "phase": "ended"
+          }
+        }
+      ]
+    },
+    {
+      "name": "đầu hàng: người kia thắng, đi tiếp bị từ chối",
+      "steps": [
+        {
+          "seat": 1,
+          "move": {
+            "type": "resign"
+          }
+        },
+        {
+          "seat": 0,
+          "move": {
+            "type": "take",
+            "n": 1
+          },
+          "error": "kết thúc"
+        }
+      ],
+      "result": {
+        "winners": [
+          0
+        ],
+        "reason": "resign"
+      }
+    }
+  ]
+}

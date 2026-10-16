@@ -1,0 +1,54 @@
+# Kiểm tự động Pull Request gửi game (developers/GUI-GAME.md).
+# AN TOÀN: chỉ sự kiện `pull_request` (KHÔNG BAO GIỜ pull_request_target), token chỉ đọc, không dùng secret nào.
+# Công cụ kiểm lấy từ NHÁNH GỐC (thư mục trusted/), mã của PR nằm riêng ở pr/ — PR không sửa được bộ kiểm đang chạy nó.
+name: Kiểm bài gửi game
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-submission-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: check-submission
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Lấy bộ kiểm từ nhánh gốc (tin cậy)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+          persist-credentials: false
+
+      - name: Lấy mã của Pull Request
+        uses: actions/checkout@v4
+        with:
+          path: pr
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: "1. Chỉ được đụng ĐÚNG MỘT thư mục submissions/<id>/"
+        id: paths
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python3 -I trusted/devkit/tools/pr_paths.py --repo pr --base "$BASE_SHA" --head "$HEAD_SHA" --github-output "$GITHUB_OUTPUT"
+
+      - name: "2. check_submission.py submissions/<id>"
+        if: steps.paths.outputs.deleted_only != 'true'
+        env:
+          GAME_ID: ${{ steps.paths.outputs.id }}
+        run: |
+          case "$GAME_ID" in ''|*[!a-z0-9-]*) echo "id không hợp lệ"; exit 1;; esac
+          python3 -I trusted/devkit/check_submission.py "pr/submissions/$GAME_ID" --json report.json --rounds 120

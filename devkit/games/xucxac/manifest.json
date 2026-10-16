@@ -1,0 +1,35 @@
+{
+  "manifest": 2,
+  "id": "xucxac",
+  "name": "Xúc xắc may rủi",
+  "version": "1.0.0",
+  "api": 1,
+  "sdk": "2",
+  "app_min": "0.1.0",
+  "group": "vui",
+  "color": "#3fae7a",
+  "players": { "min": 2, "max": 6 },
+  "spectators": true,
+  "desc": "Gieo xúc xắc cộng điểm, biết dừng đúng lúc — gieo ra 1 là mất sạch điểm lượt đó",
+  "tags": ["nhiều người", "may rủi", "cả nhà"],
+  "age": 5,
+  "languages": ["vi"],
+  "icon": "icon.svg",
+  "entry": { "client": "client/index.js", "server": "server/game.js", "style": "client/style.css" },
+  "mode": "turn",
+  "session": { "minutes": [3, 8] },
+  "needs": { "sound": true, "vibrate": false, "storage": false, "user_text": false },
+  "bot": true,
+  "options": [
+    { "key": "target", "label": "Điểm để thắng", "choices": [30, 50, 100], "default": 30 }
+  ],
+  "howto": [
+    "Tới lượt, bấm Gieo: mặt 2–6 được cộng vào điểm lượt này.",
+    "Gieo ra 1 là mất hết điểm lượt này và mất lượt.",
+    "Bấm Giữ điểm để cất điểm lượt vào tổng. Ai đạt đủ điểm trước là thắng."
+  ],
+  "news": "Bản đầu tiên — game mẫu của bộ công cụ phát triển Jagame.",
+  "author": "Jagame",
+  "license": "MIT",
+  "changelog": "1.0.0: bản đầu tiên (game mẫu devkit theo lượt 2–6 người, ngẫu nhiên bằng ctx.rng)."
+}

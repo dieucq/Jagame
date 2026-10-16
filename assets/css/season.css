@@ -1,0 +1,84 @@
+/* Jagame — Giờ vàng ⚡ + Mùa giải (UI-PRO v3). CHỈ token của site.css (--paper/--ink/--accent/--accent-ink/--accent-text/--line/--muted/--warn, --sp-*, --fs-*, --r-*, --elev-1);
+   KHÔNG #fff/#000 cố định trên nền --ink/--paper. Điện thoại trước: vùng bấm ≥ 44px, không tràn ngang ở 360px. */
+
+/* ── dải giờ vàng ── */
+.gd-bar { display: flex; align-items: center; gap: var(--sp-2, 8px); min-height: 44px; margin: 0 0 var(--sp-3, 12px); padding: 8px var(--sp-3, 12px); border-radius: var(--radius, 14px);
+  background: color-mix(in srgb, var(--warn, #d98a00) 12%, var(--paper)); color: var(--ink); border: 1px solid color-mix(in srgb, var(--warn, #d98a00) 45%, var(--line)); font: 600 var(--fs-sm, .9rem)/1.3 var(--f-body); min-width: 0; }
+.gd-bar[hidden] { display: none; }
+/* QA46 BUG-1: nền vàng + chữ sẫm CỐ ĐỊNH — không phụ thuộc giao diện/màu riêng (≥ 12:1) */
+.gd-bar.is-live { background: #ffd23f; border-color: #e0b100; color: #17142b; }
+.gd-ic { flex: none; font-size: 1.15em; line-height: 1; }
+.gd-txt { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.gd-left { flex: none; font-variant-numeric: tabular-nums; font-weight: 800; }
+.gd-left:empty { display: none; }
+.gd-bar.is-live .gd-ic { animation: gd-pulse 1.6s ease-in-out infinite; }
+@keyframes gd-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+@media (prefers-reduced-motion: reduce) { .gd-bar.is-live .gd-ic { animation: none; } }
+
+/* ── thẻ mùa (trang chủ / hub) ── */
+.ss-card { display: flex; align-items: center; gap: var(--sp-3, 12px); min-height: 64px; margin: 0 auto var(--sp-3, 12px); padding: var(--sp-3, 12px); border-radius: var(--radius, 14px); text-decoration: none; color: var(--ink);
+  background: var(--paper); border: var(--card-bw, 1px) solid var(--line); box-shadow: var(--elev-1); min-width: 0; }
+.ss-card[hidden] { display: none; }
+html.cm .ss-card { border: var(--cm-bw, 3px) solid var(--cm-line, var(--ink)); box-shadow: var(--cm-drop, 4px 4px 0 var(--ink)); }
+.ss-card-ic { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--r-icon, 14px); background: color-mix(in srgb, var(--accent) 16%, var(--paper)); color: var(--accent-text); }
+.ss-card-ic svg { width: 24px; height: 24px; }
+.ss-card-main { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.ss-card-main b { font: 700 16px/1.25 var(--f-body); overflow-wrap: anywhere; }
+.ss-card-sub { color: var(--muted); font-size: var(--fs-sm, .9rem); line-height: 1.35; overflow-wrap: anywhere; }
+.ss-card-chev { flex: none; color: var(--muted); font-size: 1.5rem; line-height: 1; }
+.ss-bar { display: block; height: 6px; margin-top: 4px; border-radius: 99px; background: color-mix(in srgb, var(--ink) 12%, var(--paper)); overflow: hidden; }
+.ss-bar[hidden] { display: none; }
+.ss-bar > i { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--accent); transition: width .4s var(--ease-pop, ease); }
+
+/* ── trang /mua-giai ── */
+.ss-page { display: grid; gap: var(--sp-4, 16px); min-width: 0; }
+.ss-hero-card { display: flex; align-items: center; gap: var(--sp-4, 16px); padding: var(--sp-4, 16px); border-radius: var(--radius, 14px); background: var(--paper); color: var(--ink);
+  border: var(--card-bw, 1px) solid var(--line); box-shadow: var(--elev-1); min-width: 0; }
+html.cm .ss-hero-card { border: var(--cm-bw, 3px) solid var(--cm-line, var(--ink)); box-shadow: var(--cm-drop, 4px 4px 0 var(--ink)); }
+.ss-ring { --p: 0; flex: none; position: relative; display: grid; place-items: center; align-content: center; width: 84px; height: 84px; border-radius: 50%;
+  background: conic-gradient(var(--accent) calc(var(--p) * 1%), color-mix(in srgb, var(--ink) 12%, var(--paper)) 0); }
+.ss-ring::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--paper); }
+.ss-ring b, .ss-ring small { position: relative; line-height: 1.1; }
+.ss-ring b { font: var(--head-w, 700) 26px/1 var(--f-head, var(--f-body)); font-variant-numeric: tabular-nums; }
+.ss-ring small { color: var(--muted); font-size: 12px; }
+.ss-hero-main { flex: 1; min-width: 0; display: grid; gap: 4px; justify-items: start; }
+.ss-season { margin: 0; font: var(--head-w, 700) var(--fs-lg, 1.25rem)/1.2 var(--f-head, var(--f-body)); }
+.ss-dates { margin: 0; color: var(--muted); font-size: var(--fs-sm, .9rem); }
+.ss-my { margin: 4px 0 0; font-size: var(--fs-md, 1rem); }
+.ss-my b { font: var(--head-w, 700) 1.6rem/1 var(--f-head, var(--f-body)); font-variant-numeric: tabular-nums; }
+.ss-hero-main .ss-bar { width: 100%; }
+.ss-need { margin: 0; color: var(--accent-text); font: 600 var(--fs-sm, .9rem)/1.3 var(--f-body); }
+.ss-parts-btn { min-height: 44px; }
+.ss-empty { padding: var(--sp-5, 24px) var(--sp-4, 16px); text-align: center; border-radius: var(--radius, 14px); border: 1px dashed var(--line); }
+.ss-note { margin: 0; color: var(--muted); font-size: var(--fs-sm, .9rem); }
+.ss-note a { color: var(--accent-text); }
+.ss-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 0 var(--sp-2, 8px); font: var(--head-w, 700) var(--fs-lg, 1.1rem) var(--f-head, var(--f-body)); }
+.ss-how { min-height: 44px; padding: 0 8px; background: none; border: 0; color: var(--accent-text); font: 600 var(--fs-sm, .9rem) var(--f-body); cursor: pointer; text-decoration: underline; }
+.ss-list, .ss-hist { list-style: none; margin: 0; padding: 0; }
+.ss-row { display: flex; align-items: center; gap: var(--sp-3, 12px); min-height: 60px; padding: 8px var(--sp-3, 12px); border-bottom: 1px solid var(--line); min-width: 0; }
+.ss-row:last-child { border-bottom: 0; }
+.ss-row.is-me { background: color-mix(in srgb, var(--accent) 10%, var(--paper)); border-radius: var(--r-btn, 12px); }
+.ss-rank { flex: none; width: 28px; text-align: center; font: var(--head-w, 700) 1rem var(--f-head, var(--f-body)); font-variant-numeric: tabular-nums; color: var(--muted); }
+.ss-rank.r1 { color: color-mix(in srgb, #f0b90b 70%, var(--ink)); }
+.ss-rank.r2 { color: color-mix(in srgb, #9aa5b1 70%, var(--ink)); }
+.ss-rank.r3 { color: color-mix(in srgb, #d98a4a 70%, var(--ink)); }
+.ss-row .ava { flex: none; margin: 4px; }
+.ss-name { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ss-name em { color: var(--muted); font-style: normal; font-weight: 500; }
+.ss-pts { flex: none; display: grid; justify-items: end; line-height: 1.1; }
+.ss-pts b { font: var(--head-w, 700) 1.15rem var(--f-head, var(--f-body)); font-variant-numeric: tabular-nums; }
+.ss-pts small { color: var(--muted); font-size: 11px; }
+.ss-gap { padding: 2px 0; text-align: center; color: var(--muted); letter-spacing: 4px; }
+.ss-empty-row { padding: var(--sp-4, 16px); text-align: center; }
+.ss-parts { list-style: none; margin: 0; padding: 0 var(--sp-3, 12px) var(--sp-3, 12px); display: grid; gap: 4px; }
+.ss-parts li { display: flex; align-items: baseline; gap: 8px; min-height: 44px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.ss-parts li > span { flex: 1; }
+.ss-parts li > b { font: var(--head-w, 700) 1.1rem var(--f-head, var(--f-body)); }
+.ss-parts li > small { color: var(--muted); font-size: 12px; }
+.ss-sheet-body { padding: 0 var(--sp-4, 16px) var(--sp-4, 16px); }
+.ss-formula { margin: 0; padding-left: 1.1em; display: grid; gap: 10px; line-height: 1.45; }
+.ss-badge { display: inline-block; margin-left: 4px; padding: 1px 8px; border-radius: 99px; font: 700 12px/1.6 var(--f-body); background: color-mix(in srgb, var(--accent) 16%, var(--paper)); color: var(--accent-text); vertical-align: middle; }
+.ss-badge.k-gold { background: color-mix(in srgb, #f0b90b 26%, var(--paper)); color: var(--ink); }
+.ss-badge.k-silver { background: color-mix(in srgb, #9aa5b1 28%, var(--paper)); color: var(--ink); }
+.ss-badge.k-bronze { background: color-mix(in srgb, #d98a4a 28%, var(--paper)); color: var(--ink); }
+@media (max-width: 380px) { .ss-hero-card { flex-direction: column; text-align: center; } .ss-hero-main { justify-items: center; } }

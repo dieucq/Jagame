@@ -1,0 +1,39 @@
+{
+  "manifest": 2,
+  "id": "oantuti",
+  "name": "Oẳn tù tì",
+  "version": "1.0.0",
+  "api": 1,
+  "sdk": "2",
+  "app_min": "0.1.0",
+  "group": "vui",
+  "color": "#5b8cff",
+  "players": { "min": 2, "max": 2 },
+  "spectators": true,
+  "desc": "Búa – bao – kéo! Hai người cùng ra tay bí mật, ai thắng trước 2 (hoặc 3) hiệp là thắng",
+  "tags": ["2 người", "nhanh", "vui"],
+  "age": 4,
+  "content": ["tinh-gio"],
+  "languages": ["vi"],
+  "icon": "icon.svg",
+  "entry": { "client": "client/index.js", "server": "server/game.js", "style": "client/style.css" },
+  "mode": ["simultaneous", "realtime"],
+  "tick_ms": 1000,
+  "session": { "minutes": [1, 3] },
+  "needs": { "sound": true, "vibrate": false, "storage": false, "user_text": false },
+  "bot": true,
+  "bot_simultaneous": true,
+  "options": [
+    { "key": "best_of", "label": "Số hiệp", "choices": [3, 5], "default": 3 },
+    { "key": "think", "label": "Giây suy nghĩ mỗi hiệp", "choices": [10, 20], "default": 10 }
+  ],
+  "howto": [
+    "Mỗi hiệp hai người cùng chọn bí mật: ✊ Búa, ✋ Bao hoặc ✌️ Kéo.",
+    "Búa thắng Kéo, Kéo thắng Bao, Bao thắng Búa. Giống nhau thì hiệp hòa, chơi lại.",
+    "Hết giờ mà chưa chọn thì máy chọn ngẫu nhiên giúp bạn. Thắng trước 2 hiệp (chế độ 5 hiệp: 3) là thắng ván."
+  ],
+  "news": "Bản đầu tiên — trò mẫu của bộ công cụ phát triển Jagame.",
+  "author": "Jagame",
+  "license": "MIT",
+  "changelog": "1.0.0: bản đầu tiên (trò mẫu devkit, giao thức game v2 + SDK)."
+}

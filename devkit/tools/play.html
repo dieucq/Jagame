@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Chơi thử game — Jagame dev</title>
+<link rel="stylesheet" href="play.css">
+</head>
+<body>
+<!--
+  Trang THỬ client game (chỉ dùng khi phát triển, không phát hành). Phục vụ thư mục  rồi mở:
+    node jagame.js play <id>   ->   http://127.0.0.1:7788/tools/play.html?game=<id>
+  "Máy chủ giả" chạy server/game.js ngay trong trình duyệt (KHÔNG sandbox như máy thật — chỉ để thử giao diện),
+  2 người chơi chung 1 máy (hot-seat): sau mỗi nước, ghế tự chuyển sang người tới lượt (view.turn).
+  Game có máy chơi (manifest "bot": true + bot()): bật "🤖 máy chơi ghế khác" -> mọi ghế khác ghế đang chọn do bot() đi (sau 600 ms).
+  ?theme=<khóa> mặc 1 trong 20 giao diện (phục vụ GỐC repo, xem play.js) — nhóm Truyện tranh tự nạp themes-comic.css + html.cm.
+  Game có manifest tick_ms + tick(): đồng hồ THẬT (ctx.now = Date.now()), tick gọi theo nhịp như máy chủ; ô "⏱ tick" / ?tick=0 để dừng.
+  Game khai ui.events + move() trả events: trang thử gọi on('event') thay on('view') y như máy chủ (nét vẽ, chip…).
+  Manifest "hint": true: nút "💡 Gợi ý" gọi hint() (không có thì bot()) cho ghế đang chọn rồi phát on('hint', {move, cells?, text?, left})
+  như khung; game.highlight(ô | [ô…] | 'selector', {ms, label}) vẽ vòng sáng đè lên phần tử (tự xóa khi có view mới) — y hợp đồng thật.
+-->
+<header class="pl-head">
+  <strong class="pl-title">Chơi thử: <span id="pl-name">…</span> <small id="pl-ver"></small></strong>
+  <div class="pl-ctl">
+    <label>Ghế
+      <select id="pl-seat"></select>
+    </label>
+    <label class="pl-chk"><input type="checkbox" id="pl-auto" checked> tự đổi lượt</label>
+    <label class="pl-chk" id="pl-bot-wrap" hidden><input type="checkbox" id="pl-bot"> 🤖 máy chơi ghế khác</label>
+    <label class="pl-chk" id="pl-tick-wrap" hidden><input type="checkbox" id="pl-tick" checked> ⏱ tick mỗi <span id="pl-tick-ms"></span> ms</label>
+    <span id="pl-opts"></span>
+    <button type="button" id="pl-new">Ván mới</button>
+    <button type="button" id="pl-resign">Đầu hàng</button>
+    <button type="button" id="pl-hint" hidden title="Gọi hint() (không có thì bot()) rồi phát on('hint') như khung thật">💡 Gợi ý</button>
+  </div>
+</header>
+<main class="pl-main">
+  <section class="pl-stage">
+    <div id="pl-banner" class="pl-banner" hidden></div>
+    <div id="pl-root" class="pl-root"></div>
+  </section>
+  <aside class="pl-side">
+    <h2>Nhật ký</h2>
+    <ol id="pl-log" class="pl-log"></ol>
+  </aside>
+</main>
+<div id="pl-toast" class="pl-toast" role="status" aria-live="polite"></div>
+<script src="play.js"></script>
+</body>
+</html>

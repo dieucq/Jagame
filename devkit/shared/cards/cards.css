@@ -1,0 +1,109 @@
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+   Jagame — BỘ LÁ BÀI DÙNG CHUNG · CSS (v1 · 08/10/2026) — đi kèm cards.js, xem README.md
+   Chép vào client/style.css của game. Mặt bài LUÔN giấy sáng + mực (mọi giao diện, kể cả tối) — viền/bóng/lưng theo giao diện.
+   Chuyển động chỉ transform/opacity; có prefers-reduced-motion ở cuối.
+   ═══════════════════════════════════════════════════════════════════════════════════════════════════════ */
+.jgk-card {
+  --w: 64px;
+  --jgk-red: #c8102e; --jgk-black: #17142b;
+  --jgk-paper: #fffdf8; --jgk-paper-lo: #f4ecdc;
+  --jgk-edge: rgba(23, 20, 43, .30);
+  --jgk-back: var(--accent, #2f54eb);                       /* lưng bài theo màu nhấn giao diện */
+  --jgk-back-ink: #fffdf8;
+  --jgk-ease: cubic-bezier(.22, .61, .36, 1); --jgk-pop: cubic-bezier(.3, 1.6, .55, 1); --jgk-inout: cubic-bezier(.65, 0, .35, 1);
+  --lift: 0px; --rot: 0deg;
+  position: relative; flex: none; display: block; width: var(--w); aspect-ratio: 5 / 7; padding: 0; margin: 0;
+  border-radius: calc(var(--w) * .085); border: 1px solid var(--jgk-edge);
+  /* giấy: sáng góc trên trái, ngả ngà ở đáy — đủ "có chất liệu" mà không bóng loáng */
+  background: linear-gradient(162deg, #fff 0%, var(--jgk-paper) 46%, var(--jgk-paper-lo) 100%);
+  box-shadow: inset 0 0 0 calc(var(--w) * .022) #fff, 0 1px 0 rgba(23, 20, 43, .14), 0 calc(var(--w) * .07) calc(var(--w) * .16) calc(var(--w) * -.06) rgba(23, 20, 43, .42);
+  color: var(--jgk-black); font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  container-type: inline-size;
+  transform: translateY(calc(var(--lift) * -1)) rotate(var(--rot));
+  transition: transform .22s var(--jgk-ease);
+  -webkit-appearance: none; appearance: none; user-select: none; -webkit-user-select: none;
+}
+.jgk-card[data-suit="h"], .jgk-card[data-suit="d"] { color: var(--jgk-red); }
+/* bài 4 màu (mù màu, màn nhỏ): rô lam, chuồn lục — bật bằng lớp trên khung game */
+.jgk-4c .jgk-card[data-suit="d"] { color: #1c55c4; } .jgk-4c .jgk-card[data-suit="c"] { color: #0f7a4a; }
+
+.jgk-face { display: block; width: 100%; height: 100%; overflow: visible; }
+.jgk-rk { font-family: "Be Vietnam Pro", "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif; font-weight: 800; letter-spacing: -.03em; }
+/* tự chọn bố cục theo bề rộng lá: < 88px = kiểu điện thoại (chỉ số to), ≥ 88px = cổ điển (đủ nút chất) */
+.jgk-face .jgk-c { display: none; }
+@container (min-width: 88px) { .jgk-face .jgk-m { display: none; } .jgk-face .jgk-c { display: inline; } }
+.jgk-face[data-layout] .jgk-m, .jgk-face[data-layout] .jgk-c { display: inline; }
+
+/* ── lưng bài: ô trám chéo 2 sắc accent + viền giấy + khung trong + huy hiệu ─────────────────── */
+.jgk-card.is-back {
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 34%, color-mix(in srgb, var(--jgk-back) 70%, #000) 35% 36%, transparent 37%),
+    repeating-linear-gradient(45deg, transparent 0 calc(var(--w) * .07), color-mix(in srgb, #fff 18%, transparent) 0 calc(var(--w) * .08)),
+    repeating-linear-gradient(-45deg, transparent 0 calc(var(--w) * .07), color-mix(in srgb, #000 16%, transparent) 0 calc(var(--w) * .08)),
+    linear-gradient(160deg, color-mix(in srgb, #fff 14%, var(--jgk-back)), color-mix(in srgb, #000 22%, var(--jgk-back)));
+  border: calc(var(--w) * .06) solid var(--jgk-back-ink);
+  box-shadow: 0 0 0 1px var(--jgk-edge), inset 0 0 0 calc(var(--w) * .025) color-mix(in srgb, #000 35%, var(--jgk-back)),
+    0 calc(var(--w) * .07) calc(var(--w) * .16) calc(var(--w) * -.06) rgba(23, 20, 43, .42);
+  color: var(--jgk-back-ink); display: grid; place-items: center;
+}
+.jgk-emblem { width: 52%; height: auto; filter: drop-shadow(0 1px 0 rgba(0, 0, 0, .25)); }
+.jgk-card:not(.is-back) > .jgk-emblem { display: none; }
+
+/* nhóm Truyện tranh: nét mực dày + bóng cứng */
+html.cm .jgk-card { border: 2px solid #17142b; box-shadow: inset 0 0 0 2px #fff, 3px 3px 0 #17142b; }
+html.cm .jgk-card.is-sel { box-shadow: 0 0 0 3px var(--accent, #2f54eb), 3px 3px 0 #17142b; }
+html.cm .jgk-card.is-back { border-color: #17142b; box-shadow: inset 0 0 0 3px var(--jgk-back-ink), 3px 3px 0 #17142b; }
+/* giao diện pixel/cyber: góc vuông hơn */
+html[data-theme="pixel"] .jgk-card, html[data-theme="cyber"] .jgk-card { border-radius: calc(var(--w) * .03); }
+
+/* ── trạng thái ────────────────────────────────────────────────────────────────────────────── */
+.jgk-card.is-sel { --lift: 16px; box-shadow: 0 0 0 3px var(--accent, #2f54eb), 0 calc(var(--w) * .22) calc(var(--w) * .26) calc(var(--w) * -.1) rgba(23, 20, 43, .5); }
+.jgk-card:focus-visible { outline: 3px solid var(--accent, #2f54eb); outline-offset: 2px; }
+.jgk-card.is-dim { filter: brightness(.82) saturate(.7); }            /* lá không đánh được lúc này (KHÔNG dùng opacity: vẫn đọc rõ) */
+.jgk-card.is-hot::after { content: ""; position: absolute; inset: -4px; border-radius: inherit; border: 3px solid var(--hl, #ffd23f);
+  animation: jgk-hot .9s var(--jgk-ease) 2 both; pointer-events: none; }  /* "chặt heo", lá ăn điểm: lóe 2 nhịp */
+@media (hover: hover) { .jgk-hand > .jgk-card:not(.is-sel):not(:disabled):hover { --lift: 7px; } }
+.jgk-card:disabled { cursor: default; }
+
+/* ── tay bài ─────────────────────────────────────────────────────────────────────────────────
+   .jgk-hand: hàng chồng, lá tự co để 13 lá vừa 328px (360 − lề), mỗi lá lòi 52% (đủ thấy chỉ số kiểu điện thoại)
+   .jgk-hand.is-fan: xòe quạt (JS JGCards.fan đặt --k, --k2) — dùng cho tay ≤ 13 lá ở vùng ≥ 340px */
+.jgk-hand { --n: 13; container-type: inline-size; display: flex; justify-content: center; align-items: flex-end; padding: 22px 6px 8px; min-height: 96px; }
+.jgk-hand > .jgk-card { --w: clamp(44px, calc((100cqw - 12px) / (1 + (var(--n) - 1) * .52)), 92px); }
+.jgk-hand > .jgk-card + .jgk-card { margin-left: calc(var(--w) * -.48); }
+.jgk-hand.is-fan { padding-inline: 14px; }
+.jgk-hand.is-fan > .jgk-card { --w: clamp(44px, calc((100cqw - 40px) / (1 + (var(--n) - 1) * .44)), 92px); transform-origin: 50% 160%;
+  --rot: calc(var(--k, 0) * 1.8deg); transform: translateY(calc(var(--k2, 0) * .55px - var(--lift))) rotate(var(--rot)); }
+.jgk-hand.is-fan > .jgk-card + .jgk-card { margin-left: calc(var(--w) * -.56); }
+.jgk-hand.is-fan > .jgk-card.is-sel { transform: translateY(calc(var(--k2, 0) * .55px - var(--lift))) rotate(var(--rot)); }
+
+/* ── giữa bàn: bộ vừa đánh — bộ mới đè bộ cũ, lệch nhẹ (JS đặt --rot ±6°, --ox ±10px) ─────────── */
+.jgk-pile { position: relative; display: grid; place-items: center; min-height: calc(var(--w, 64px) * 1.4 + 16px); }
+.jgk-set { grid-area: 1 / 1; display: flex; transform: translate(var(--ox, 0), var(--oy, 0)) rotate(var(--rot, 0deg)); }
+.jgk-set > .jgk-card + .jgk-card { margin-left: calc(var(--w) * -.5); }
+.jgk-set.is-old { filter: brightness(.9) saturate(.75); }                   /* bộ cũ lùi xuống */
+.jgk-set.is-in { animation: jgk-play .24s var(--jgk-ease) both; }          /* JS đặt --fx/--fy = vị trí người đánh so với giữa bàn */
+
+/* ── chồng bài úp của đối thủ + số lá ───────────────────────────────────────────────────────── */
+.jgk-stack { position: relative; display: inline-grid; }
+.jgk-stack > .jgk-card { --w: 34px; grid-area: 1 / 1; cursor: default; }
+.jgk-stack > .jgk-card:nth-child(2) { translate: 3px -2px; } .jgk-stack > .jgk-card:nth-child(3) { translate: 6px -4px; }
+.jgk-stack > b { position: absolute; right: -8px; bottom: -6px; z-index: 2; min-width: 26px; height: 26px; padding: 0 5px; display: grid; place-items: center;
+  border-radius: 8px; background: var(--ink, #17142b); color: var(--paper, #fff); font: 800 15px/1 "Be Vietnam Pro", system-ui, sans-serif; border: 2px solid var(--paper, #fff); }
+.jgk-stack.is-low > b { background: #c8102e; }                               /* còn ≤ 2 lá: báo đỏ (kèm chữ "Báo!" ở chip) */
+
+/* ── chuyển động ───────────────────────────────────────────────────────────────────────────── */
+.jgk-card.is-deal { animation: jgk-deal .26s var(--jgk-ease) both; animation-delay: calc(var(--i, 0) * 60ms); }
+.jgk-card.is-flip-a { animation: jgk-flip-a .16s var(--jgk-inout) both; }
+.jgk-card.is-flip-b { animation: jgk-flip-b .2s var(--jgk-pop) both; }
+.jgk-card.is-nope { animation: jgk-nope .32s var(--jgk-ease); }             /* bộ không hợp lệ: lắc ngang (kèm câu lý do + âm error) */
+@keyframes jgk-deal { from { transform: translate(var(--fx, 0), var(--fy, -140px)) rotate(-14deg) scale(.6); opacity: 0; } 60% { opacity: 1; } to { transform: translateY(calc(var(--lift) * -1)) rotate(var(--rot)); opacity: 1; } }
+@keyframes jgk-flip-a { from { transform: rotateY(0); } to { transform: rotateY(90deg) scale(1.04); } }
+@keyframes jgk-flip-b { from { transform: rotateY(-90deg) scale(1.04); } to { transform: rotateY(0) scale(1); } }
+@keyframes jgk-play { from { transform: translate(var(--fx, 0), var(--fy, 120px)) rotate(0) scale(.8); opacity: .4; } to { transform: translate(var(--ox, 0), var(--oy, 0)) rotate(var(--rot, 0deg)); opacity: 1; } }
+@keyframes jgk-hot { 0% { opacity: 0; transform: scale(.94); } 40% { opacity: 1; } 100% { opacity: 0; transform: scale(1.08); } }
+@keyframes jgk-nope { 0%, 100% { translate: 0; } 20% { translate: -6px; } 40% { translate: 5px; } 60% { translate: -4px; } 80% { translate: 2px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .jgk-card, .jgk-card::after, .jgk-set { animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

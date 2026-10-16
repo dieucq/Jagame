@@ -1,0 +1,19 @@
+{
+  "name": "jagame-realtime",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cổng realtime Jagame: Socket.IO + reverse proxy tới PHP (Web/).",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@jitl/quickjs-wasmfile-release-sync": "0.32.0",
+    "quickjs-emscripten-core": "0.32.0",
+    "socket.io": "^4.8.1"
+  }
+}

@@ -1,0 +1,924 @@
+/* Jagame — BỘ GIAO DIỆN 2026 (nhóm 'v3' ở config/content.php `themes`; <html data-theme="…" class="t3">). Thiết kế: Docs/design/THEMES-2026.md.
+   Nạp SAU themes.css, CHỈ khi giao diện thuộc nhóm v3 hoặc đang ở chế độ sửa (views/partials/head.php) — như themes-comic.css.
+   10 giao diện cho 10–30 tuổi: neon (cũ, nâng cấp chủ lực — giữ khóa) + bacau · lofi · y2k · riso · win98 · trasua · datnan · cucquang · huyenthoai.
+   Quy ước (giống themes.css):
+   - Khối [data-theme="x"] CHỈ đặt biến (site.css) — áp cho <html> và ô xem trước .ed-swatch[data-theme] của trình chọn.
+   - Nét riêng viết html[data-theme="x"] … ; màu phụ suy từ --bg/--ink/--accent bằng color-mix() => màu riêng chủ nhà vẫn hài hòa.
+   - Ngân sách chữ ký (UI-PRO 2.4): đường viền/bóng đặc trưng đi qua --sig-*, chỉ ≤ 2 phần tử .is-sig mỗi màn; bề mặt thường dùng --e-1.
+   - Hình: SVG mặt nạ 1 màu ở assets/img/themes/<khóa>-{ph,orn,band}.svg (Docs/design/svg-gen/gen_themes_v3.py). Hạt nhiễu = SVG data URI.
+   - Phông: chỉ phông tự host (fonts.css). Mới thêm: Unbounded 700 (neon). Còn lại dùng lại: Be Vietnam Pro, Fraunces, Sigmar One, Anton,
+     Mali, Baloo 2, Montserrat, Cormorant Garamond.
+   - Chuyển động: chỉ transform/opacity/box-shadow ngắn khi chạm/trỏ; tắt hết khi prefers-reduced-motion (cuối tệp). */
+
+/* ═══ ★ 1. NEON ĐÊM — chủ lực (nâng cấp từ themes.css: phông Unbounded, KHÔNG chữ hoa ép, nền có quầng đèn, viền neon 3 màu) ═══ */
+[data-theme="neon"] {
+  --bg: #0b0a14; --ink: #f0ecff; --ink: oklch(from var(--bg) clamp(.2, (.6 - l) * 999, .955) .025 296);
+  --paper: color-mix(in srgb, var(--bg) 89%, var(--accent));
+  --f-head: "Unbounded", "Be Vietnam Pro", sans-serif; --head-w: 700; --head-case: none; --head-track: -.015em;
+  --radius: 16px; --r-btn: 12px; --r-icon: 14px; --r-img: 18px;
+  --neon-rule: linear-gradient(90deg, var(--cyan), var(--accent) 50%, var(--magenta));
+  --sig-line: color-mix(in srgb, var(--cyan) 70%, var(--ink));
+  --sig-shadow: 0 0 0 1px color-mix(in srgb, var(--cyan) 55%, transparent), 0 0 30px -6px color-mix(in srgb, var(--accent) 70%, transparent), 0 0 60px -20px color-mix(in srgb, var(--magenta) 60%, transparent);
+}
+html[data-theme="neon"] body.site { background:
+  radial-gradient(110% 420px at 12% -120px, color-mix(in srgb, var(--accent) 26%, transparent), transparent 70%),
+  radial-gradient(80% 360px at 105% -60px, color-mix(in srgb, var(--magenta) 16%, transparent), transparent 70%), var(--bg); }
+html[data-theme="neon"] :is(.topbar, .tabbar) { --bar-bg: color-mix(in srgb, var(--bg) 94%, var(--accent)); border-color: transparent; }
+html[data-theme="neon"] .topbar::after, html[data-theme="neon"] .tabbar::after { content: ""; position: absolute; left: 0; right: 0; height: 1px; background: var(--neon-rule); opacity: .75; pointer-events: none; }
+html[data-theme="neon"] .topbar::after { bottom: -1px; }
+html[data-theme="neon"] .tabbar::after { top: -1px; }
+html[data-theme="neon"] .tabbar a.is-on svg { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 80%, transparent)); }
+html[data-theme="neon"] .tabbar a.is-on::before { background: var(--neon-rule); box-shadow: 0 0 10px var(--accent); }
+html[data-theme="neon"] .btn-accent { box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 32%, transparent), 0 0 24px -4px color-mix(in srgb, var(--accent) 70%, transparent); }
+html[data-theme="neon"] :is(.gc-name, .qp-title) { font-size: 1.02rem; line-height: 1.3; }
+html[data-theme="neon"] :is(.pg-title, .ah-row h2, .sec-title) { letter-spacing: -.02em; }
+html[data-theme="neon"] .ah-row h2 { font-size: 1.08rem; }
+html[data-theme="neon"] .hero-title { line-height: 1.18; text-transform: none; }
+html[data-theme="neon"] .gc { background: color-mix(in srgb, var(--paper) 96%, var(--cyan)); }
+
+/* ═══ 2. BẮC ÂU — tối giản kiểu tạp chí: trắng ngà ám ấm, xanh rêu, đường kẻ mảnh thay khung, đánh số khối 01 — 0n ═══ */
+[data-theme="bacau"] {
+  --bg: #f4f2ed; --ink: #1d1f1c; --accent: #2e6b4f; --clay: #c08a5b; --sand: #e8e2d6;
+  --paper: #fbfaf7; --soft: color-mix(in srgb, var(--accent) 8%, var(--bg)); --line: color-mix(in srgb, var(--ink) 14%, var(--bg));
+  --muted: color-mix(in srgb, var(--ink) 74%, var(--bg)); --sec-alt: color-mix(in srgb, var(--sand) 70%, var(--bg));
+  --f-head: "Be Vietnam Pro", system-ui, sans-serif; --head-w: 800; --head-track: -.035em;
+  --radius: 12px; --r-btn: 10px; --r-icon: 12px; --r-img: 6px; --r-field: 10px; --card-bw: 1px;
+  --card-line: color-mix(in srgb, var(--ink) 16%, transparent); --card-shadow: none; --btn-shadow: none;
+  --e-1: 0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent);
+  --e-2: 0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent), 0 18px 36px -22px color-mix(in srgb, var(--ink) 40%, transparent);
+  --sig-bw: 1.5px; --sig-line: var(--ink); --sig-shadow: 0 0 0 0 transparent; --sig-btn-shadow: none;
+  --hero-bg: var(--bg);
+  --hero-pattern: radial-gradient(circle at 84% 34%, var(--clay) 0 74px, transparent 75px),
+    linear-gradient(color-mix(in srgb, var(--ink) 7%, transparent) 1px, transparent 1px) 0 0 / 100% 28px;
+  --icon-bg: var(--sand);
+  --hl: var(--clay); --badge-bg: var(--ink); --badge-ink: var(--bg);
+  --orn: url(../img/themes/bacau-orn.svg); --ph: url(../img/themes/bacau-ph.svg);
+}
+html[data-theme="bacau"] :is(.topbar, .tabbar) { --bar-bg: var(--bg); }
+html[data-theme="bacau"] .tabbar { box-shadow: none; }
+html[data-theme="bacau"] .tabbar a.is-on::before { top: auto; bottom: 8px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--ink); }
+html[data-theme="bacau"] .app-home, html[data-theme="bacau"] .hub { counter-reset: v3sec; }
+html[data-theme="bacau"] :is(.app-home, .hub) .ah-row h2::before { counter-increment: v3sec; content: counter(v3sec, decimal-leading-zero) " —"; margin-right: .4em;
+  font: 600 .78em/1 var(--f-body); letter-spacing: .06em; color: var(--accent-text); vertical-align: .12em; }
+html[data-theme="bacau"] .ah-row { padding-top: 14px; border-top: 1px solid var(--line); }
+html[data-theme="bacau"] .qp { background: var(--accent); }
+html[data-theme="bacau"] .qp::before { background: color-mix(in srgb, #000 14%, transparent); inset: auto -30px -90px auto; }
+@media (max-width: 760px) { [data-theme="bacau"] { --hero-pattern: radial-gradient(circle at 96% 3%, var(--clay) 0 46px, transparent 47px),
+  linear-gradient(color-mix(in srgb, var(--ink) 7%, transparent) 1px, transparent 1px) 0 0 / 100% 28px; } }
+html[data-theme="bacau"] .hero-title { letter-spacing: -.045em; }
+html[data-theme="bacau"] .eyebrow { letter-spacing: .16em; }
+html[data-theme="bacau"] .hero-img { border-radius: 6px; box-shadow: 18px 18px 0 var(--sand); }
+html[data-theme="bacau"] .gc { box-shadow: var(--e-1); }
+html[data-theme="bacau"] a:not(.btn):not(.gc-link):not(.qp) { text-underline-offset: 3px; }
+
+/* ═══ 3. CHIỀU LO-FI — hoàng hôn cam hồng → oải hương, hạt nhiễu phim phủ cả trang, chữ có chân mềm (Fraunces) ═══ */
+[data-theme="lofi"] {
+  --bg: #f6ebe2; --ink: #2c2236; --accent: #b4492f; --rose: #e98a7a; --lav: #a99bd6; --peach: #f6b48f;
+  --paper: #fffaf5; --soft: color-mix(in srgb, var(--peach) 26%, var(--bg)); --line: color-mix(in srgb, var(--ink) 14%, var(--bg));
+  --muted: color-mix(in srgb, var(--ink) 76%, var(--bg)); --sec-alt: color-mix(in srgb, var(--lav) 15%, var(--bg));
+  --f-head: "Fraunces", Georgia, serif; --head-w: 600; --head-track: -.015em;
+  --radius: 22px; --r-btn: 999px; --r-icon: 18px; --r-img: 28px; --r-field: 16px;
+  --card-shadow: 0 14px 30px -18px color-mix(in srgb, #7a3040 55%, transparent);
+  --e-1: 0 1px 0 color-mix(in srgb, var(--ink) 5%, transparent), 0 10px 24px -16px color-mix(in srgb, #7a3040 40%, transparent);
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .17 0 0 0 0 .13 0 0 0 0 .21 0 0 0 .1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  --hero-bg: linear-gradient(180deg, var(--peach) 0%, var(--rose) 46%, var(--lav) 100%);
+  --hero-pattern: var(--grain) 0 0 / 180px 180px, radial-gradient(circle at 82% 30%, #ffe4c4 0 64px, color-mix(in srgb, #ffe4c4 35%, transparent) 66px 86px, transparent 88px);
+  --hero-ink: #2c2236; --hero-muted: #2c2236; --hero-eyebrow: #2c2236;
+  --icon-bg: linear-gradient(160deg, color-mix(in srgb, var(--peach) 55%, #fff), color-mix(in srgb, var(--lav) 45%, #fff));
+  --hl: var(--rose); --badge-bg: var(--ink); --badge-ink: var(--bg);
+  --edge-on: ""; --edge: url(../img/themes/lofi-band.svg); --edge-h: 16px;
+  --orn: url(../img/themes/lofi-orn.svg); --ph: url(../img/themes/lofi-ph.svg);
+}
+html[data-theme="lofi"] body.site { background: var(--grain) 0 0 / 180px 180px,
+  linear-gradient(180deg, color-mix(in srgb, var(--peach) 30%, var(--bg)) 0, color-mix(in srgb, var(--rose) 8%, var(--bg)) 170px, var(--bg) 330px) no-repeat, var(--bg); }
+html[data-theme="lofi"] .topbar { box-shadow: inset 0 -3px 0 transparent; border-bottom: 0; }
+html[data-theme="lofi"] .topbar::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: linear-gradient(90deg, var(--peach), var(--rose), var(--lav)); }
+html[data-theme="lofi"] :is(.topbar, .tabbar) { --bar-bg: color-mix(in srgb, var(--paper) 86%, var(--peach)); }
+html[data-theme="lofi"] .qp { background: linear-gradient(120deg, var(--accent), color-mix(in srgb, var(--accent) 80%, #5b2f6b)); }
+html[data-theme="lofi"] .qp::before { background: color-mix(in srgb, #2c0f1c 14%, transparent); }
+html[data-theme="lofi"] .hero-img { border: 8px solid #fffaf5; box-shadow: 0 24px 50px -18px rgba(90, 40, 60, .45); transform: rotate(-1.5deg); }
+html[data-theme="lofi"] .eyebrow { font-style: italic; font-family: "Fraunces", Georgia, serif; text-transform: none; letter-spacing: 0; font-size: 1.15rem; }
+html[data-theme="lofi"] .gc { box-shadow: var(--e-1); }
+@media (hover: hover) { html[data-theme="lofi"] .gc:has(.gc-link):hover { transform: translateY(-4px) rotate(-.6deg); } }
+
+/* ═══ 4. Y2K LẤP LÁNH — tím băng, nút bóng như chrome, chữ phồng (Sigmar One), sao 4 cánh lấp lánh ═══ */
+[data-theme="y2k"] {
+  --bg: #eef0ff; --ink: #1b1640; --accent: #e0157a; --cyan: #2bc4f0; --lilac: #c9b8ff; --lime: #c8f560;
+  --paper: #fff; --soft: color-mix(in srgb, var(--lilac) 32%, var(--bg)); --line: color-mix(in srgb, var(--ink) 14%, var(--bg));
+  --muted: color-mix(in srgb, var(--ink) 76%, var(--bg)); --sec-alt: color-mix(in srgb, var(--cyan) 14%, var(--bg));
+  --f-head: "Sigmar One", "Be Vietnam Pro", sans-serif; --head-w: 400; --head-track: .005em;
+  --radius: 24px; --r-btn: 999px; --r-icon: 20px; --r-img: 32px; --r-field: 18px;
+  --chrome: linear-gradient(180deg, var(--paper) 0%, color-mix(in srgb, var(--lilac) 22%, var(--paper)) 42%, color-mix(in srgb, var(--ink) 20%, var(--paper)) 52%, color-mix(in srgb, var(--ink) 4%, var(--paper)) 100%);
+  --btn-shadow: inset 0 2px 0 rgba(255, 255, 255, .55), inset 0 -3px 0 rgba(0, 0, 0, .16), 0 8px 16px -8px color-mix(in srgb, var(--accent) 75%, transparent);
+  --card-shadow: 0 12px 28px -14px color-mix(in srgb, var(--accent) 45%, transparent);
+  --e-1: inset 0 1px 0 #fff, 0 0 0 1px color-mix(in srgb, var(--lilac) 45%, transparent), 0 8px 20px -14px color-mix(in srgb, var(--ink) 45%, transparent);
+  --sig-bw: 2px; --sig-line: #fff;
+  --sig-shadow: 0 0 0 2px var(--cyan), 0 0 0 4px color-mix(in srgb, var(--lilac) 80%, #fff), 0 16px 30px -12px color-mix(in srgb, var(--accent) 70%, transparent);
+  --sparkle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='200'><g fill='%23ffffff'><path d='M40 20c1.4 9 6 13.6 15 15c-9 1.4-13.6 6-15 15c-1.4-9-6-13.6-15-15c9-1.4 13.6-6 15-15z'/><path d='M170 120c1 6 4 9 10 10c-6 1-9 4-10 10c-1-6-4-9-10-10c6-1 9-4 10-10z'/></g><g fill='%23c9b8ff'><path d='M120 50c.8 5 3.2 7.4 8 8c-4.8.8-7.2 3.2-8 8c-.8-4.8-3.2-7.2-8-8c4.8-.6 7.2-3 8-8z'/><circle cx='80' cy='150' r='2.5'/><circle cx='200' cy='30' r='2'/></g></svg>");
+  --hero-bg: radial-gradient(60% 55% at 12% 18%, color-mix(in srgb, var(--lilac) 85%, transparent), transparent 70%),
+    radial-gradient(50% 50% at 92% 20%, color-mix(in srgb, var(--cyan) 45%, transparent), transparent 70%),
+    radial-gradient(60% 50% at 70% 100%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%), var(--bg);
+  --hero-pattern: var(--sparkle) 0 0 / 220px 200px;
+  --icon-bg: var(--chrome);
+  --hl: var(--cyan); --badge-bg: var(--ink); --badge-ink: #fff;
+  --orn: url(../img/themes/y2k-orn.svg); --ph: url(../img/themes/y2k-ph.svg);
+}
+html[data-theme="y2k"] body.site { background: var(--sparkle) 0 0 / 220px 200px,
+  radial-gradient(90% 380px at 0% -80px, color-mix(in srgb, var(--lilac) 55%, transparent), transparent 70%),
+  radial-gradient(70% 320px at 100% -40px, color-mix(in srgb, var(--cyan) 22%, transparent), transparent 70%), var(--bg); }
+html[data-theme="y2k"][data-cc] body.site { background: var(--bg); }   /* màu riêng nền/chữ: bỏ sao trắng sau chữ */
+html[data-theme="y2k"] .topbar { background: linear-gradient(180deg, var(--paper), color-mix(in srgb, var(--lilac) 22%, var(--paper))); border-bottom-color: color-mix(in srgb, var(--lilac) 70%, var(--paper)); }
+html[data-theme="y2k"] .tabbar { --bar-bg: var(--paper); border-top-color: color-mix(in srgb, var(--lilac) 70%, var(--paper)); }
+html[data-theme="y2k"] .btn-accent { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 93%, #fff) 0%, var(--accent) 48%, color-mix(in srgb, var(--accent) 86%, #000) 100%); color: var(--accent-ink); }
+html[data-theme="y2k"] .btn-ghost { background: var(--chrome); border-color: color-mix(in srgb, var(--ink) 18%, var(--paper)); box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 70%, transparent), 0 4px 10px -6px color-mix(in srgb, var(--ink) 40%, transparent); }
+html[data-theme="y2k"] .btn { position: relative; overflow: hidden; }
+html[data-theme="y2k"] .btn-accent::after { content: ""; position: absolute; inset: 0 auto 0 -60%; width: 40%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .45), transparent);
+  transform: skewX(-20deg); transition: transform .5s var(--ease); pointer-events: none; }
+@media (hover: hover) { html[data-theme="y2k"] .btn-accent:hover::after { transform: translateX(420%) skewX(-20deg); } }
+html[data-theme="y2k"] .qp { background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #5a2bd6)); }
+html[data-theme="y2k"] .qp::before { background: var(--sparkle) center / 220px 200px; border-radius: 0; inset: 0; width: auto; height: auto; opacity: .55; }
+html[data-theme="y2k"] :is(.gc-name, .qp-title) { font-size: 1.08rem; line-height: 1.3; }
+html[data-theme="y2k"] .ah-row h2 { font-size: 1.12rem; }
+html[data-theme="y2k"] .hero-title { line-height: 1.2; text-shadow: 0 2px 0 #fff, 0 6px 18px color-mix(in srgb, var(--accent) 35%, transparent); }
+html[data-theme="y2k"] .hero-img { border: 6px solid #fff; box-shadow: 0 0 0 2px var(--cyan), 0 24px 46px -16px color-mix(in srgb, var(--accent) 55%, transparent); }
+html[data-theme="y2k"] .gc { box-shadow: var(--e-1); }
+
+/* ═══ 5. IN RISO — tạp chí in riso: mực xanh chồng hồng huỳnh quang, chữ cô đặc in hoa (Anton), lệch màu, chấm tram ═══ */
+[data-theme="riso"] {
+  --bg: #f6f1e7; --ink: #1d2a6b; --accent: #ff3d7f; --yel: #ffd23f;
+  --paper: #fffdf8; --soft: color-mix(in srgb, var(--accent) 12%, var(--bg)); --line: color-mix(in srgb, var(--ink) 20%, var(--bg));
+  --muted: color-mix(in srgb, var(--ink) 80%, var(--bg)); --sec-alt: color-mix(in srgb, var(--yel) 30%, var(--bg));
+  --f-head: "Anton", "Be Vietnam Pro", sans-serif; --head-w: 400; --head-case: uppercase; --head-track: .015em;
+  --radius: 4px; --r-btn: 4px; --r-icon: 4px; --r-img: 2px; --r-field: 4px; --card-bw: 2px;
+  --card-line: var(--ink); --card-shadow: 5px 5px 0 var(--accent); --btn-shadow: 3px 3px 0 var(--ink);
+  --e-1: 0 0 0 1.5px color-mix(in srgb, var(--ink) 24%, transparent);
+  --sig-bw: 2px; --sig-line: var(--ink); --sig-shadow: 5px 5px 0 var(--accent); --sig-btn-shadow: 4px 4px 0 var(--accent);
+  --tone: radial-gradient(color-mix(in srgb, var(--accent) 55%, transparent) 1.6px, transparent 2.1px) 0 0 / 9px 9px;
+  --hero-bg: var(--bg);
+  --hero-pattern: radial-gradient(color-mix(in srgb, var(--accent) 60%, transparent) 1.8px, transparent 2.3px) 0 0 / 10px 10px;
+  --icon-bg: var(--yel);
+  --hl: var(--accent); --badge-bg: var(--accent); --badge-ink: var(--accent-ink);
+  --edge-on: ""; --edge: url(../img/themes/riso-band.svg); --edge-h: 14px;
+  --orn: url(../img/themes/riso-orn.svg); --ph: url(../img/themes/riso-ph.svg);
+}
+html[data-theme="riso"] .sec-hero::before { -webkit-mask: radial-gradient(circle at 85% 30%, #000 0 22%, transparent 48%); mask: radial-gradient(circle at 85% 30%, #000 0 22%, transparent 48%); }
+html[data-theme="riso"] :is(.topbar) { border-bottom: 2px solid var(--ink); }
+html[data-theme="riso"] .tabbar { border-top: 2px solid var(--ink); box-shadow: none; }
+html[data-theme="riso"] .tabbar a.is-on::before { height: 5px; width: 34px; margin-left: -17px; border-radius: 0; background: var(--accent); }
+html[data-theme="riso"] :is(.pg-title, .ah-row h2, .hero-title, .sec-title, .gc-name, .qp-title, .jg-end-word) { text-shadow: 2px 1.5px 0 color-mix(in srgb, var(--accent) 80%, transparent); }
+html[data-theme="riso"] .qp { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+html[data-theme="riso"] .qp::before { background: var(--tone); border-radius: 50%; opacity: .9; }
+html[data-theme="riso"] .qp-go { background: var(--accent); color: var(--accent-ink); }
+html[data-theme="riso"] .btn-accent:not(.btn-sm) { border-color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+html[data-theme="riso"] body.site .btn:not(:disabled):not(.btn-sm):hover { transform: translate(-1px, -1px); box-shadow: 5px 4px 0 var(--ink); }
+html[data-theme="riso"] .gc { border: 2px solid var(--ink); box-shadow: 4px 4px 0 color-mix(in srgb, var(--accent) 75%, transparent); }
+html[data-theme="riso"] .gc-cover { background-blend-mode: multiply; }
+html[data-theme="riso"] .eyebrow { background: var(--yel); color: var(--ink); padding: 5px 10px; transform: rotate(-1.5deg); }
+html[data-theme="riso"] .hero-img { border: 3px solid var(--ink); box-shadow: 10px 10px 0 var(--accent); filter: contrast(1.05) saturate(1.1); }
+
+/* ═══ 6. MÁY TÍNH 98 — cửa sổ xám nổi khối (bevel 2 lớp), thanh tiêu đề xanh đậm, thanh tác vụ, nút bấm lún ═══ */
+[data-theme="win98"] {
+  --bg: #c0c0c0; --ink: #000; --accent: #000080; --teal: #008080; --title2: color-mix(in srgb, var(--accent) 70%, #1084d0);
+  --paper: #dedede; --soft: color-mix(in srgb, var(--accent) 10%, var(--bg)); --line: #808080;
+  --muted: color-mix(in srgb, var(--ink) 78%, var(--bg)); --sec-alt: #d4d0c8; --field: #fff;
+  --f-head: "Be Vietnam Pro", system-ui, sans-serif; --head-w: 700; --head-track: -.01em;
+  --radius: 0px; --r-btn: 0px; --r-icon: 0px; --r-img: 0px; --r-field: 0px; --card-bw: 0px; --btn-bw: 0px;
+  --bevel: inset -1px -1px 0 #000, inset 1px 1px 0 #fff, inset -2px -2px 0 #808080, inset 2px 2px 0 #dfdfdf;
+  --bevel-in: inset 1px 1px 0 #000, inset -1px -1px 0 #fff, inset 2px 2px 0 #808080, inset -2px -2px 0 #dfdfdf;
+  --card-shadow: var(--bevel); --btn-shadow: var(--bevel);
+  --e-1: var(--bevel); --e-2: var(--bevel), 3px 3px 0 rgba(0, 0, 0, .35); --e-3: var(--bevel), 5px 5px 0 rgba(0, 0, 0, .4);
+  --s-sunk: #b8b8b8; --hair: rgba(0, 0, 0, .28); --field-line: #808080;
+  --sig-bw: 1px; --sig-line: #000; --sig-shadow: var(--bevel), 3px 3px 0 #000; --sig-btn-shadow: var(--bevel), 2px 2px 0 #000;
+  --r-xl: 0px; --r-md: 0px; --r-row: 0px;
+  --hero-bg: var(--teal); --hero-ink: #fff; --hero-muted: #fff; --hero-eyebrow: #fff;
+  --hero-pattern: none;
+  --icon-bg: #fff;
+  --hl: var(--teal); --badge-bg: var(--accent); --badge-ink: #fff; --badge-r: 0;
+  --orn: url(../img/themes/win98-orn.svg); --ph: url(../img/themes/win98-ph.svg);
+}
+html[data-theme="win98"] .topbar { background: linear-gradient(90deg, var(--accent), var(--title2)); --bar-ink: var(--accent-ink); color: var(--accent-ink); border-bottom: 2px solid #000; }
+html[data-theme="win98"] .topbar .topnav :is(.qs-chip, .hq-chip) { color: var(--accent-ink); }
+html[data-theme="win98"] .topbar .topnav :is(.qs-chip, .hq-chip)::before { background: var(--accent); box-shadow: inset 1px 1px 0 color-mix(in srgb, #000 40%, transparent); }
+html[data-theme="win98"] .topbar .notify-link .notify-badge { box-shadow: 0 0 0 2px var(--title2); }
+html[data-theme="win98"] .topbar .tp-nav a { color: var(--accent-ink); }
+html[data-theme="win98"] .topbar .tp-nav a.is-on, html[data-theme="win98"] .topbar .tp-nav a:hover { background: color-mix(in srgb, var(--accent) 70%, #000); color: var(--accent-ink); }
+html[data-theme="win98"] .topbar .me-menu summary { color: var(--ink); }
+html[data-theme="win98"] .topbar .logo-mono { background: #c0c0c0; color: #000; box-shadow: var(--bevel); }
+html[data-theme="win98"] .tabbar { --bar-bg: #c0c0c0; border-top: 0; box-shadow: inset 0 1px 0 #dfdfdf, inset 0 2px 0 #fff; }
+html[data-theme="win98"] .tabbar a.is-on { color: #000; background: #d4d4d4; box-shadow: var(--bevel-in); }
+html[data-theme="win98"] .tabbar a.is-on::before { display: none; }
+html[data-theme="win98"] .btn { box-shadow: var(--bevel); }
+html[data-theme="win98"] .btn-ghost { background: #c0c0c0; color: #000; }
+html[data-theme="win98"] body.site .btn:not(:disabled):hover { transform: none; }
+html[data-theme="win98"] body.site .btn:not(:disabled):active { transform: translate(1px, 1px); box-shadow: var(--bevel-in); }
+html[data-theme="win98"] .btn:focus-visible { outline: 1px dotted #000; outline-offset: -5px; }
+html[data-theme="win98"]:not([data-cc], [data-mode="dark"]) :is(input, textarea, select):not([type=checkbox]):not([type=radio]):not([type=color]):not(.cx-input) { border: 0; border-radius: 0; background: #fff; box-shadow: var(--bevel-in); }
+html[data-theme="win98"] .cx-field { border: 0; border-radius: 0; background: #fff; box-shadow: var(--bevel-in); }
+html[data-theme="win98"] .cx .msg-bubble { border-radius: 0 !important; }
+html[data-theme="win98"] .qp { background: var(--accent); color: var(--accent-ink); border: 0; box-shadow: var(--bevel), 3px 3px 0 #000; }
+html[data-theme="win98"] .qp::before { display: none; }
+html[data-theme="win98"] .qp-ic { background: #c0c0c0; box-shadow: var(--bevel); border-radius: 0; }
+html[data-theme="win98"] .qp-go { border-radius: 0; background: #c0c0c0; color: #000; box-shadow: var(--bevel); }
+html[data-theme="win98"] .gc { border: 0; box-shadow: var(--bevel); }
+html[data-theme="win98"] .gc-cover { border-bottom: 2px solid #808080; }
+html[data-theme="win98"] .gc-play { border-radius: 0; border: 0; box-shadow: var(--bevel); }
+html[data-theme="win98"] :is(.ava, .online-item .ava, .gc-icon) { border-radius: 0 !important; }
+html[data-theme="win98"] .hero-img { border: 0; box-shadow: var(--bevel), 6px 6px 0 rgba(0, 0, 0, .45); padding: 4px; background: #c0c0c0; }
+html[data-theme="win98"] .eyebrow { background: #c0c0c0; color: #000; padding: 4px 10px; box-shadow: var(--bevel); }
+html[data-theme="win98"] .sec-hero .btn-ghost { background: #c0c0c0; color: #000; }
+
+/* ═══ 7. TRÀ SỮA — kem sữa, nâu trà, khoai môn + matcha, trân châu tròn, chữ viết tay (Mali), nút có gờ ═══ */
+[data-theme="trasua"] {
+  --bg: #f5ece0; --ink: #3b2417; --accent: #8a4b2a; --taro: #b49ad6; --matcha: #9cc58a; --pearl: #2b1a12; --caramel: #d99a55;
+  --paper: #fffaf3; --soft: color-mix(in srgb, var(--caramel) 10%, var(--bg)); --line: color-mix(in srgb, var(--ink) 15%, var(--bg));
+  --muted: color-mix(in srgb, var(--ink) 76%, var(--bg)); --sec-alt: color-mix(in srgb, var(--taro) 9%, var(--paper));
+  --f-head: "Mali", "Be Vietnam Pro", cursive; --head-w: 700; --head-track: 0;
+  --radius: 24px; --r-btn: 999px; --r-icon: 20px; --r-img: 30px; --r-field: 16px;
+  --card-shadow: 0 6px 0 color-mix(in srgb, var(--accent) 22%, var(--bg)); --btn-shadow: 0 4px 0 color-mix(in srgb, var(--accent) 55%, var(--ink));
+  --e-1: 0 1px 0 color-mix(in srgb, var(--ink) 6%, transparent), 0 8px 18px -12px color-mix(in srgb, var(--ink) 32%, transparent);
+  --sig-bw: 2px; --sig-line: color-mix(in srgb, var(--accent) 70%, var(--ink)); --sig-shadow: 0 6px 0 color-mix(in srgb, var(--accent) 45%, var(--ink));
+  --hero-bg: linear-gradient(180deg, var(--bg) 0 64%, color-mix(in srgb, var(--caramel) 48%, var(--bg)) 64%);
+  --hero-pattern: radial-gradient(circle, var(--pearl) 0 9px, color-mix(in srgb, #fff 25%, transparent) 9.5px 10px, transparent 10.5px) 6px calc(100% - 10px) / 38px 34px repeat-x,
+    radial-gradient(circle, var(--pearl) 0 9px, transparent 9.5px) 25px calc(100% - 36px) / 38px 34px repeat-x;
+  --icon-bg: color-mix(in srgb, var(--caramel) 28%, #fff);
+  --hl: var(--taro); --badge-bg: var(--pearl); --badge-ink: #fffaf3;
+  --edge-on: ""; --edge: url(../img/themes/trasua-band.svg); --edge-h: 18px;
+  --orn: url(../img/themes/trasua-orn.svg); --ph: url(../img/themes/trasua-ph.svg);
+}
+html[data-theme="trasua"] body.site { background: radial-gradient(circle, color-mix(in srgb, var(--pearl) 7%, transparent) 0 4px, transparent 4.5px) 0 0 / 52px 52px,
+  radial-gradient(circle, color-mix(in srgb, var(--pearl) 5%, transparent) 0 3px, transparent 3.5px) 26px 26px / 52px 52px, var(--bg); }
+html[data-theme="trasua"] :is(.topbar, .tabbar) { --bar-bg: var(--paper); }
+html[data-theme="trasua"] .topbar { border-bottom: 2px solid color-mix(in srgb, var(--caramel) 55%, var(--bg)); }
+html[data-theme="trasua"] .tabbar { border-top: 2px solid color-mix(in srgb, var(--caramel) 55%, var(--bg)); }
+html[data-theme="trasua"] .qp { background: linear-gradient(160deg, var(--accent), color-mix(in srgb, var(--accent) 70%, var(--pearl))); }
+html[data-theme="trasua"] .qp::before { inset: auto 10px -14px auto; width: 120px; height: 36px; border-radius: 0;
+  background: radial-gradient(circle, color-mix(in srgb, var(--pearl) 75%, transparent) 0 8px, transparent 8.5px) 0 0 / 24px 22px; }
+html[data-theme="trasua"] body.site .btn:not(:disabled):active { transform: translateY(3px); box-shadow: 0 1px 0 color-mix(in srgb, var(--accent) 55%, var(--ink)); }
+html[data-theme="trasua"] .hero-img { border: 6px solid #fffaf3; box-shadow: 0 0 0 3px var(--caramel), 0 20px 40px -18px rgba(70, 35, 15, .45); }
+html[data-theme="trasua"] .gc { box-shadow: var(--e-1); }
+
+/* ═══ 8. ĐẤT NẶN — khối phồng như đất sét (bóng trong + bóng đổ mềm), tím oải hương, cam quýt, chữ tròn mập (Baloo 2), bấm là lún ═══ */
+[data-theme="datnan"] {
+  --bg: #ece8ff; --ink: #241c4a; --accent: #ff6a3d; --grape: #7b61ff; --mint: #7fe0c3; --lemon: #ffd66b;
+  --paper: #f8f6ff; --soft: color-mix(in srgb, var(--grape) 14%, var(--bg)); --line: color-mix(in srgb, var(--ink) 12%, var(--bg));
+  --muted: color-mix(in srgb, var(--ink) 76%, var(--bg)); --sec-alt: color-mix(in srgb, var(--mint) 26%, var(--bg));
+  --f-head: "Baloo 2", "Be Vietnam Pro", sans-serif; --head-w: 800; --head-track: -.01em;
+  --radius: 28px; --r-btn: 999px; --r-icon: 24px; --r-img: 36px; --r-field: 20px; --card-bw: 0px;
+  --clay: inset 0 2px 1px rgba(255, 255, 255, .85), inset 0 -6px 12px color-mix(in srgb, var(--grape) 16%, transparent), 0 12px 24px -12px color-mix(in srgb, var(--ink) 40%, transparent);
+  --e-1: inset 0 2px 0 rgba(255, 255, 255, .8), inset 0 -3px 6px color-mix(in srgb, var(--grape) 10%, transparent), 0 6px 14px -8px color-mix(in srgb, var(--ink) 28%, transparent);
+  --card-shadow: var(--clay);
+  --btn-shadow: inset 0 3px 2px rgba(255, 255, 255, .42), inset 0 -5px 8px rgba(0, 0, 0, .16), 0 8px 16px -8px color-mix(in srgb, var(--accent) 80%, transparent);
+  --sig-bw: 0px; --sig-line: transparent;
+  --sig-shadow: inset 0 3px 2px rgba(255, 255, 255, .5), inset 0 -8px 16px rgba(0, 0, 0, .14), 0 18px 30px -14px color-mix(in srgb, var(--accent) 75%, transparent);
+  --sig-btn-shadow: var(--btn-shadow);
+  --hero-bg: radial-gradient(42% 46% at 8% 20%, color-mix(in srgb, var(--grape) 30%, transparent), transparent 70%),
+    radial-gradient(36% 40% at 94% 12%, color-mix(in srgb, var(--lemon) 70%, transparent), transparent 70%),
+    radial-gradient(44% 40% at 70% 100%, color-mix(in srgb, var(--mint) 60%, transparent), transparent 70%), var(--bg);
+  --hero-pattern: none;
+  --icon-bg: radial-gradient(circle at 35% 30%, #fff, color-mix(in srgb, var(--grape) 18%, #fff) 72%);
+  --hl: var(--grape); --badge-bg: var(--grape); --badge-ink: #fff;
+  --orn: url(../img/themes/datnan-orn.svg); --ph: url(../img/themes/datnan-ph.svg);
+}
+html[data-theme="datnan"] :is(.topbar, .tabbar) { --bar-bg: var(--paper); border-color: transparent; }
+html[data-theme="datnan"] .topbar { box-shadow: 0 8px 20px -14px color-mix(in srgb, var(--ink) 45%, transparent); }
+html[data-theme="datnan"] .tabbar a.is-on::before { top: 6px; width: 46px; height: 32px; margin-left: -23px; border-radius: 16px; z-index: -1;
+  background: color-mix(in srgb, var(--grape) 16%, var(--paper)); box-shadow: inset 0 2px 1px rgba(255, 255, 255, .8), inset 0 -3px 6px color-mix(in srgb, var(--grape) 18%, transparent); }
+html[data-theme="datnan"] .tabbar a { isolation: isolate; }
+html[data-theme="datnan"] .gc { box-shadow: var(--e-1); border: 0; }
+html[data-theme="datnan"] .qp { box-shadow: var(--sig-shadow); border: 0; }
+html[data-theme="datnan"] .qp-ic { box-shadow: inset 0 2px 1px rgba(255, 255, 255, .55), inset 0 -4px 8px rgba(0, 0, 0, .12); }
+html[data-theme="datnan"] body.site .btn:not(:disabled):active, html[data-theme="datnan"] .gc:has(.gc-link):active, html[data-theme="datnan"] .qp:active { transform: scale(.95, .93); transition-duration: .1s; }
+html[data-theme="datnan"] .hero-img { border-radius: 36px; box-shadow: var(--clay), 0 0 0 8px #fff; }
+
+/* ═══ 9. CỰC QUANG — đêm Bắc cực, dải sáng xanh ngọc–tím, sao, kính mờ CÓ CHỪNG MỰC (chỉ thanh trên/thanh tab) (tối) ═══ */
+[data-theme="cucquang"] {
+  --bg: #07121c; --ink: #e8f4f2; --ink: oklch(from var(--bg) clamp(.2, (.6 - l) * 999, .96) .02 190); --accent: #3ee6b0;
+  --violet: #9d7bff; --pink: #ff7ad9; --ice: #9fe8ff;
+  --paper: color-mix(in srgb, var(--bg) 88%, #7fd8ff); --soft: color-mix(in srgb, var(--accent) 14%, var(--bg));
+  --line: color-mix(in srgb, var(--ink) 16%, var(--bg)); --muted: color-mix(in srgb, var(--ink) 76%, var(--bg));
+  --sec-alt: color-mix(in srgb, var(--bg) 88%, var(--violet));
+  --accent-text: color-mix(in oklab, var(--accent) 62%, var(--ink));
+  --f-head: "Montserrat", "Be Vietnam Pro", sans-serif; --head-w: 700; --head-track: -.015em;
+  --radius: 20px; --r-btn: 14px; --r-icon: 16px; --r-img: 24px;
+  --shadow: 0 16px 40px rgba(0, 0, 0, .5);
+  --card-line: color-mix(in srgb, var(--ice) 22%, var(--bg));
+  --aurora: radial-gradient(70% 300px at 18% -40px, color-mix(in srgb, var(--accent) 32%, transparent), transparent 72%),
+    radial-gradient(55% 260px at 70% -60px, color-mix(in srgb, var(--violet) 30%, transparent), transparent 72%),
+    radial-gradient(40% 220px at 100% 40px, color-mix(in srgb, var(--pink) 14%, transparent), transparent 72%);
+  --stars: radial-gradient(1.3px 1.3px at 20px 30px, #fff 60%, transparent) 0 0 / 170px 150px, radial-gradient(1px 1px at 110px 80px, #d9fff4 60%, transparent) 0 0 / 230px 190px;
+  --hero-bg: var(--aurora), linear-gradient(180deg, #040b13, var(--bg));
+  --hero-pattern: var(--stars);
+  --hero-ink: #eefaf7; --hero-muted: #c6ddd9; --hero-eyebrow: var(--accent);
+  --icon-bg: color-mix(in srgb, var(--accent) 16%, var(--bg));
+  --hl: var(--violet); --badge-bg: var(--accent); --badge-ink: #04201a;
+  --orn: url(../img/themes/cucquang-orn.svg); --ph: url(../img/themes/cucquang-ph.svg);
+  --sig-line: color-mix(in srgb, var(--accent) 60%, var(--ink));
+  --sig-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent), 0 0 34px -8px color-mix(in srgb, var(--accent) 60%, transparent), 0 0 50px -20px color-mix(in srgb, var(--violet) 70%, transparent);
+}
+html[data-theme="cucquang"] body.site { background: var(--stars), var(--aurora), var(--bg); background-repeat: repeat, no-repeat, no-repeat, no-repeat, no-repeat; }
+html[data-theme="cucquang"] :is(.topbar, .tabbar) { --bar-bg: color-mix(in srgb, var(--bg) 96%, var(--accent)); border-color: color-mix(in srgb, var(--ice) 14%, transparent); }
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  html[data-theme="cucquang"] :is(.topbar, .tabbar) { background: color-mix(in srgb, var(--bg) 80%, transparent); -webkit-backdrop-filter: blur(16px) saturate(150%); backdrop-filter: blur(16px) saturate(150%); }
+}
+html[data-theme="cucquang"] .qp::before { background: radial-gradient(closest-side, color-mix(in srgb, var(--violet) 55%, transparent), transparent); inset: -60px -60px auto auto; width: 220px; height: 220px; }
+html[data-theme="cucquang"] .tabbar a.is-on::before { background: linear-gradient(90deg, var(--accent), var(--violet)); }
+html[data-theme="cucquang"] .hero-title { text-shadow: 0 0 30px color-mix(in srgb, var(--accent) 45%, transparent); }
+html[data-theme="cucquang"] .hero-img { box-shadow: 0 0 0 1px color-mix(in srgb, var(--ice) 40%, transparent), 0 30px 60px -20px color-mix(in srgb, var(--accent) 45%, transparent); }
+html[data-theme="cucquang"] .gc { box-shadow: var(--e-1); }
+
+/* ═══ 10. HUYỀN THOẠI — kỳ ảo phiêu lưu: trời sao xanh thẳm, viền vàng 2 lớp chạm khắc, chữ có chân in hoa (Cormorant) (tối) ═══ */
+[data-theme="huyenthoai"] {
+  --bg: #0e1424; --ink: #f3ead6; --ink: oklch(from var(--bg) clamp(.2, (.6 - l) * 999, .95) .035 85); --accent: #e2b14a;
+  --teal: #5fd3c6; --crimson: #d4495a; --gold2: #f6d58a;
+  --paper: color-mix(in srgb, var(--bg) 88%, #8aa0ff); --soft: color-mix(in srgb, var(--accent) 12%, var(--bg));
+  --line: color-mix(in srgb, var(--accent) 26%, var(--bg)); --muted: color-mix(in srgb, var(--ink) 76%, var(--bg));
+  --sec-alt: color-mix(in srgb, var(--bg) 90%, var(--accent));
+  --accent-text: color-mix(in oklab, var(--accent) 72%, var(--ink));
+  --f-head: "Cormorant Garamond", "Noto Serif Display", Georgia, serif; --head-w: 600; --head-case: uppercase; --head-track: .06em;
+  --radius: 10px; --r-btn: 6px; --r-icon: 50%; --r-img: 12px; --card-bw: 1px;
+  --shadow: 0 16px 40px rgba(0, 0, 0, .55);
+  --card-line: color-mix(in srgb, var(--accent) 45%, var(--bg));
+  --card-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), inset 0 0 0 3px var(--paper), inset 0 0 0 4px color-mix(in srgb, var(--accent) 30%, transparent);
+  --stars: radial-gradient(1.4px 1.4px at 24px 30px, #fff6dc 60%, transparent) 0 0 / 180px 160px, radial-gradient(1.8px 1.8px at 130px 90px, var(--gold2) 55%, transparent) 0 0 / 260px 220px,
+    radial-gradient(1px 1px at 70px 120px, #cfe0ff 60%, transparent) 0 0 / 140px 170px;
+  --hero-bg: radial-gradient(circle at 82% 26%, color-mix(in srgb, var(--gold2) 32%, transparent), transparent 26%),
+    radial-gradient(120% 80% at 50% 0%, #1b2748, var(--bg) 70%);
+  --hero-pattern: var(--stars);
+  --hero-ink: #f8f0dc; --hero-muted: #dcd2bc; --hero-eyebrow: var(--gold2);
+  --icon-bg: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--accent) 28%, var(--bg)), var(--paper) 72%);
+  --hl: var(--teal); --badge-bg: var(--accent); --badge-ink: #1a1204;
+  --edge-on: ""; --edge: url(../img/themes/huyenthoai-band.svg); --edge-h: 12px;
+  --orn: url(../img/themes/huyenthoai-orn.svg); --ph: url(../img/themes/huyenthoai-ph.svg);
+  --sig-bw: 1px; --sig-line: var(--accent);
+  --sig-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4px color-mix(in srgb, var(--accent) 55%, transparent), 0 0 30px -8px color-mix(in srgb, var(--accent) 60%, transparent);
+  --sig-btn-shadow: 0 0 22px -4px color-mix(in srgb, var(--accent) 65%, transparent);
+}
+html[data-theme="huyenthoai"] body.site { background: var(--stars), radial-gradient(120% 420px at 50% -120px, #1b2748, transparent 75%), var(--bg); }
+html[data-theme="huyenthoai"] :is(.topbar, .tabbar) { --bar-bg: color-mix(in srgb, var(--bg) 94%, var(--accent)); border-color: color-mix(in srgb, var(--accent) 38%, var(--bg)); }
+html[data-theme="huyenthoai"] .tabbar a.is-on::before { width: 10px; height: 10px; margin-left: -5px; top: -5px; border-radius: 1px; transform: rotate(45deg); background: var(--accent); }
+html[data-theme="huyenthoai"] .qp { background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 80%, #6b3d0f)); }
+html[data-theme="huyenthoai"] .btn-accent { background: linear-gradient(180deg, var(--accent) 40%, color-mix(in srgb, var(--accent) 86%, #6b3d0f)); color: var(--accent-ink);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 45%, transparent), var(--sig-btn-shadow); }
+html[data-theme="huyenthoai"] :is(.pg-title, .ah-row h2, .gc-name, .qp-title) { line-height: 1.2; }
+html[data-theme="huyenthoai"] .ah-row h2 { font-size: 1.3rem; }
+html[data-theme="huyenthoai"] .gc-name { font-size: 1.3rem; }
+html[data-theme="huyenthoai"] .gc { box-shadow: var(--card-shadow); border-color: color-mix(in srgb, var(--accent) 40%, var(--bg)); }
+html[data-theme="huyenthoai"] .hero-title { text-shadow: 0 2px 0 #000, 0 0 30px color-mix(in srgb, var(--accent) 40%, transparent); }
+html[data-theme="huyenthoai"] .hero-img { border: 1px solid var(--accent); box-shadow: inset 0 0 0 3px var(--bg), 0 0 0 6px var(--bg), 0 0 0 7px color-mix(in srgb, var(--accent) 60%, transparent), 0 0 60px -10px color-mix(in srgb, var(--accent) 50%, transparent); }
+
+/* ═══ Dùng chung cho 2 giao diện TỐI mới (như neon/trungthu ở cuối themes.css): màu ngữ nghĩa sáng hơn, độ nổi = vành sáng mảnh ═══ */
+html:is([data-theme="cucquang"], [data-theme="huyenthoai"]) { color-scheme: dark; }
+[data-theme="cucquang"], [data-theme="huyenthoai"] {
+  --ok: #4ade80; --warn: #fbbf24; --danger: #f87171; --live: #ff6b6b; --on-danger: #2a0a0a; --on-live: #2a0a0a; --gold: #ffc53d; --silver: #c3cad3; --bronze: #d8926a;
+  --info: #7cb3ff; --heart: #ff5c8d; --streak: #ff9a4a; --online: #3fd47e;
+  --s-sunk: color-mix(in srgb, var(--ink) 9%, var(--bg));
+  --hair: color-mix(in srgb, var(--ink) 14%, transparent); --hair-strong: color-mix(in srgb, var(--ink) 24%, transparent);
+  --field-line: color-mix(in srgb, var(--ink) 30%, transparent);
+  --e-1: 0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent);
+  --e-2: 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent), 0 14px 32px -12px rgba(0, 0, 0, .6);
+  --e-3: 0 0 0 1px color-mix(in srgb, var(--ink) 12%, transparent), 0 24px 60px -16px rgba(0, 0, 0, .7);
+  --scrim: rgba(0, 0, 0, .62);
+}
+html:is([data-theme="cucquang"], [data-theme="huyenthoai"]) .gc-cover {
+  background: radial-gradient(closest-side at 50% 54%, color-mix(in oklab, var(--gc-tint) 45%, transparent), transparent), var(--gc-pattern, none),
+    linear-gradient(170deg, color-mix(in oklab, var(--gc-tint) 22%, var(--paper)), color-mix(in oklab, var(--gc-tint) 38%, var(--paper))); }
+html:is([data-theme="cucquang"], [data-theme="huyenthoai"]) .gc-live { color: #6be3a4; }
+html:is([data-theme="cucquang"], [data-theme="huyenthoai"]) .online-item .ava { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5.5px #3fd27f; }
+/* Bàn caro (gói chính thức đọc data-theme): quân sáng trên nền tối như neon */
+html:is([data-theme="cucquang"], [data-theme="huyenthoai"]) .jgc { --jgc-paper: color-mix(in srgb, var(--bg) 84%, var(--accent)); --jgc-x: #ff6b9a; --jgc-o: #5fd7ff;
+  --jgc-grid: color-mix(in srgb, var(--accent) 18%, transparent); --jgc-star: color-mix(in srgb, var(--accent) 60%, transparent);
+  --jgc-frame: color-mix(in srgb, var(--accent) 60%, var(--bg)); --jgc-bw: 1.5px;
+  --jgc-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 0 30px color-mix(in srgb, var(--accent) 22%, transparent), 0 20px 40px rgba(0, 0, 0, .5);
+  --jgc-sheen: radial-gradient(90% 70% at 50% 0%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 70%);
+  --jgc-edge: inset 0 0 22px color-mix(in srgb, var(--accent) 20%, transparent);
+  --jgc-xs: var(--jgc-x); --jgc-os: var(--jgc-o); --jgc-pdy: 0px; --jgc-win: #ffffff; --jgc-win-a: .6; --jgc-ring: #fff;
+  --jgc-last: color-mix(in srgb, var(--accent) 18%, transparent); --jgc-focus: var(--accent); --jgc-chip-line: color-mix(in srgb, var(--accent) 45%, var(--bg)); }
+html[data-theme="huyenthoai"] .jgc { --jgc-x: #ff7a85; --jgc-o: #f6d58a; }
+html:is([data-theme="cucquang"], [data-theme="huyenthoai"]) .jgc-p.is-winner { --jgc-winchip: color-mix(in srgb, var(--jgc-me) 26%, var(--jgc-paper)); --jgc-winchip-line: var(--jgc-me); --jgc-winchip-ink: var(--ink); }
+
+/* ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   ĐỢT 2 (THEMES-2026 §5) — mỗi giao diện kéo chất riêng xuống TẬN bàn chơi, chat, hồ sơ, màn kết thúc:
+   ký hiệu tiêu đề mục · avatar viền theo chủ đề · bong bóng chat · bàn cờ vua / mặt bàn bài (biến khung chơi .jgv/.jgl/.jgk — KHÔNG sửa play.css
+   hay gói game) · hiệu ứng thắng · trạng thái rỗng · phản hồi chạm. Màu suy từ --bg/--ink/--accent khi có thể để màu riêng chủ nhà vẫn hài hòa.
+   ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+
+/* — Khung chung: ký hiệu đầu tiêu đề mục (mặt nạ SVG 1 màu, tô bằng --glyph-bg) + avatar hồ sơ viền gradient (--ring) — */
+html.t3:is([data-theme="neon"], [data-theme="lofi"], [data-theme="y2k"], [data-theme="trasua"], [data-theme="datnan"], [data-theme="cucquang"], [data-theme="huyenthoai"]) .ah-row h2::before {
+  content: ""; display: inline-block; width: 1.05em; height: 1.05em; margin-right: .42em; vertical-align: -.1em;
+  background: var(--glyph-bg, var(--accent)); -webkit-mask: var(--glyph) center / contain no-repeat; mask: var(--glyph) center / contain no-repeat; }
+html.t3 :is(.pf-hero > .ava, .me-ava) { border-color: transparent; background: linear-gradient(var(--bg), var(--bg)) padding-box, var(--ring, var(--bg)) border-box; }
+
+/* ── ★ NEON ĐÊM ── */
+[data-theme="neon"] {
+  --glyph: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='1' y='6' width='15' height='3.4' rx='1.7'/><rect x='8' y='14.6' width='15' height='3.4' rx='1.7'/></svg>");
+  --glyph-bg: linear-gradient(90deg, var(--cyan), var(--accent), var(--magenta));
+  --ring: conic-gradient(from 200deg, var(--cyan), var(--accent), var(--magenta), var(--cyan));
+}
+html[data-theme="neon"] :is(.pf-hero > .ava, .me-ava) { box-shadow: 0 0 26px -4px color-mix(in srgb, var(--accent) 80%, transparent); }
+html[data-theme="neon"] .ofr-ava .ava { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--cyan), 0 0 14px -2px var(--cyan); }
+html[data-theme="neon"] .cx { --bub-r: 18px; --bub-r-s: 5px; }
+html[data-theme="neon"] .cx .msg.is-me .msg-bubble { box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 30%, transparent), 0 6px 20px -8px var(--magenta); }
+html[data-theme="neon"] .cx .msg.is-other .msg-bubble { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cyan) 28%, transparent); }
+html[data-theme="neon"] .jgl-felt { background: radial-gradient(110% 90% at 50% 30%, color-mix(in srgb, var(--accent) 30%, var(--bg)), color-mix(in srgb, var(--bg) 92%, #000) 72%);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--cyan) 55%, transparent), inset 0 0 30px -8px var(--magenta), 0 0 28px -10px var(--accent); }
+html[data-theme="neon"] .jgk-card { --jgk-back: color-mix(in srgb, var(--accent) 55%, var(--magenta)); }
+html[data-theme="neon"] .empty-box { border-color: color-mix(in srgb, var(--cyan) 45%, transparent); background: radial-gradient(80% 120% at 50% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%); }
+html[data-theme="neon"] .jg-end.is-win .jg-end-word { color: var(--ink); text-shadow: -2px 0 0 var(--cyan), 2px 0 0 var(--magenta), 0 0 24px var(--accent); }
+html[data-theme="neon"] .jg-end-burst { color: var(--cyan); }
+html[data-theme="neon"] body.site .btn:not(:disabled):active { box-shadow: 0 0 0 2px color-mix(in srgb, var(--cyan) 60%, transparent), 0 0 28px -2px var(--accent); }
+
+/* ── 1. BẮC ÂU — bàn cờ xanh rêu–vải lanh, bong bóng mực đặc, avatar viền mực cách 3px, chữ kết quả gạch đất sét ── */
+[data-theme="bacau"] { --ring: var(--ink); }
+html[data-theme="bacau"] :is(.pf-hero > .ava, .me-ava) { border-width: 2px; box-shadow: 0 0 0 5px var(--bg), 0 0 0 6.5px var(--clay); }
+html[data-theme="bacau"] :is(.pf-band, .me-band) { background: radial-gradient(circle at 12% 100%, var(--clay) 0 44px, transparent 45px),
+  linear-gradient(color-mix(in srgb, var(--ink) 8%, transparent) 1px, transparent 1px) 0 0 / 100% 22px, var(--sand); box-shadow: none; }
+html[data-theme="bacau"] .ofr-ava .ava { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--ink); }
+html[data-theme="bacau"] .cx { --bub-me: var(--ink); --bub-me-ink: var(--bg); --bub-other: var(--paper); --bub-r: 14px; --bub-r-s: 4px; }
+html[data-theme="bacau"] .cx .msg.is-other .msg-bubble { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 14%, transparent); }
+html[data-theme="bacau"] .jgv { --jgv-sq-l: #ecebe1; --jgv-sq-d: #8fa894; --jgv-co-l: #6d8a74; --jgv-co-d: #f4f2ed; }
+html[data-theme="bacau"] .jgl-felt { border-radius: 18px; background: linear-gradient(color-mix(in srgb, var(--ink) 5%, transparent) 1px, transparent 1px) 0 0 / 100% 14px,
+  color-mix(in srgb, var(--accent) 16%, var(--paper)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 16%, transparent); }
+html[data-theme="bacau"] .jgk-card { --jgk-back: var(--accent); }
+html[data-theme="bacau"] .empty-box { border: 1px solid var(--line); border-style: solid; background: var(--paper); }
+html[data-theme="bacau"] .jg-end-word { letter-spacing: -.04em; }
+html[data-theme="bacau"] .jg-end.is-win .jg-end-word { background: linear-gradient(transparent 74%, color-mix(in srgb, var(--clay) 60%, transparent) 74% 90%, transparent 90%); padding-inline: 4px; }
+html[data-theme="bacau"] .jg-end-burst { color: var(--clay); opacity: .3; }
+html[data-theme="bacau"] body.site .btn:not(:disabled):active { transform: translateY(1px); }
+
+/* ── 2. CHIỀU LO-FI — mặt trời hoàng hôn kẻ sọc (ký hiệu + bìa hồ sơ), bong bóng hoàng hôn, bàn cờ đào–mận, mặt bàn chạng vạng ── */
+[data-theme="lofi"] {
+  --glyph: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><clipPath id='c'><rect y='5' width='24' height='5'/><rect y='11.4' width='24' height='3'/><rect y='16' width='24' height='1.8'/><rect y='19.2' width='24' height='1'/></clipPath><circle cx='12' cy='19' r='11' clip-path='url(%23c)'/></svg>");
+  --glyph-bg: linear-gradient(180deg, #f2a25c, var(--accent) 60%, #8a3a5f);
+  --ring: linear-gradient(180deg, var(--peach), var(--rose) 50%, var(--lav));
+}
+html[data-theme="lofi"] :is(.pf-band, .me-band) { background:
+  linear-gradient(transparent 62%, color-mix(in srgb, var(--lav) 70%, #fff) 62% 65%, transparent 65% 72%, color-mix(in srgb, var(--lav) 70%, #fff) 72% 74%, transparent 74%) ,
+  radial-gradient(circle at 50% 100%, #ffe0b5 0 46px, transparent 47px), var(--grain) 0 0 / 180px 180px,
+  linear-gradient(180deg, var(--peach), var(--rose) 55%, var(--lav)); }
+html[data-theme="lofi"] :is(.pf-hero > .ava, .me-ava) { box-shadow: 0 14px 28px -12px rgba(122, 48, 64, .55); }
+html[data-theme="lofi"] .ofr-ava .ava { box-shadow: 0 0 0 2.5px var(--bg), 0 0 0 5px var(--rose); }
+html[data-theme="lofi"] .cx { --bub-me: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 70%, #5b2f6b)); --bub-r: 22px; --bub-r-s: 8px; }
+html[data-theme="lofi"] .cx .msg.is-other .msg-bubble { box-shadow: 0 6px 14px -10px rgba(122, 48, 64, .6); }
+html[data-theme="lofi"] .jgv { --jgv-sq-l: #fbe3cf; --jgv-sq-d: #c98e8a; --jgv-co-l: #a06469; --jgv-co-d: #fbe3cf; }
+html[data-theme="lofi"] .jgv-frame { background: linear-gradient(180deg, color-mix(in srgb, var(--peach) 40%, var(--paper)), color-mix(in srgb, var(--lav) 35%, var(--paper))); }
+html[data-theme="lofi"] .jgl-felt { background: var(--grain) 0 0 / 180px 180px, radial-gradient(circle at 50% 108%, #ffe0b5 0 22%, transparent 23%),
+  linear-gradient(180deg, color-mix(in srgb, var(--peach) 70%, var(--paper)), color-mix(in srgb, var(--rose) 45%, var(--paper)) 55%, color-mix(in srgb, var(--lav) 60%, var(--paper)));
+  box-shadow: inset 0 0 0 6px color-mix(in srgb, var(--paper) 70%, transparent), 0 16px 30px -18px rgba(122, 48, 64, .6); }
+html[data-theme="lofi"] .jgk-card { --jgk-back: color-mix(in srgb, var(--accent) 60%, #5b2f6b); }
+html[data-theme="lofi"] .empty-box { border: 0; background: var(--grain) 0 0 / 180px 180px, linear-gradient(160deg, color-mix(in srgb, var(--peach) 16%, var(--paper)), color-mix(in srgb, var(--lav) 12%, var(--paper))); box-shadow: var(--e-1); }
+html[data-theme="lofi"] .jg-end-word { font-style: italic; letter-spacing: -.02em; }
+html[data-theme="lofi"] .jg-end.is-win .jg-end-word { color: var(--accent-text); text-shadow: 0 6px 22px color-mix(in srgb, var(--peach) 90%, transparent); }
+html[data-theme="lofi"] .jg-end-burst { color: var(--rose); }
+html[data-theme="lofi"] .gc-cover { box-shadow: inset 0 0 0 5px color-mix(in srgb, var(--paper) 80%, transparent); }
+html[data-theme="lofi"] body.site .btn:not(:disabled):active { transform: scale(.97); }
+
+/* ── 3. Y2K — chữ phồng CHỈ ở tiêu đề lớn (tên trang/tiêu đề mục nhỏ về sans đậm nghiêng), viền ánh bạc kim–hologram, bong bóng thạch hồng ── */
+[data-theme="y2k"] {
+  --glyph: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 1c.9 6.2 4 9.4 11 11-7 1.6-10.1 4.8-11 11-.9-6.2-4-9.4-11-11 7-1.6 10.1-4.8 11-11z'/></svg>");
+  --glyph-bg: linear-gradient(135deg, var(--cyan), var(--accent) 55%, var(--lilac));
+  --holo: conic-gradient(from 30deg, #ff8ad8, var(--cyan), var(--lime), var(--lilac), #ff8ad8);
+  --ring: var(--holo);
+}
+html[data-theme="y2k"] .topbar .brand .u-name, html[data-theme="y2k"] .pg-h2 { font-family: var(--f-ui, "Be Vietnam Pro"), sans-serif; font-weight: 800; font-style: italic; letter-spacing: -.02em; text-transform: none; }
+html[data-theme="y2k"] body.site { background: var(--sparkle) 0 0 / 300px 270px,
+  radial-gradient(90% 380px at 0% -80px, color-mix(in srgb, var(--lilac) 55%, transparent), transparent 70%),
+  radial-gradient(70% 320px at 100% -40px, color-mix(in srgb, var(--cyan) 22%, transparent), transparent 70%), var(--bg); }
+html[data-theme="y2k"] :is(.pf-hero > .ava, .me-ava) { border-width: 5px; box-shadow: 0 10px 26px -10px color-mix(in srgb, var(--accent) 70%, transparent); }
+html[data-theme="y2k"] :is(.pf-band, .me-band) { background: var(--sparkle) 0 0 / 220px 200px, linear-gradient(115deg, color-mix(in srgb, #ff8ad8 55%, var(--paper)), color-mix(in srgb, var(--cyan) 45%, var(--paper)) 45%, color-mix(in srgb, var(--lime) 40%, var(--paper)) 70%, color-mix(in srgb, var(--lilac) 70%, var(--paper))); }
+html[data-theme="y2k"][data-cc] :is(.pf-band, .me-band) { background: var(--hero-bg); }
+html[data-theme="y2k"] .ofr-ava .ava { border: 3px solid transparent; background: linear-gradient(#fff, #fff) padding-box, var(--holo) border-box; }
+html[data-theme="y2k"] .cx { --bub-me: linear-gradient(180deg, var(--accent) 45%, color-mix(in srgb, var(--accent) 84%, #000)); --bub-other: var(--chrome); --bub-r: 22px; --bub-r-s: 8px; }
+html[data-theme="y2k"] .cx .msg.is-me .msg-bubble { box-shadow: inset 0 2px 0 rgba(255, 255, 255, .45), 0 6px 14px -8px var(--accent); }
+html[data-theme="y2k"] .cx .msg.is-other .msg-bubble { box-shadow: inset 0 1px 0 #fff, 0 0 0 1px color-mix(in srgb, var(--lilac) 60%, transparent); }
+html[data-theme="y2k"] .jgv { --jgv-sq-l: #f6f1ff; --jgv-sq-d: #c4aef5; --jgv-co-l: #8a6fd6; --jgv-co-d: #f6f1ff; }
+html[data-theme="y2k"] .jgv-frame { border-color: #fff; box-shadow: 0 0 0 2px var(--cyan), 0 14px 30px -14px var(--accent); }
+html[data-theme="y2k"] .jgl-felt { background: var(--sparkle) center / 220px 200px, radial-gradient(60% 70% at 20% 20%, color-mix(in srgb, #ff8ad8 55%, transparent), transparent),
+  radial-gradient(60% 70% at 85% 80%, color-mix(in srgb, var(--cyan) 55%, transparent), transparent), color-mix(in srgb, var(--lilac) 55%, #fff);
+  box-shadow: inset 0 0 0 4px #fff, 0 0 0 2px color-mix(in srgb, var(--lilac) 80%, #fff), 0 14px 28px -14px var(--accent); }
+html[data-theme="y2k"] .jgk-card { --jgk-back: color-mix(in srgb, var(--accent) 70%, #7a4dff); }
+html[data-theme="y2k"] .empty-box { border: 2px solid #fff; background: linear-gradient(160deg, color-mix(in srgb, var(--lilac) 30%, #fff), color-mix(in srgb, var(--cyan) 14%, #fff)); box-shadow: 0 0 0 2px color-mix(in srgb, var(--lilac) 60%, transparent), var(--e-1); }
+html[data-theme="y2k"] .jg-end.is-win .jg-end-word { color: var(--accent-text); text-shadow: 0 2px 0 #fff, -3px 0 0 color-mix(in srgb, var(--cyan) 70%, transparent), 0 8px 22px color-mix(in srgb, var(--accent) 45%, transparent); }
+html[data-theme="y2k"] .jg-end-burst { color: var(--cyan); opacity: .5; }
+html[data-theme="y2k"] body.site .btn-accent:not(:disabled):active { transform: scale(.96); box-shadow: inset 0 3px 6px rgba(0, 0, 0, .22); }
+
+/* ── 4. IN RISO — bút nhớ vàng sau tiêu đề mục, bàn cờ hồng huỳnh quang, mặt bàn chấm tram, avatar lệch màu, bấm = bóng sập ── */
+html[data-theme="riso"] .ah-row h2 { text-shadow: none; background: linear-gradient(transparent 52%, var(--yel) 52% 92%, transparent 92%); padding-inline: 2px; }
+html[data-theme="riso"][data-cc] :is(.ah-row h2, .jg-end.is-win .jg-end-word) { background: none; }   /* màu riêng nền/chữ: bỏ bút nhớ vàng sau chữ */
+html[data-theme="riso"] :is(.pf-hero > .ava, .me-ava) { border: 3px solid var(--ink); box-shadow: 6px 4px 0 var(--accent); }
+html[data-theme="riso"] :is(.pf-band, .me-band) { background: radial-gradient(color-mix(in srgb, var(--accent) 70%, transparent) 1.8px, transparent 2.3px) 0 0 / 10px 10px, var(--yel); border: 2px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
+html[data-theme="riso"] .ofr-ava .ava { box-shadow: 0 0 0 2px var(--ink), 3px 3px 0 2px var(--accent); }
+html[data-theme="riso"] .cx { --bub-me: var(--ink); --bub-me-ink: var(--paper); --bub-other: var(--paper); --bub-r: 4px; --bub-r-s: 2px; }
+html[data-theme="riso"] .cx .msg.is-me .msg-bubble { box-shadow: 3px 3px 0 var(--accent); }
+html[data-theme="riso"] .cx .msg.is-other .msg-bubble { box-shadow: inset 0 0 0 2px var(--ink); }
+html[data-theme="riso"] .jgv { --jgv-sq-l: #fffdf8; --jgv-sq-d: #f7a3bd; --jgv-co-l: #d42a63; --jgv-co-d: #fffdf8; }
+html[data-theme="riso"] .jgv-frame { border-color: var(--ink); box-shadow: 6px 6px 0 var(--accent); border-radius: 2px; }
+html[data-theme="riso"] .jgl-felt { border-radius: 6px; background: radial-gradient(color-mix(in srgb, var(--accent) 45%, transparent) 1.6px, transparent 2.1px) 0 0 / 9px 9px, var(--yel);
+  box-shadow: inset 0 0 0 2px var(--ink), 5px 5px 0 var(--accent); }
+html[data-theme="riso"] .jgk-card { --jgk-back: var(--ink); }
+html[data-theme="riso"] .empty-box { border: 2px dashed var(--ink); background: radial-gradient(color-mix(in srgb, var(--accent) 40%, transparent) 1.4px, transparent 1.9px) 0 0 / 9px 9px; }
+html[data-theme="riso"] .jg-end.is-win .jg-end-word { background: linear-gradient(transparent 55%, var(--yel) 55% 92%, transparent 92%); padding-inline: 6px; }
+html[data-theme="riso"] .jg-end-burst { color: var(--accent); opacity: .55; }
+html[data-theme="riso"] body.site .btn:not(:disabled):not(.btn-sm):active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); }
+
+/* ── 5. MÁY TÍNH 98 — vuông TOÀN BỘ (kể cả nút/avatar trong phòng chơi), mặt bàn = nỉ xanh Solitaire, bàn cờ trắng–mòng két, hộp thoại kết thúc có thanh tiêu đề ── */
+html[data-theme="win98"] body.site :is(*, *::before, *::after):not(.jgk-card):not(.jgk-card *) { border-radius: 0 !important; }
+html[data-theme="win98"] .ah-row h2::before { content: ""; display: inline-block; width: 20px; height: 16px; margin-right: 8px; vertical-align: -1px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16' shape-rendering='crispEdges'><path d='M1 2h7l2 2h9v11H1z' fill='%23ffd84a' stroke='%23000'/><path d='M2 6h16' stroke='%23fff'/></svg>") center / contain no-repeat; }
+html[data-theme="win98"] :is(.play-back, .room-sound, .emote-btn, .chat-close, .jg-end-peek) { box-shadow: var(--bevel); border: 0; background: #c0c0c0; }
+html[data-theme="win98"] :is(.pf-hero > .ava, .me-ava) { border: 0; padding: 3px; background: #c0c0c0; box-shadow: var(--bevel), 3px 3px 0 #000; }
+html[data-theme="win98"] :is(.pf-band, .me-band) { background: var(--teal); border: 0; box-shadow: var(--bevel-in); }
+html[data-theme="win98"] .cx { --bub-me: var(--accent); --bub-me-ink: var(--accent-ink); --bub-other: #ffffe1; --bub-other-ink: #000; }
+html[data-theme="win98"] .cx .msg.is-other .msg-bubble { box-shadow: inset 0 0 0 1px #000; }
+html[data-theme="win98"] .jgv { --jgv-sq-l: #ffffff; --jgv-sq-d: #3f9c9c; --jgv-co-l: #007070; --jgv-co-d: #ffffff; }
+html[data-theme="win98"] .jgv-frame { border: 0; background: #c0c0c0; box-shadow: var(--bevel), 3px 3px 0 rgba(0, 0, 0, .4); }
+html[data-theme="win98"] .jgl-felt { background: radial-gradient(120% 90% at 50% 40%, #0a8a0a, #006b00 75%); box-shadow: var(--bevel-in); }
+html[data-theme="win98"] .jgl-felt .jgl-table-note { color: #fff; }
+html[data-theme="win98"] .jgk-card { --jgk-back: var(--accent); }
+html[data-theme="win98"] .empty-box { border: 0; background: #fff; box-shadow: var(--bevel-in); }
+html[data-theme="win98"] .jg-end-card { padding-top: 34px; background: linear-gradient(90deg, var(--accent), var(--title2)) top / 100% 24px no-repeat, var(--paper); box-shadow: var(--bevel), 4px 4px 0 rgba(0, 0, 0, .45); }
+html[data-theme="win98"] .jg-end-burst { display: none; }
+html[data-theme="win98"] .jg-end.is-win .jg-end-word { color: var(--accent); text-shadow: 2px 2px 0 #fff; }
+html[data-theme="win98"] .ofr-ava .ava { box-shadow: var(--bevel); padding: 2px; background: #c0c0c0; }
+
+/* ── 6. TRÀ SỮA — ba viên trân châu đầu tiêu đề, bàn cờ khoai môn, mặt bàn trà caramel có trân châu dưới đáy, bong bóng sữa có gờ ── */
+[data-theme="trasua"] {
+  --glyph: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='6' cy='16' r='4.6'/><circle cx='17' cy='16.5' r='4.6'/><circle cx='11.5' cy='7.5' r='4.6'/></svg>");
+  --glyph-bg: var(--pearl);
+  --ring: var(--caramel);
+}
+html[data-theme="trasua"] :is(.pf-band, .me-band) { background: radial-gradient(circle, var(--pearl) 0 6px, color-mix(in srgb, #fff 30%, transparent) 6.5px 7px, transparent 7.5px) 4px calc(100% - 8px) / 26px 22px repeat-x,
+  linear-gradient(180deg, color-mix(in srgb, var(--caramel) 22%, var(--paper)), color-mix(in srgb, var(--caramel) 52%, var(--bg))); }
+html[data-theme="trasua"] :is(.pf-hero > .ava, .me-ava) { box-shadow: 0 0 0 3px var(--paper), 0 5px 0 3px color-mix(in srgb, var(--accent) 35%, var(--bg)); }
+html[data-theme="trasua"] .ofr-ava .ava { box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 5px var(--caramel); }
+html[data-theme="trasua"] .cx { --bub-other: var(--paper); --bub-r: 20px; --bub-r-s: 7px; }
+html[data-theme="trasua"] .cx .msg.is-me .msg-bubble { box-shadow: 0 3px 0 color-mix(in srgb, var(--accent) 55%, var(--ink)); }
+html[data-theme="trasua"] .cx .msg.is-other .msg-bubble { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--caramel) 55%, var(--bg)), 0 3px 0 color-mix(in srgb, var(--caramel) 45%, var(--bg)); }
+html[data-theme="trasua"] .jgv { --jgv-sq-l: #fbf3e7; --jgv-sq-d: #c2a9e3; --jgv-co-l: #7d5fae; --jgv-co-d: #fbf3e7; }
+html[data-theme="trasua"] .jgv-frame { border-color: var(--caramel); box-shadow: 0 6px 0 color-mix(in srgb, var(--accent) 35%, var(--bg)); }
+html[data-theme="trasua"] .jgl-felt { background: radial-gradient(circle, color-mix(in srgb, var(--pearl) 85%, transparent) 0 6px, transparent 6.5px) 50% 4px / 20px 16px repeat-x,
+  linear-gradient(180deg, color-mix(in srgb, var(--caramel) 22%, var(--paper)), color-mix(in srgb, var(--caramel) 55%, var(--bg)));
+  box-shadow: inset 0 0 0 2.5px color-mix(in srgb, var(--caramel) 70%, var(--bg)), 0 6px 0 color-mix(in srgb, var(--accent) 30%, var(--bg)); }
+html[data-theme="trasua"] .jgk-card { --jgk-back: var(--pearl); }
+html[data-theme="trasua"] .empty-box { border-color: color-mix(in srgb, var(--caramel) 60%, var(--bg)); background: var(--paper); }
+html[data-theme="trasua"] .jg-end.is-win .jg-end-word { color: var(--accent-text); text-shadow: 0 4px 0 color-mix(in srgb, var(--caramel) 60%, var(--bg)); }
+html[data-theme="trasua"] .jg-end-burst { color: var(--caramel); opacity: .55; }
+
+/* ── 7. ĐẤT NẶN — đất sét phủ TẤT CẢ bề mặt (thẻ, danh sách, ô rỗng, bong bóng), bàn cờ nho–oải hương, mặt bàn gối bạc hà ── */
+[data-theme="datnan"] {
+  --glyph: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12.5 2.5c5 0 9.5 3.6 9 9.3-.5 5.6-4.6 9.7-10 9.7S1.8 18 2.2 12.3C2.7 6.3 7.3 2.5 12.5 2.5z'/></svg>");
+  --glyph-bg: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--grape) 55%, #fff), var(--grape) 70%);
+  --ring: #fff;
+}
+html[data-theme="datnan"] :is(.list, .qs-card, .empty-box) { border: 0; box-shadow: var(--clay); background: var(--paper); }
+html[data-theme="datnan"] :is(.pf-band, .me-band) { border: 0; box-shadow: var(--clay); }
+html[data-theme="datnan"] :is(.pf-hero > .ava, .me-ava) { border-width: 6px; box-shadow: 0 12px 22px -10px color-mix(in srgb, var(--ink) 50%, transparent), inset 0 -4px 8px rgba(0, 0, 0, .1); }
+html[data-theme="datnan"] .ofr-ava .ava { box-shadow: 0 0 0 4px #fff, 0 8px 14px -6px color-mix(in srgb, var(--ink) 45%, transparent); }
+html[data-theme="datnan"] .cx { --bub-other: var(--paper); --bub-r: 24px; --bub-r-s: 10px; }
+html[data-theme="datnan"] .cx .msg.is-me .msg-bubble { box-shadow: inset 0 2px 1px rgba(255, 255, 255, .4), inset 0 -4px 6px rgba(0, 0, 0, .14), 0 6px 12px -8px var(--accent); }
+html[data-theme="datnan"] .cx .msg.is-other .msg-bubble { box-shadow: var(--e-1); }
+html[data-theme="datnan"] .jgv { --jgv-sq-l: #f4f1ff; --jgv-sq-d: #b3a3ff; --jgv-co-l: #6f58e6; --jgv-co-d: #f4f1ff; }
+html[data-theme="datnan"] .jgv-frame { border: 0; border-radius: 26px; background: var(--paper); box-shadow: var(--clay); }
+html[data-theme="datnan"] .jgl-felt { background: radial-gradient(90% 70% at 35% 25%, color-mix(in srgb, var(--mint) 45%, #fff), color-mix(in srgb, var(--mint) 70%, var(--bg)) 75%);
+  box-shadow: inset 0 4px 3px rgba(255, 255, 255, .7), inset 0 -10px 18px color-mix(in srgb, var(--ink) 14%, transparent), 0 14px 24px -14px color-mix(in srgb, var(--ink) 45%, transparent); }
+html[data-theme="datnan"] .jgk-card { --jgk-back: var(--grape); }
+html[data-theme="datnan"] .jg-end-card { box-shadow: var(--clay); }
+html[data-theme="datnan"] .jg-end.is-win .jg-end-word { color: var(--accent-text); text-shadow: 0 4px 0 color-mix(in srgb, var(--accent) 30%, var(--paper)), 0 10px 18px color-mix(in srgb, var(--ink) 25%, transparent); }
+html[data-theme="datnan"] .jg-end-burst { color: var(--lemon); opacity: .8; }
+
+/* ── 8. CỰC QUANG — dải sáng làm ký hiệu, avatar vành cực quang, bàn cờ băng–lam đêm (quân sáng / tím), mặt bàn trời đêm có dải sáng ── */
+[data-theme="cucquang"] {
+  --glyph: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M1 16C5 7 9 15 12 9s7-7 11-4v5c-4-3-7-1-10 5S5 15 1 21z'/></svg>");
+  --glyph-bg: linear-gradient(90deg, var(--accent), var(--ice) 50%, var(--violet));
+  --ring: conic-gradient(from 140deg, var(--accent), var(--ice), var(--violet), var(--pink), var(--accent));
+}
+html[data-theme="cucquang"] :is(.pf-band, .me-band) { background: var(--stars), var(--aurora), linear-gradient(180deg, #040b13, var(--bg)); }
+html[data-theme="cucquang"] :is(.pf-hero > .ava, .me-ava) { box-shadow: 0 0 30px -6px color-mix(in srgb, var(--accent) 70%, transparent); }
+html[data-theme="cucquang"] .ofr-ava .ava { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--accent), 0 0 16px -3px var(--accent); }
+html[data-theme="cucquang"] .cx { --bub-me: linear-gradient(130deg, var(--accent), color-mix(in srgb, var(--ice) 80%, var(--accent))); --bub-me-ink: #04201a; --bub-r: 20px; --bub-r-s: 6px; }
+html[data-theme="cucquang"] .cx .msg.is-other .msg-bubble { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ice) 18%, transparent); }
+html[data-theme="cucquang"] .jgv { --jgv-sq-l: #2a5560; --jgv-sq-d: #143039; --jgv-co-l: #7fd8c6; --jgv-co-d: #7fd8c6; --jgv-white: #f2fffb; --jgv-black: #b7a0ff; }
+html[data-theme="cucquang"] .jgv-frame { border-color: color-mix(in srgb, var(--accent) 45%, var(--bg)); box-shadow: 0 0 34px -10px var(--accent); }
+html[data-theme="cucquang"] .jgl-felt { background: var(--stars), radial-gradient(80% 50% at 30% 0%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 70%),
+  radial-gradient(60% 50% at 80% 10%, color-mix(in srgb, var(--violet) 35%, transparent), transparent 70%), color-mix(in srgb, var(--bg) 85%, #0c3a44);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ice) 30%, transparent), 0 0 30px -12px var(--accent); }
+html[data-theme="cucquang"] .jgk-card { --jgk-back: #1d8f86; }
+html[data-theme="cucquang"] .empty-box { border-color: color-mix(in srgb, var(--accent) 35%, transparent); background: radial-gradient(90% 100% at 50% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%); }
+html[data-theme="cucquang"] .jg-end.is-win .jg-end-word { color: var(--accent-text); text-shadow: 0 0 26px color-mix(in srgb, var(--accent) 70%, transparent), 0 0 60px color-mix(in srgb, var(--violet) 50%, transparent); }
+html[data-theme="cucquang"] .jg-end-burst { color: var(--accent); opacity: .35; }
+html[data-theme="cucquang"] body.site .btn:not(:disabled):active { box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 55%, transparent), 0 0 24px -4px var(--accent); }
+
+/* ── 9. HUYỀN THOẠI — Cormorant CHỈ cho chữ lớn (tên trang/tiêu đề mục nhỏ về sans giãn chữ), kim cương vàng đầu mục, avatar khung vàng 2 vòng,
+   bàn cờ da dê–đồng cổ, mặt bàn nhung lam viền vàng kép ── */
+[data-theme="huyenthoai"] {
+  --glyph: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2l6 10-6 10-6-10z'/><circle cx='2.2' cy='12' r='1.6'/><circle cx='21.8' cy='12' r='1.6'/></svg>");
+  --glyph-bg: linear-gradient(180deg, var(--gold2), var(--accent));
+  --ring: linear-gradient(160deg, var(--gold2), var(--accent) 45%, #7a531a);
+}
+html[data-theme="huyenthoai"] .topbar .brand .u-name { font-family: var(--f-ui, "Be Vietnam Pro"), sans-serif; font-weight: 700; letter-spacing: .02em; }
+html[data-theme="huyenthoai"] .pg-h2 { font-size: 1.3rem; }
+html[data-theme="huyenthoai"] .pg-h2 b { font: 500 .82rem/1.3 var(--f-ui, "Be Vietnam Pro"), sans-serif; text-transform: none; letter-spacing: 0; }
+html[data-theme="huyenthoai"] :is(.pf-band, .me-band) { border-color: color-mix(in srgb, var(--accent) 45%, var(--bg)); box-shadow: inset 0 0 0 3px var(--bg), inset 0 0 0 4px color-mix(in srgb, var(--accent) 40%, transparent); }
+html[data-theme="huyenthoai"] :is(.pf-hero > .ava, .me-ava) { box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px color-mix(in srgb, var(--accent) 70%, transparent), 0 0 34px -6px color-mix(in srgb, var(--accent) 60%, transparent); }
+html[data-theme="huyenthoai"] .ofr-ava .ava { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--accent), 0 0 0 5.5px var(--bg), 0 0 0 6.5px color-mix(in srgb, var(--accent) 45%, transparent); }
+html[data-theme="huyenthoai"] .cx { --bub-me: linear-gradient(180deg, var(--gold2), var(--accent)); --bub-me-ink: var(--accent-ink); --bub-r: 14px; --bub-r-s: 4px; }
+html[data-theme="huyenthoai"] .cx .msg.is-other .msg-bubble { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent); }
+html[data-theme="huyenthoai"] .jgv { --jgv-sq-l: #e9d9b1; --jgv-sq-d: #9a7444; --jgv-co-l: #7a5a30; --jgv-co-d: #f1e3bf; }
+html[data-theme="huyenthoai"] .jgv-frame { border: 1px solid var(--accent); background: var(--bg); box-shadow: inset 0 0 0 3px var(--bg), inset 0 0 0 4px color-mix(in srgb, var(--accent) 50%, transparent), 0 0 40px -12px var(--accent); }
+html[data-theme="huyenthoai"] .jgl-felt { background: var(--stars), radial-gradient(110% 90% at 50% 35%, #1d3554, #0c1526 75%);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 70%, transparent), inset 0 0 0 6px var(--bg), inset 0 0 0 7px color-mix(in srgb, var(--accent) 40%, transparent), 0 0 30px -12px var(--accent); }
+html[data-theme="huyenthoai"] .jgk-card { --jgk-back: #1d2a50; --jgk-back-ink: var(--gold2); }
+html[data-theme="huyenthoai"] .empty-box { border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--bg)); box-shadow: inset 0 0 0 3px var(--bg), inset 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent); }
+html[data-theme="huyenthoai"] .jg-end.is-win .jg-end-word { color: var(--gold2); text-shadow: 0 2px 0 #000, 0 0 30px color-mix(in srgb, var(--accent) 70%, transparent); }
+html[data-theme="huyenthoai"] .jg-end-burst { color: var(--gold2); opacity: .5; }
+html[data-theme="huyenthoai"] body.site .btn-accent:not(:disabled):active { box-shadow: inset 0 2px 6px rgba(0, 0, 0, .35), 0 0 28px -4px var(--accent); }
+
+/* ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   ĐỢT 3 (THEMES-2026 §6) — chi tiết hoàn thiện ở MỌI màn: toast, bottom sheet, thanh tiến độ nhiệm vụ, bục xếp hạng, huy hiệu,
+   ô biểu tượng hàng, logo chữ, chỉ báo tab, ô nhập/nút form, màn thắng/thua có chuyển động riêng (chỉ khi KHÔNG giảm chuyển động).
+   Khung chung đọc biến --toast-* --sheet-* --bar-* --pc; mỗi giao diện chỉ đặt biến + vài quy tắc. Đất nặn làm lại (mục 7).
+   ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+html.t3 .flash:not(.flash-error) { background: var(--toast-bg, #221c19); color: var(--toast-ink, #fff8f0); border: var(--toast-b, 0); border-radius: var(--toast-r, 14px);
+  box-shadow: var(--toast-sh, 0 10px 30px rgba(0, 0, 0, .25)); }
+html.t3 .jg-sheet-box { background: var(--sheet-top, none) top / 100% var(--sheet-top-h, 0px) no-repeat, var(--paper); box-shadow: var(--sheet-sh, 0 -12px 40px rgba(0, 0, 0, .25)); }
+html.t3 .jg-sheet-grip { background: var(--grip, color-mix(in srgb, var(--ink) 25%, var(--line))); }
+html.t3 .qs-bar { background: var(--bar-track, color-mix(in srgb, var(--ink) 12%, var(--paper))); }
+html.t3 .qs-item:not(.is-done) .qs-bar i { background: var(--bar-fill, var(--accent)); box-shadow: var(--bar-sh, none); }
+html.t3 .rk-pod { --pc: var(--silver); } html.t3 .rk-pod.is-1 { --pc: var(--gold); } html.t3 .rk-pod.is-3 { --pc: var(--bronze); }
+html.t3 :is(.pg-title, .hero-title) { text-wrap: balance; }
+
+/* ── ★ NEON — toast/sheet viền ống neon, thanh tiến độ 3 màu phát sáng, bục = khối kính có mép đèn, ô biểu tượng phát sáng ── */
+[data-theme="neon"] { --toast-bg: color-mix(in srgb, var(--bg) 82%, var(--accent)); --toast-ink: var(--ink); --toast-b: 1px solid color-mix(in srgb, var(--cyan) 50%, transparent);
+  --toast-sh: 0 0 26px -8px var(--accent), 0 12px 30px rgba(0, 0, 0, .5); --sheet-top: var(--neon-rule); --sheet-top-h: 2px;
+  --sheet-sh: 0 -14px 40px -14px color-mix(in srgb, var(--accent) 70%, transparent); --grip: var(--cyan);
+  --bar-fill: var(--neon-rule); --bar-sh: 0 0 10px color-mix(in srgb, var(--accent) 80%, transparent); --bar-track: color-mix(in srgb, var(--ink) 10%, var(--bg)); }
+html:is([data-theme="neon"], [data-theme="cucquang"]) .row-ic { background: color-mix(in srgb, var(--ic-bg) 20%, var(--paper)); color: color-mix(in srgb, var(--ic-bg) 70%, var(--ink));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ic-bg) 55%, transparent), 0 0 14px -5px var(--ic-bg); }
+html:is([data-theme="neon"], [data-theme="cucquang"]) .rk-pod .rk-pod-step { border: 0; color: var(--ink);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--pc) 32%, transparent), transparent 75%), var(--paper);
+  box-shadow: inset 0 2px 0 var(--pc), 0 -8px 20px -10px var(--pc); }
+html:is([data-theme="neon"], [data-theme="cucquang"]) .bdg.is-on { border-color: color-mix(in srgb, var(--accent) 60%, transparent); box-shadow: 0 0 18px -8px var(--accent); }
+html[data-theme="neon"] .topbar .logo-mono { background: linear-gradient(135deg, var(--cyan), var(--accent) 34% 66%, var(--magenta)); color: var(--accent-ink); box-shadow: 0 0 14px -3px var(--accent); }
+html[data-theme="neon"] .jg-end.is-lose .jg-end-word { color: color-mix(in srgb, var(--ink) 80%, var(--bg)); text-shadow: -1px 0 0 color-mix(in srgb, var(--magenta) 60%, transparent), 1px 0 0 color-mix(in srgb, var(--cyan) 50%, transparent); }
+
+/* ── BẮC ÂU — toast mực có vạch đất sét, thanh tiến độ rêu trên nền cát, bục phẳng kẻ mực, ô biểu tượng đơn sắc ── */
+[data-theme="bacau"] { --toast-bg: var(--ink); --toast-ink: var(--bg); --toast-r: 10px; --toast-sh: inset 4px 0 0 var(--clay), 0 14px 30px -14px rgba(0, 0, 0, .45);
+  --sheet-sh: 0 -1px 0 var(--line), 0 -24px 40px -24px rgba(0, 0, 0, .3); --grip: var(--ink); --bar-fill: var(--accent); --bar-track: color-mix(in srgb, var(--ink) 9%, var(--paper));
+  --ph: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='78' cy='46' r='22'/><g fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round'><path d='M10 82h100M22 92h76M36 102h48'/></g></svg>"); }
+html[data-theme="bacau"] .row-ic { background: color-mix(in srgb, var(--ink) 9%, var(--paper)); color: var(--ink); }
+html[data-theme="bacau"] .rk-pod .rk-pod-step { background: color-mix(in srgb, var(--pc) 14%, var(--paper)); border: 1px solid var(--line); border-top: 2px solid var(--ink); color: var(--ink); }
+html[data-theme="bacau"] .bdg.is-on { border-color: var(--ink); background: var(--paper); }
+html[data-theme="bacau"] .topbar .logo-mono { background: var(--ink); color: var(--bg); border-radius: 50%; }
+html[data-theme="bacau"] .tabbar a.is-on { font-weight: 700; }
+html[data-theme="bacau"] .jg-end-card { box-shadow: 0 0 0 1px var(--line), 0 24px 40px -24px rgba(0, 0, 0, .35); }
+
+/* ── LO-FI — toast/sheet có dải hoàng hôn, thanh tiến độ đào→hồng→gạch, bục hoàng hôn, huy hiệu kiểu polaroid ── */
+[data-theme="lofi"] { --sunset: linear-gradient(90deg, var(--peach), var(--rose), var(--lav));
+  --toast-bg: var(--sunset) top / 100% 3px no-repeat, var(--ink); --toast-ink: var(--bg); --toast-r: 22px; --toast-sh: 0 16px 30px -14px rgba(90, 40, 60, .6);
+  --sheet-top: var(--sunset); --sheet-top-h: 4px; --grip: var(--rose);
+  --bar-fill: linear-gradient(90deg, var(--peach), var(--rose) 50%, var(--accent)); --bar-track: color-mix(in srgb, var(--lav) 22%, var(--paper)); }
+html[data-theme="lofi"] .tabbar a.is-on::before { background: var(--sunset); width: 34px; margin-left: -17px; }
+html[data-theme="lofi"] .row-ic { border-radius: 50%; background: color-mix(in srgb, var(--ic-bg) 20%, var(--paper)); color: color-mix(in srgb, var(--ic-bg) 60%, var(--ink)); }
+html[data-theme="lofi"] .rk-pod .rk-pod-step { border: 0; color: var(--ink); background: var(--grain) 0 0 / 180px 180px, linear-gradient(180deg, color-mix(in srgb, var(--pc) 34%, var(--paper)), color-mix(in srgb, var(--lav) 30%, var(--paper))); border-radius: 18px 18px 0 0; }
+html[data-theme="lofi"] .bdg.is-on { border: 0; background: var(--paper); box-shadow: 0 8px 16px -10px rgba(90, 40, 60, .55); transform: rotate(-1.2deg); }
+html[data-theme="lofi"] .bdg.is-on:nth-child(even) { transform: rotate(1.4deg); }
+html[data-theme="lofi"] .topbar .logo-mono { border-radius: 50%; background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 85%, #f2a25c), var(--accent) 50%, color-mix(in srgb, var(--accent) 75%, #5b2f6b)); color: var(--accent-ink); }
+html[data-theme="lofi"] .jg-end.is-lose .jg-end-word { color: color-mix(in srgb, var(--ink) 80%, var(--lav)); }
+
+/* ── Y2K — toast viền hologram, thanh tiến độ thạch bóng, bục mạ chrome, huy hiệu viền hologram, logo có vòng bạc ── */
+[data-theme="y2k"] { --holo-l: linear-gradient(90deg, #ff8ad8, var(--cyan), var(--lime), var(--lilac));
+  --toast-bg: linear-gradient(var(--ink), var(--ink)) padding-box, var(--holo-l) border-box; --toast-b: 2px solid transparent; --toast-ink: var(--bg); --toast-r: 22px;
+  --sheet-top: var(--holo-l); --sheet-top-h: 4px; --grip: var(--lilac);
+  --bar-fill: linear-gradient(180deg, rgba(255, 255, 255, .5), transparent 55%), linear-gradient(90deg, #ff6ac1, var(--accent)); --bar-sh: inset 0 -2px 2px rgba(0, 0, 0, .15);
+  --bar-track: color-mix(in srgb, var(--lilac) 16%, var(--paper)); }
+html[data-theme="y2k"] .tabbar a.is-on::before { background: var(--holo-l); height: 4px; }
+html[data-theme="y2k"] .row-ic { background: var(--chrome); color: color-mix(in srgb, var(--ic-bg) 75%, var(--ink)); box-shadow: inset 0 1px 0 #fff, 0 0 0 1px color-mix(in srgb, var(--lilac) 70%, transparent); }
+html[data-theme="y2k"] .rk-pod .rk-pod-step { background: var(--chrome); border: 1px solid #fff; color: var(--ink); box-shadow: inset 0 3px 0 var(--pc), 0 0 0 1px color-mix(in srgb, var(--lilac) 70%, transparent); }
+html[data-theme="y2k"] .bdg.is-on { border: 2px solid transparent; background: linear-gradient(var(--paper), var(--paper)) padding-box, var(--holo) border-box; }
+html[data-theme="y2k"] .topbar .logo-mono { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--cyan); }
+
+/* ── RISO — toast mực có bóng hồng lệch, sheet viền mực + dải vàng, thanh tiến độ hồng chấm tram, bục in 3 màu mực ── */
+[data-theme="riso"] { --toast-bg: var(--ink); --toast-ink: var(--paper); --toast-r: 3px; --toast-sh: 4px 4px 0 var(--accent);
+  --sheet-top: linear-gradient(var(--yel), var(--yel)); --sheet-top-h: 10px; --grip: var(--ink); --sheet-sh: 0 -5px 0 var(--accent);
+  --bar-fill: radial-gradient(color-mix(in srgb, var(--ink) 30%, transparent) 1.1px, transparent 1.6px) 0 0 / 5px 5px, var(--accent); --bar-track: var(--paper); }
+html[data-theme="riso"] .jg-sheet-box { border: 2px solid var(--ink); border-bottom: 0; }
+html[data-theme="riso"] .qs-bar { border-radius: 2px; box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ink) 30%, var(--paper)); }
+html[data-theme="riso"] .qs-bar i { border-radius: 0; }
+html[data-theme="riso"] .row-ic { background: color-mix(in srgb, var(--ic-bg) 40%, var(--paper)); color: var(--ink); border-radius: 3px; box-shadow: inset 0 0 0 1.5px var(--ink), 2px 2px 0 var(--ink); }
+html[data-theme="riso"] .rk-pod .rk-pod-step { border: 2px solid var(--ink); border-bottom: 0; border-radius: 2px 2px 0 0; color: var(--ink);
+  background: radial-gradient(color-mix(in srgb, var(--accent) 50%, transparent) 1.4px, transparent 1.9px) 0 0 / 8px 8px, var(--paper); }
+html[data-theme="riso"]:not([data-cc]) .rk-pod.is-1 .rk-pod-step { background: var(--yel); }
+html[data-theme="riso"] .rk-pod.is-3 .rk-pod-step { background: color-mix(in srgb, var(--accent) 35%, var(--paper)); }
+html[data-theme="riso"] .bdg.is-on { border: 2px solid var(--ink); background: var(--paper); box-shadow: 3px 3px 0 var(--accent); }
+html[data-theme="riso"] .topbar .logo-mono { border-radius: 2px; box-shadow: 2px 2px 0 var(--ink); }
+html[data-theme="riso"] .jg-end-card { border: 2px solid var(--ink); box-shadow: 6px 6px 0 var(--accent); }
+
+/* ── WIN98 — toast = bong bóng nhắc vàng, sheet = cửa sổ có thanh tiêu đề, thanh tiến độ khối xanh từng ô, bục bevel ── */
+[data-theme="win98"] { --toast-bg: #ffffe1; --toast-ink: #000; --toast-b: 1px solid #000; --toast-r: 0; --toast-sh: 2px 2px 0 rgba(0, 0, 0, .45);
+  --sheet-top: linear-gradient(90deg, var(--accent), var(--title2)); --sheet-top-h: 24px; --grip: #fff; --sheet-sh: var(--bevel), 0 -3px 0 rgba(0, 0, 0, .25);
+  --bar-fill: repeating-linear-gradient(90deg, var(--accent) 0 8px, transparent 8px 10px); --bar-track: var(--paper); }
+html[data-theme="win98"] .flash-line + .flash-line { border-top-color: rgba(0, 0, 0, .25); }
+html[data-theme="win98"] .flash, html[data-theme="win98"] .jg-sheet, html[data-theme="win98"] .jg-sheet-box { animation-timing-function: steps(3); }
+html[data-theme="win98"] .jg-sheet-box { border: 0; }
+html[data-theme="win98"]:not([data-cc], [data-mode="dark"]) .qs-bar { background: #fff; padding: 2px; box-shadow: inset 0 0 0 1px #808080; }
+html[data-theme="win98"]:not([data-cc], [data-mode="dark"]) .row-ic { background: #c0c0c0; color: #000; box-shadow: var(--bevel); }
+html[data-theme="win98"]:not([data-cc], [data-mode="dark"]) .rk-pod .rk-pod-step { border: 0; background: #c0c0c0; color: #000; box-shadow: var(--bevel); }
+html[data-theme="win98"]:not([data-cc], [data-mode="dark"]) .rk-pod.is-1 .rk-pod-step { background: linear-gradient(90deg, var(--accent), var(--title2)); color: var(--accent-ink); }
+html[data-theme="win98"]:not([data-cc], [data-mode="dark"]) .bdg { border: 0; box-shadow: var(--bevel-in); background: #d4d4d4; }
+html[data-theme="win98"]:not([data-cc], [data-mode="dark"]) .bdg.is-on { box-shadow: var(--bevel); background: #c0c0c0; }
+html[data-theme="win98"]:not([data-cc], [data-mode="dark"]) .seg { background: #c0c0c0; box-shadow: var(--bevel-in); }
+html[data-theme="win98"] .empty-box::before { filter: grayscale(.2); }
+
+/* ── TRÀ SỮA — toast trân châu có gờ caramel, sheet có viền trà, thanh tiến độ = ống hút trà có trân châu, bục = 3 vị ── */
+[data-theme="trasua"] { --toast-bg: var(--pearl); --toast-ink: #fffaf3; --toast-r: 20px; --toast-sh: 0 4px 0 var(--caramel), 0 14px 28px -12px rgba(43, 26, 18, .5);
+  --sheet-top: linear-gradient(var(--caramel), var(--caramel)); --sheet-top-h: 6px; --grip: var(--pearl);
+  --bar-fill: radial-gradient(circle, color-mix(in srgb, var(--pearl) 70%, transparent) 0 2.4px, transparent 2.9px) 2px 50% / 10px 100% repeat-x, linear-gradient(180deg, color-mix(in srgb, var(--caramel) 80%, #fff), var(--caramel));
+  --bar-track: color-mix(in srgb, var(--caramel) 18%, var(--paper)); }
+html[data-theme="trasua"] .qs-bar { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--caramel) 40%, var(--paper)); }
+html[data-theme="trasua"] .tabbar a.is-on::before { top: -5px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #7a5644, var(--pearl) 65%); }
+html[data-theme="trasua"] .row-ic { border-radius: 50%; background: color-mix(in srgb, var(--ic-bg) 22%, var(--paper)); color: color-mix(in srgb, var(--ic-bg) 50%, var(--ink));
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--ic-bg) 40%, var(--bg)); }
+html[data-theme="trasua"] .rk-pod .rk-pod-step { border: 2px solid color-mix(in srgb, var(--caramel) 70%, var(--bg)); border-bottom: 0; border-radius: 16px 16px 0 0; color: var(--ink);
+  background: radial-gradient(circle, color-mix(in srgb, var(--pearl) 80%, transparent) 0 4px, transparent 4.5px) 3px calc(100% - 3px) / 12px 11px repeat-x, color-mix(in srgb, var(--taro) 40%, var(--paper)); }
+html[data-theme="trasua"] .rk-pod.is-1 .rk-pod-step { background-color: color-mix(in srgb, var(--caramel) 50%, var(--paper)); }
+html[data-theme="trasua"] .rk-pod.is-3 .rk-pod-step { background-color: color-mix(in srgb, var(--matcha) 50%, var(--paper)); }
+html[data-theme="trasua"] .bdg.is-on { border: 2px solid color-mix(in srgb, var(--caramel) 60%, var(--bg)); box-shadow: 0 3px 0 color-mix(in srgb, var(--caramel) 50%, var(--bg)); }
+html[data-theme="trasua"] .topbar .logo-mono { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #7a5644, var(--pearl) 62%); color: #fffaf3; }
+
+/* ── CỰC QUANG — toast kính mờ có dải cực quang, thanh tiến độ cực quang phát sáng (ô biểu tượng/bục dùng chung với neon) ── */
+[data-theme="cucquang"] { --aur-l: linear-gradient(90deg, var(--accent), var(--ice), var(--violet));
+  --toast-bg: var(--aur-l) top / 100% 2px no-repeat, color-mix(in srgb, var(--bg) 84%, #7fd8ff); --toast-ink: var(--ink); --toast-b: 1px solid color-mix(in srgb, var(--ice) 22%, transparent); --toast-r: 18px;
+  --toast-sh: 0 0 30px -10px var(--accent), 0 14px 30px rgba(0, 0, 0, .5); --sheet-top: var(--aur-l); --sheet-top-h: 2px; --grip: var(--ice);
+  --bar-fill: var(--aur-l); --bar-sh: 0 0 12px color-mix(in srgb, var(--accent) 60%, transparent); --bar-track: color-mix(in srgb, var(--ink) 10%, var(--bg));
+  --ph: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><path d='M4 70C24 30 44 62 60 40s36-24 56-12v18C96 34 80 40 62 60S24 52 4 88z'/><path d='M6 110l26-22 14 10 20-18 48 30z' opacity='.6'/><circle cx='26' cy='22' r='2'/><circle cx='96' cy='14' r='1.6'/><circle cx='62' cy='18' r='1.2'/></svg>"); }
+html[data-theme="cucquang"] .topbar .logo-mono { background: linear-gradient(135deg, var(--accent), var(--ice) 55%, var(--violet)); color: #04201a; }
+
+/* ── HUYỀN THOẠI — toast/sheet khung vàng 2 lớp, thanh tiến độ thỏi vàng, bục đá có khung vàng, số không dùng chữ có chân (1 ≠ I) ── */
+[data-theme="huyenthoai"] { --toast-bg: color-mix(in srgb, var(--bg) 92%, var(--accent)); --toast-ink: var(--ink); --toast-b: 1px solid var(--accent); --toast-r: 8px;
+  --toast-sh: inset 0 0 0 3px color-mix(in srgb, var(--bg) 92%, var(--accent)), inset 0 0 0 4px color-mix(in srgb, var(--accent) 45%, transparent), 0 14px 30px rgba(0, 0, 0, .6);
+  --sheet-top: linear-gradient(90deg, transparent, var(--accent), transparent); --sheet-top-h: 2px; --grip: var(--accent);
+  --bar-fill: linear-gradient(180deg, var(--gold2), var(--accent) 60%, #8a5a1a); --bar-track: var(--bg); }
+html[data-theme="huyenthoai"] .qs-bar { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent); }
+html[data-theme="huyenthoai"] .jg-sheet-box { border-color: color-mix(in srgb, var(--accent) 45%, var(--bg)); }
+html[data-theme="huyenthoai"] .row-ic { border-radius: 50%; background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--accent) 22%, var(--bg)), var(--bg)); color: var(--gold2);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 65%, transparent); }
+html[data-theme="huyenthoai"] .rk-pod .rk-pod-step { border: 1px solid color-mix(in srgb, var(--pc) 70%, var(--bg)); border-bottom: 0; color: color-mix(in srgb, var(--pc) 60%, var(--ink));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--pc) 20%, var(--paper)), var(--paper)); box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4px color-mix(in srgb, var(--pc) 35%, transparent); }
+html[data-theme="huyenthoai"] .bdg.is-on { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--paper), inset 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent); }
+html[data-theme="huyenthoai"] .topbar .logo-mono { background: var(--bg); color: var(--accent-text); box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 2px var(--bg), 0 0 0 3px color-mix(in srgb, var(--accent) 50%, transparent); }
+html[data-theme="huyenthoai"] :is(.qs-streak-n, .rk-pod-val, .pf-kpis b, .me-kpis b) { font-family: var(--f-ui, "Be Vietnam Pro"), sans-serif; }
+
+/* ── ĐẤT NẶN (làm lại) — "nặn tay": khối có ĐỘ DÀY (gờ tím dưới đáy như miếng đất ép), góc bo lệch không đều, viên đất 3 màu có điểm sáng
+   rơi vãi trên nền, ký hiệu mục = 2 viên đất cam + bạc hà, nút = phiến cam có gờ, bấm là ép bẹp; tiêu đề chữ mập có gờ nổi. ── */
+[data-theme="datnan"] {
+  --blob: 30px 24px 32px 26px / 26px 32px 24px 30px; --slab: color-mix(in srgb, var(--grape) 42%, var(--bg));
+  --e-1: inset 0 2px 0 rgba(255, 255, 255, .85), inset 0 -3px 6px color-mix(in srgb, var(--grape) 10%, transparent), 0 5px 0 var(--slab), 0 12px 18px -10px color-mix(in srgb, var(--ink) 35%, transparent);
+  --clay: inset 0 2px 1px rgba(255, 255, 255, .85), inset 0 -6px 12px color-mix(in srgb, var(--grape) 14%, transparent), 0 6px 0 var(--slab), 0 16px 24px -12px color-mix(in srgb, var(--ink) 40%, transparent);
+  --btn-shadow: inset 0 3px 1px rgba(255, 255, 255, .42), inset 0 -3px 6px rgba(0, 0, 0, .12), 0 5px 0 color-mix(in srgb, var(--accent) 55%, var(--ink));
+  --balls: radial-gradient(circle at calc(100% - 54px) 72px, rgba(255, 255, 255, .8) 0 4px, transparent 5px), radial-gradient(circle at calc(100% - 46px) 80px, var(--accent) 0 16px, color-mix(in srgb, var(--accent) 70%, var(--ink)) 19px, transparent 20px),
+    radial-gradient(circle at calc(100% - 92px) 72px, var(--mint) 0 8px, color-mix(in srgb, var(--mint) 60%, var(--ink)) 10px, transparent 11px), radial-gradient(circle at calc(100% - 18px) 100px, var(--lemon) 0 6px, transparent 7px);
+  --hero-eyebrow: var(--ink);
+  --hero-pattern: radial-gradient(circle at 88% 22%, rgba(255, 255, 255, .7) 0 5px, transparent 6px), radial-gradient(circle at 90% 25%, var(--accent) 0 26px, transparent 27px),
+    radial-gradient(circle at 6% 82%, var(--mint) 0 18px, transparent 19px), radial-gradient(circle at 74% 92%, var(--lemon) 0 11px, transparent 12px);
+  --glyph-art: radial-gradient(circle at 30% 40%, #fff 0 9%, transparent 10%), radial-gradient(circle at 36% 52%, var(--accent) 0 34%, color-mix(in srgb, var(--accent) 70%, var(--ink)) 40%, transparent 41%),
+    radial-gradient(circle at 76% 70%, #fff 0 5%, transparent 6%), radial-gradient(circle at 80% 76%, var(--mint) 0 18%, color-mix(in srgb, var(--mint) 60%, var(--ink)) 23%, transparent 24%);
+  --toast-bg: var(--ink); --toast-ink: var(--bg); --toast-r: 26px 22px 28px 24px; --toast-sh: inset 0 2px 1px rgba(255, 255, 255, .18), inset 0 -4px 8px rgba(0, 0, 0, .35), 0 5px 0 color-mix(in srgb, var(--grape) 55%, var(--ink));
+  --sheet-sh: inset 0 2px 1px rgba(255, 255, 255, .85), 0 -10px 30px -12px color-mix(in srgb, var(--ink) 45%, transparent); --grip: var(--grape);
+  --bar-fill: linear-gradient(180deg, rgba(255, 255, 255, .5), transparent 50%), var(--accent); --bar-sh: inset 0 -2px 3px rgba(0, 0, 0, .18);
+  --bar-track: color-mix(in srgb, var(--grape) 14%, var(--paper));
+}
+html[data-theme="datnan"] body.site { background: var(--balls), radial-gradient(90% 360px at 100% -80px, color-mix(in srgb, var(--lemon) 30%, transparent), transparent 70%), var(--bg); }
+html[data-theme="datnan"][data-cc] body.site { background: var(--bg); }
+html[data-theme="datnan"] :is(.gc, .qp, .qs-card, .list, .empty-box, .jg-end-card, .pf-band, .me-band, .jgv-frame, .bdg) { border-radius: var(--blob); }
+html[data-theme="datnan"] .topbar { border-radius: 0 0 26px 26px; box-shadow: 0 5px 0 var(--slab), 0 12px 20px -14px color-mix(in srgb, var(--ink) 45%, transparent); }
+html[data-theme="datnan"] .tabbar { border-radius: 26px 26px 0 0; box-shadow: 0 -5px 0 var(--slab), inset 0 2px 1px rgba(255, 255, 255, .9); }
+html[data-theme="datnan"] .tabbar a.is-on::before { top: 5px; height: 28px; background: var(--lemon); box-shadow: inset 0 2px 1px rgba(255, 255, 255, .7), inset 0 -3px 5px rgba(0, 0, 0, .14), 0 3px 0 color-mix(in srgb, var(--lemon) 55%, var(--ink)); }
+html[data-theme="datnan"] .tabbar a.is-on { color: var(--ink); }
+html.t3[data-theme="datnan"] .ah-row h2::before { width: 1.4em; -webkit-mask: none; mask: none; background: var(--glyph-art); }
+html[data-theme="datnan"] :is(.pg-title, .hero-title, .jg-end-word) { text-shadow: 0 3px 0 color-mix(in srgb, var(--grape) 28%, var(--bg)); }
+html[data-theme="datnan"] .btn-ghost { box-shadow: inset 0 2px 1px rgba(255, 255, 255, .8), 0 4px 0 var(--slab); border: 0; }
+html[data-theme="datnan"] body.site :is(.btn, .gc:has(.gc-link), .qp):not(:disabled):active { transform: translateY(3px) scale(1.03, .93); box-shadow: inset 0 2px 1px rgba(255, 255, 255, .4), 0 1px 0 var(--slab); }
+html[data-theme="datnan"] .qp::before { inset: auto -30px -36px auto; width: 84px; height: 84px; border-radius: 50%; opacity: 1;
+  background: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, .7) 0 5px, transparent 6px), radial-gradient(circle, var(--mint) 0 60%, color-mix(in srgb, var(--mint) 60%, var(--ink)) 68%, transparent 70%); }
+html[data-theme="datnan"] .row-ic { border-radius: 12px; box-shadow: inset 0 2px 1px rgba(255, 255, 255, .5), inset 0 -3px 5px rgba(0, 0, 0, .18); }
+html[data-theme="datnan"] .rk-pod .rk-pod-step { border: 0; border-radius: 22px 18px 6px 6px; color: var(--ink); background: color-mix(in srgb, var(--grape) 30%, var(--paper)); box-shadow: var(--clay); }
+html[data-theme="datnan"]:not([data-cc]) .rk-pod.is-1 .rk-pod-step { background: var(--lemon); }
+html[data-theme="datnan"] .rk-pod.is-3 .rk-pod-step { background: color-mix(in srgb, var(--accent) 40%, var(--paper)); }
+html[data-theme="datnan"] .bdg { border: 0; box-shadow: var(--e-1); }
+html[data-theme="datnan"] .qs-bar { box-shadow: inset 0 2px 3px color-mix(in srgb, var(--ink) 18%, transparent); }
+html[data-theme="datnan"] .topbar .logo-mono { border-radius: 46% 54% 50% 50% / 55% 45% 55% 45%; box-shadow: inset 0 2px 1px rgba(255, 255, 255, .5), inset 0 -3px 5px rgba(0, 0, 0, .18); }
+html[data-theme="datnan"] .seg { box-shadow: inset 0 2px 4px color-mix(in srgb, var(--ink) 14%, transparent); }
+html[data-theme="datnan"] :is(input, textarea, select):not([type=checkbox]):not([type=radio]):not([type=color]):not(.cx-input) { border-color: transparent; box-shadow: inset 0 3px 5px color-mix(in srgb, var(--ink) 12%, transparent); background: var(--paper); }
+html[data-theme="datnan"] :is(.pf-band, .me-band) { background: radial-gradient(circle at 7% 74%, var(--mint) 0 18px, transparent 19px), radial-gradient(circle at 19% 30%, var(--lemon) 0 9px, transparent 10px),
+  linear-gradient(135deg, color-mix(in srgb, var(--grape) 34%, var(--paper)), color-mix(in srgb, var(--accent) 28%, var(--paper))); }
+html[data-theme="datnan"] .jg-end.is-lose .jg-end-word { color: color-mix(in srgb, var(--ink) 80%, var(--grape)); }
+
+/* Bàn caro (gói chính thức đọc biến --jgc-*) cho 7 giao diện sáng: khung + lưới + màu quân theo chất giao diện (2 giao diện tối ở khối dùng chung) */
+html[data-theme="bacau"] .jgc { --jgc-frame: var(--ink); --jgc-bw: 1.5px; --jgc-shadow: none; --jgc-sheen: none; --jgc-x: var(--accent); --jgc-o: #a0623a; --jgc-chip-r: 8px; }
+html[data-theme="lofi"] .jgc { --jgc-paper: color-mix(in srgb, var(--peach) 14%, var(--paper)); --jgc-frame: var(--rose); --jgc-grid: color-mix(in srgb, var(--rose) 30%, transparent);
+  --jgc-shadow: 0 18px 34px -18px rgba(122, 48, 64, .55); --jgc-x: var(--accent); --jgc-o: #6a58b0; }
+html[data-theme="y2k"] .jgc { --jgc-frame: #fff; --jgc-bw: 3px; --jgc-grid: color-mix(in srgb, var(--lilac) 45%, transparent); --jgc-shadow: 0 0 0 2px var(--cyan), 0 16px 30px -14px var(--accent); --jgc-x: var(--accent); --jgc-o: #1b84b8; }
+html[data-theme="riso"] .jgc { --jgc-r: 3px; --jgc-frame: var(--ink); --jgc-shadow: 6px 6px 0 var(--accent); --jgc-sheen: none; --jgc-grid: color-mix(in srgb, var(--ink) 18%, transparent); --jgc-x: #e0245e; --jgc-o: var(--ink); --jgc-pdy: 0px; --jgc-chip-r: 3px; }
+html[data-theme="win98"] .jgc { --jgc-paper: #fff; --jgc-frame: #808080; --jgc-bw: 1px; --jgc-shadow: var(--bevel), 3px 3px 0 rgba(0, 0, 0, .35); --jgc-sheen: none; --jgc-edge: none; --jgc-grid: #c0c0c0;
+  --jgc-x: #c00000; --jgc-o: var(--accent); --jgc-pdy: 0px; --jgc-chip-r: 0; }
+html[data-theme="trasua"] .jgc { --jgc-frame: var(--caramel); --jgc-bw: 3px; --jgc-grid: color-mix(in srgb, var(--caramel) 30%, transparent); --jgc-shadow: 0 6px 0 color-mix(in srgb, var(--accent) 35%, var(--bg)); --jgc-x: var(--accent); --jgc-o: #7d5fae; }
+html[data-theme="datnan"] .jgc { --jgc-frame: transparent; --jgc-bw: 0px; --jgc-grid: color-mix(in srgb, var(--grape) 20%, transparent); --jgc-shadow: var(--clay); --jgc-x: var(--accent); --jgc-o: var(--grape); --jgc-r: 26px; }
+
+/* Ghế người thắng ở cờ vua (gói đọc --jgv-gold/-ink): theo màu nhấn thay vàng chung */
+html:is([data-theme="neon"], [data-theme="cucquang"]) .jgv { --jgv-gold: var(--accent); --jgv-gold-ink: var(--accent-ink); }
+html[data-theme="win98"] .jgv { --jgv-gold: var(--accent); --jgv-gold-ink: var(--accent-ink); }
+html[data-theme="datnan"] .jgv { --jgv-gold: var(--lemon); --jgv-gold-ink: var(--ink); }
+
+/* Thẻ đăng nhập/đăng ký (.bare-card) + nút Đóng/biểu tượng của bottom sheet */
+html[data-theme="win98"] .bare-card { padding-top: 48px; background: linear-gradient(90deg, var(--accent), var(--title2)) top / 100% 24px no-repeat, var(--paper); box-shadow: var(--bevel), 4px 4px 0 rgba(0, 0, 0, .4); }
+html[data-theme="win98"] :is(.jg-sheet-x, .jg-sheet-list .ic) { background: #c0c0c0; color: #000; box-shadow: var(--bevel); }
+html[data-theme="riso"] .bare-card { border: 2px solid var(--ink); box-shadow: 7px 7px 0 var(--accent); }
+html[data-theme="riso"] :is(.jg-sheet-x, .jg-sheet-list .ic) { background: var(--paper); border: 2px solid var(--ink); }
+html[data-theme="datnan"] .bare-card { border-radius: var(--blob); box-shadow: var(--clay); }
+html[data-theme="datnan"] :is(.jg-sheet-x, .jg-sheet-list .ic) { box-shadow: inset 0 2px 1px rgba(255, 255, 255, .8), 0 4px 0 var(--slab); }
+html[data-theme="huyenthoai"] .bare-card { border: 1px solid color-mix(in srgb, var(--accent) 50%, var(--bg)); box-shadow: inset 0 0 0 4px var(--paper), inset 0 0 0 5px color-mix(in srgb, var(--accent) 35%, transparent), 0 0 50px -16px var(--accent); }
+html[data-theme="neon"] .bare-card { box-shadow: var(--sig-shadow); }
+html[data-theme="cucquang"] .bare-card { box-shadow: 0 0 0 1px color-mix(in srgb, var(--ice) 22%, transparent), 0 0 50px -18px var(--accent); }
+
+/* Màu riêng nền/chữ (data-cc): vùng hero của giao diện tối + nhãn vàng riso + hào quang Y2K theo nền mới (QA đợt 3, trang chưa đăng nhập) */
+html:is([data-theme="cucquang"], [data-theme="huyenthoai"])[data-cc] { --hero-ink: var(--ink); --hero-muted: var(--muted); --hero-eyebrow: var(--accent-text); --hero-bg: var(--bg); }
+html[data-theme="win98"][data-cc] { --field: var(--paper); }
+html[data-theme="y2k"][data-cc] { --hero-bg: var(--bg); }
+html[data-theme="riso"][data-cc] .eyebrow { background: none; color: var(--accent-text); }
+
+/* Chế độ tối người chơi (themes.css G11 đổi token nền/mực; chỗ nào ở đây cứng màu sáng thì vá) — QA43 BUG-2: bút nhớ riso thành hồng đậm dưới chữ sáng */
+html[data-mode="dark"][data-theme="riso"] :is(.ah-row h2, .jg-end.is-win .jg-end-word) { background: linear-gradient(transparent 60%, color-mix(in srgb, var(--accent) 42%, var(--bg)) 60% 92%, transparent 92%); }
+html[data-mode="dark"]:is([data-theme="riso"], [data-theme="datnan"]) .rk-pod.is-1 .rk-pod-step { color: #17142b; }
+html[data-mode="dark"][data-theme="datnan"] .tabbar a.is-on svg { color: #241c4a; }
+html[data-mode="dark"]:is([data-theme="win98"], [data-theme="y2k"]) .empty-box { background: var(--paper); }
+
+/* ── Form đăng nhập / đăng ký / ô nhập theo chất từng giao diện ── */
+html[data-theme="riso"] :is(input, textarea, select):not([type=checkbox]):not([type=radio]):not([type=color]):not(.cx-input) { border: 2px solid var(--ink); border-radius: 3px; background: var(--paper); }
+html[data-theme="riso"] :is(input, textarea):focus-visible { box-shadow: 3px 3px 0 var(--accent); outline: 0; }
+html[data-theme="neon"] :is(input, textarea):focus-visible { border-color: var(--cyan); box-shadow: 0 0 0 3px color-mix(in srgb, var(--cyan) 30%, transparent), 0 0 18px -4px var(--cyan); outline: 0; }
+html[data-theme="cucquang"] :is(input, textarea):focus-visible { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); outline: 0; }
+html[data-theme="huyenthoai"] :is(input, textarea):focus-visible { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 0 16px -4px var(--accent); outline: 0; }
+html[data-theme="bacau"] :is(input, textarea, select):not([type=checkbox]):not([type=radio]):not([type=color]):not(.cx-input) { background: var(--paper); border-color: color-mix(in srgb, var(--ink) 22%, var(--bg)); }
+html[data-theme="trasua"] :is(input, textarea):focus-visible { border-color: var(--caramel); box-shadow: 0 3px 0 var(--caramel); outline: 0; }
+
+/* ── Chuyển động có chủ đề — CHỈ khi người dùng không bật giảm chuyển động; 1 lần, ≤ 700 ms, chỉ transform/opacity ── */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="neon"] .jg-end.is-enter.is-win .jg-end-word { animation: t3-flicker 700ms steps(1) 120ms both; }
+  html[data-theme="bacau"] .jg-end.is-enter .jg-end-word { animation: jg-in 520ms var(--ease) 120ms both; }
+  html[data-theme="lofi"] .jg-end.is-enter .jg-end-word { animation: t3-drift 700ms var(--ease) 120ms both; }
+  html[data-theme="y2k"] .jg-end.is-enter.is-win .jg-end-word { animation: t3-pop 560ms var(--ease-pop, var(--ease)) 120ms both; }
+  html[data-theme="y2k"] .jg-end.is-enter .jg-end-burst { animation: t3-spin 700ms var(--ease) 100ms both; }
+  html[data-theme="riso"] .jg-end.is-enter.is-win .jg-end-word { animation: t3-misreg 520ms steps(4) 120ms both; }
+  html[data-theme="win98"] .jg-end.is-enter :is(.jg-end-card, .jg-end-word) { animation: none; }
+  html[data-theme="trasua"] .jg-end.is-enter .jg-end-word { animation: t3-drop 620ms var(--ease) 120ms both; }
+  html[data-theme="datnan"] .jg-end.is-enter .jg-end-word { animation: t3-squish 640ms var(--ease) 120ms both; }
+  html[data-theme="datnan"] .jg-end.is-enter.is-lose .jg-end-word { animation: t3-sag 640ms var(--ease) 120ms both; }
+  html[data-theme="datnan"] .flash { animation: t3-squish-t 420ms var(--ease); }
+  html[data-theme="datnan"] .tabbar a.is-on svg { animation: t3-squish 480ms var(--ease) both; }
+  html[data-theme="cucquang"] .jg-end.is-enter.is-win .jg-end-word { animation: t3-glow 900ms var(--ease) 120ms both; }
+  html[data-theme="huyenthoai"] .jg-end.is-enter.is-win .jg-end-word { animation: t3-seal 600ms var(--ease) 120ms both; }
+  html[data-theme="win98"] .flash { animation: none; }
+}
+@keyframes t3-flicker { 0% { opacity: 0; } 12% { opacity: .9; } 20% { opacity: .2; } 34% { opacity: 1; } 46% { opacity: .5; } 58%, 100% { opacity: 1; } }
+@keyframes t3-drift { from { opacity: 0; transform: translateY(12px); } }
+@keyframes t3-pop { 0% { opacity: 0; transform: scale(.4) rotate(-6deg); } 70% { opacity: 1; transform: scale(1.12) rotate(2deg); } }
+@keyframes t3-spin { from { opacity: 0; transform: scale(.6) rotate(-40deg); } }
+@keyframes t3-misreg { 0% { opacity: 0; transform: translate(-6px, 3px); } 50% { opacity: 1; transform: translate(4px, -2px); } 75% { transform: translate(-2px, 1px); } }
+@keyframes t3-drop { 0% { opacity: 0; transform: translateY(-26px); } 60% { opacity: 1; transform: translateY(4px); } 80% { transform: translateY(-2px); } }
+@keyframes t3-squish { 0% { opacity: 0; transform: scale(.5, 1.4); } 45% { opacity: 1; transform: scale(1.25, .78); } 70% { transform: scale(.94, 1.06); } }
+@keyframes t3-sag { 0% { opacity: 0; transform: translateY(-10px); } 60% { opacity: 1; transform: scale(1.06, .9) translateY(3px); } 100% { transform: rotate(-2deg); } }
+@keyframes t3-squish-t { 0% { opacity: 0; transform: translate(-50%, 14px) scale(.9, 1.12); } 60% { opacity: 1; transform: translate(-50%, 0) scale(1.04, .95); } }
+@keyframes t3-glow { from { opacity: 0; transform: scale(.94); } 50% { opacity: 1; } }
+@keyframes t3-seal { 0% { opacity: 0; transform: scale(1.5); } 65% { opacity: 1; transform: scale(.97); } }
+
+/* ═══ Ô xem trước trong trình chọn giao diện: ảnh chụp thật màn trang chủ (assets/img/themes/v3/<khóa>.jpg, 240×180) ═══ */
+.ed-swatch:is([data-theme="neon"], [data-theme="bacau"], [data-theme="lofi"], [data-theme="y2k"], [data-theme="riso"], [data-theme="win98"], [data-theme="trasua"], [data-theme="datnan"], [data-theme="cucquang"], [data-theme="huyenthoai"]) {
+  background-position: center top; background-size: cover; background-repeat: no-repeat; }
+.ed-swatch:is([data-theme="neon"], [data-theme="bacau"], [data-theme="lofi"], [data-theme="y2k"], [data-theme="riso"], [data-theme="win98"], [data-theme="trasua"], [data-theme="datnan"], [data-theme="cucquang"], [data-theme="huyenthoai"]) > i,
+.ed-swatch:is([data-theme="neon"], [data-theme="bacau"], [data-theme="lofi"], [data-theme="y2k"], [data-theme="riso"], [data-theme="win98"], [data-theme="trasua"], [data-theme="datnan"], [data-theme="cucquang"], [data-theme="huyenthoai"])::before,
+.ed-swatch:is([data-theme="neon"], [data-theme="bacau"], [data-theme="lofi"], [data-theme="y2k"], [data-theme="riso"], [data-theme="win98"], [data-theme="trasua"], [data-theme="datnan"], [data-theme="cucquang"], [data-theme="huyenthoai"])::after { display: none; }
+.ed-swatch[data-theme="neon"] { background-image: url(../img/themes/v3/neon.jpg); }
+.ed-swatch[data-theme="bacau"] { background-image: url(../img/themes/v3/bacau.jpg); }
+.ed-swatch[data-theme="lofi"] { background-image: url(../img/themes/v3/lofi.jpg); }
+.ed-swatch[data-theme="y2k"] { background-image: url(../img/themes/v3/y2k.jpg); }
+.ed-swatch[data-theme="riso"] { background-image: url(../img/themes/v3/riso.jpg); }
+.ed-swatch[data-theme="win98"] { background-image: url(../img/themes/v3/win98.jpg); }
+.ed-swatch[data-theme="trasua"] { background-image: url(../img/themes/v3/trasua.jpg); }
+.ed-swatch[data-theme="datnan"] { background-image: url(../img/themes/v3/datnan.jpg); }
+.ed-swatch[data-theme="cucquang"] { background-image: url(../img/themes/v3/cucquang.jpg); }
+.ed-swatch[data-theme="huyenthoai"] { background-image: url(../img/themes/v3/huyenthoai.jpg); }
+
+/* ═══ Giảm chuyển động: không trượt bóng, không nghiêng/lún — trạng thái tĩnh giữ nguyên ═══ */
+@media (prefers-reduced-motion: reduce) {
+  html.t3 .btn-accent::after { display: none; }
+  html.t3 :is(.gc, .qp, .btn) { transition: none !important; }
+  html.t3 body.site :is(.gc, .qp, .btn):is(:hover, :active) { transform: none !important; }
+}
+
+/* Phông tiêu đề chỉ có 1 độ đậm (Sigmar One, Anton) hoặc tối đa 600 (Cormorant): tiêu đề mục chợ game ghi cứng 700 -> dùng --head-w, không tô đậm giả */
+html:is([data-theme="y2k"], [data-theme="riso"], [data-theme="huyenthoai"]) .mk-sec-h { font-weight: var(--head-w); }
+/* Tên người không chịu chữ hoa ép của giao diện (UI-PRO 2.1 — .u-name) */
+html.t3 :is(.pf-name, .me-head .row-title) { text-transform: none; letter-spacing: -.01em; }
+
+/* QA45 BUG-7 (y2k): sao ✦ trắng không đè chữ — chế độ tối bỏ sao ở nền trang; thẻ nổi bật chỉ giữ sao rất mờ. */
+html[data-theme="y2k"][data-mode="dark"] body.site { background: radial-gradient(90% 380px at 0% -80px, color-mix(in srgb, var(--lilac) 40%, transparent), transparent 70%), var(--bg); }
+html[data-theme="y2k"] .qp::before { opacity: .22; }

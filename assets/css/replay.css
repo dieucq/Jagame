@@ -1,0 +1,22 @@
+/* Trang xem lại ván (/choi/<id>/xem/<matchId>) — dùng khung .play + .game-stage của play.css; thanh điều khiển dính đáy trên điện thoại. */
+.rp-msg { margin: var(--sp-4, 16px) 0; padding: 14px 16px; border-radius: var(--r-md, 12px); background: var(--soft); color: var(--ink); font-weight: 600; }
+.rp-body { display: grid; gap: 12px; min-width: 0; }
+.rp-stage { min-height: 200px; }
+.rp-stage.is-readonly { -webkit-user-select: none; user-select: none; }   /* QA14 BUG-06: chỉ đọc (thuộc tính inert đặt ở replay.js) */
+.rp-bar { display: grid; gap: 8px; padding: 10px 12px; border-radius: var(--r-md, 14px); background: var(--paper); border: var(--card-bw, 1px) solid var(--line); box-shadow: var(--card-shadow, none); }
+.rp-scrub { width: 100%; min-height: 32px; accent-color: var(--accent); }
+.rp-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.rp-btn { min-width: 48px; min-height: 48px; padding: 0 12px; border-radius: 999px; border: var(--card-bw, 1px) solid var(--line); background: var(--soft); color: var(--ink);
+  font: 700 1.1rem/1 var(--f-body, inherit); cursor: pointer; }
+.rp-btn:active { transform: scale(.94); }
+.rp-play { background: var(--accent); color: var(--accent-ink); border-color: transparent; min-width: 64px; }
+.rp-speed { font-size: .95rem; min-width: 56px; }
+.rp-step { margin: 0; text-align: center; font: 600 .95rem/1.3 var(--f-body, inherit); color: var(--muted); }
+.rp-log { list-style: none; margin: 0; padding: 4px; display: flex; flex-wrap: wrap; gap: 4px; max-height: 180px; overflow-y: auto; border-radius: var(--r-md, 12px); background: var(--soft); }
+.rp-log li { display: contents; }
+.rp-log button { min-height: 36px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; color: var(--ink); font: 600 .9rem/1 var(--f-body, inherit); cursor: pointer; }
+.rp-log .is-cur button { background: var(--accent); color: var(--accent-ink); }
+.rp-foot { margin: 0; text-align: center; }
+@media (max-width: 899px) {
+  .rp-bar { position: sticky; bottom: calc(var(--app-tabbar-h, 0px) + 8px + env(safe-area-inset-bottom)); z-index: 5; }
+}

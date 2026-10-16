@@ -1,0 +1,90 @@
+/* Jagame — kiểm duyệt (P3, POLISH-2 2.12): trang Quản trị → Kiểm duyệt (views/admin/moderation.php) + sheet "Báo cáo" / banner giờ yên tĩnh ở
+   trang người chơi (assets/js/moderation.js — dựng trong JG.sheet chung). Chỉ dùng biến CSS của site.css; điện thoại là chính (vùng bấm ≥ 44px).
+   Tab = .chips (site.css), 1 tầng. Thẻ báo cáo: 2 nút (Bỏ qua · Xử lý ▾ -> sheet), mức nặng = nhãn NGHIÊM TRỌNG + viền trái --danger. */
+
+/* ── trang quản trị ── */
+.mod-privacy { margin: -4px 0 12px; }
+.mod-tabs { margin: 0 0 6px; }
+.mod-tab .badge[hidden] { display: none; }
+.mod-pane[hidden] { display: none; }
+.mod-rt { margin: 0 0 10px; }
+.mod-filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 12px; }
+.mod-filters .btn-sm { min-height: 40px; }
+.mod-logfilter select, .mod-logfilter input { min-height: 44px; margin: 0; flex: 1 1 120px; max-width: 220px; }
+.mod-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.mod-item { position: relative; padding: 14px 16px; border-radius: var(--radius); border: var(--card-bw, 1px) solid var(--line); border-left-width: 4px; background: var(--paper); box-shadow: var(--elev-1); }
+.mod-item.is-high { border-left-color: var(--danger); }
+.mod-item.is-done { opacity: .78; }
+.mod-item.is-new { animation: jg-in 240ms var(--ease); }
+.mod-sev { display: inline-block; padding: 3px 8px; border-radius: 6px; background: var(--danger); color: #fff; font: 800 var(--fs-xs)/1.2 var(--f-body); letter-spacing: .06em; text-transform: uppercase; }
+.mod-item-top { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: var(--fs-sm); }
+.mod-item-top .tag { padding: 5px 9px; }
+.mod-kind { font-weight: 700; }
+.mod-item-who { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 8px 0 6px; }
+.mod-item-who .ava { flex: 0 0 auto; }
+.mod-item-who b { font-size: var(--fs-md); }
+.mod-item-who .muted { font-size: 13px; }
+.mod-quote { margin: 8px 0; padding: 10px 12px; border-radius: var(--r-row); background: var(--soft); border: 1px dashed color-mix(in srgb, var(--ink) 20%, transparent); }
+.mod-quote-main { font-size: 15px; white-space: pre-wrap; word-break: break-word; }
+.mod-quote-ctx { margin: 0 0 6px; padding: 0 0 6px 10px; border-left: 3px solid var(--line); font-size: 13px; color: var(--muted); white-space: pre-wrap; word-break: break-word; }
+.mod-quote-ctx b { color: var(--ink); }
+.mod-quote-more { background: none; border: 0; color: var(--accent-text); font: 600 13px var(--f-body); padding: 4px 0; cursor: pointer; min-height: 32px; }
+.mod-quote-ctx[hidden] { display: none; }
+.mod-photos { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.mod-photos a { display: block; width: 72px; height: 72px; border-radius: 10px; overflow: hidden; background: var(--line); }
+.mod-photos img { width: 100%; height: 100%; object-fit: cover; display: block; filter: blur(8px); transition: filter var(--t-fast) var(--ease); }   /* ảnh bị báo: mờ, trỏ/chạm mới rõ */
+.mod-photos a:hover img, .mod-photos a:focus-visible img, .mod-photos a:active img { filter: none; }
+.mod-note { font-size: var(--fs-sm); margin: 4px 0; }
+.mod-actions { display: flex; gap: 8px; margin-top: 10px; }
+.mod-actions .btn-sm { min-height: 44px; flex: 1; }
+.mod-actions .btn-accent { flex: 1.4; }
+.mod-sheet-form { padding: 8px 4px 4px; }
+.mod-empty { text-align: center; color: var(--muted); padding: 24px 8px; }
+.mod-empty[hidden] { display: none; }
+.mod-more { text-align: center; margin: 12px 0; }
+.mod-handled { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.mod-spam { color: var(--warn, #b36b00); font-weight: 600; }
+.mod-log { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+.mod-log th, .mod-log td { padding: 8px 6px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.mod-log th { font-size: var(--fs-xs); color: var(--muted); font-weight: 600; }
+@media (max-width: 640px) {
+  .mod-log thead { display: none; }
+  .mod-log tr { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .mod-log td { border: 0; padding: 0; }
+  .mod-log td:nth-child(5) { grid-column: 1 / -1; }
+}
+.mod-try, .mod-addword { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+.mod-try input, .mod-addword input[type="text"] { flex: 1 1 200px; min-height: 48px; font-size: 16px; margin: 0; }
+.mod-addword select { flex: 1 1 220px; margin: 0; }
+.mod-try .btn, .mod-addword .btn { min-height: 48px; }
+.mod-try-out { padding: 10px 12px; border-radius: var(--r-row); background: var(--soft); white-space: pre-wrap; word-break: break-word; }
+.mod-try-out.is-clean { background: color-mix(in srgb, var(--ok, #2e8b57) 12%, var(--paper)); }
+.mod-try-out.is-bad { background: color-mix(in srgb, var(--danger) 12%, var(--paper)); }
+.mod-words { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.mod-word { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.mod-word.is-off .mod-word-text { text-decoration: line-through; color: var(--muted); }
+.mod-word-text { flex: 1 1 120px; font-size: 16px; }
+.mod-word-mode { flex: 0 1 200px; min-height: 44px !important; margin: 0; font-size: var(--fs-sm); }
+.mod-word .btn-sm { min-height: 44px; }
+.mod-times { display: flex; gap: 12px; flex-wrap: wrap; margin: 8px 0; }
+.mod-times label { display: grid; gap: 4px; font-weight: 600; }
+.mod-times input { min-height: 48px; font-size: 16px; margin: 0; width: 9em; }
+
+/* ── phía người chơi: nội dung sheet báo cáo (trong .jg-sheet-box) + banner giờ yên tĩnh ── */
+.mod-sheet { padding: 0 4px; }
+.mod-reasons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 10px; }
+.mod-reason { min-height: 56px; padding: 8px 10px; border-radius: var(--r-row); border: 2px solid var(--line); background: var(--paper); color: var(--ink); font: 600 var(--fs-sm)/1.25 var(--f-body);
+  display: flex; align-items: center; gap: 8px; text-align: left; cursor: pointer; }
+.mod-reason span:first-child { font-size: 22px; }
+.mod-reason.is-on { border-color: var(--accent); background: var(--soft); }
+.mod-sheet textarea { width: 100%; min-height: 64px; font-size: 16px; border-radius: var(--r-row); border: 1px solid var(--line); padding: 10px; margin: 0 0 10px; background: var(--field, var(--paper)); color: var(--ink); resize: vertical; box-sizing: border-box; }
+.mod-sheet-btns { display: flex; gap: 8px; }
+.mod-sheet-btns .btn { flex: 1; min-height: 48px; }
+.mod-sheet-ok { text-align: center; padding: 18px 0; font-size: 16px; }
+.mod-sheet-ok span { display: block; font-size: 40px; margin-bottom: 6px; }
+.jg-quiet-banner { position: fixed; left: 50%; top: calc(var(--topbar-h, 56px) + 8px + env(safe-area-inset-top)); transform: translateX(-50%); z-index: 1100; max-width: min(94vw, 520px); padding: 10px 16px;
+  border-radius: 999px; background: color-mix(in srgb, var(--ink) 88%, #223); color: #fff; font: 600 var(--fs-sm)/1.3 var(--f-body); box-shadow: var(--elev-2);
+  display: flex; align-items: center; gap: 8px; }
+.jg-quiet-banner[hidden] { display: none; }
+html.is-quiet .cx-input, html.is-quiet .cx textarea { opacity: .5; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .mod-item.is-new { animation: none; } .mod-photos img { transition: none; } }

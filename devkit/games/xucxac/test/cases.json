@@ -1,0 +1,36 @@
+{
+  "cases": [
+    {
+      "name": "khai cuộc: ghế 0 tới lượt, 0 điểm",
+      "players": 3,
+      "steps": [],
+      "result": null,
+      "view": [
+        { "seat": 0, "match": { "proto": 2, "phase": "play", "turn": 0, "you": 0, "turnPts": 0, "scores": [0, 0, 0], "target": 30 } },
+        { "seat": -1, "match": { "you": -1, "turn": 0 } }
+      ]
+    },
+    {
+      "name": "sai: giữ điểm khi chưa gieo, sai lượt, nước rác",
+      "steps": [
+        { "seat": 0, "move": { "type": "hold" }, "error": "Gieo ít nhất" },
+        { "seat": 1, "move": { "type": "roll" }, "error": "Chưa tới lượt" },
+        { "seat": 0, "move": { "type": "cheat" }, "error": "không hợp lệ" },
+        { "seat": 9, "move": { "type": "roll" }, "error": "không ngồi" }
+      ]
+    },
+    {
+      "name": "2 người: đầu hàng thì người kia thắng",
+      "players": 2,
+      "steps": [ { "seat": 0, "move": { "type": "resign" } }, { "seat": 1, "move": { "type": "roll" }, "error": "kết thúc" } ],
+      "result": { "winners": [1], "reason": "resign" }
+    },
+    {
+      "name": "3 người: ghế 0 đầu hàng, ván chạy tiếp tới ghế 1",
+      "players": 3,
+      "steps": [ { "seat": 0, "move": { "type": "resign" } } ],
+      "result": null,
+      "view": [ { "seat": 0, "match": { "youDone": true, "turn": 1 } }, { "seat": 1, "match": { "youDone": false, "turn": 1 } } ]
+    }
+  ]
+}

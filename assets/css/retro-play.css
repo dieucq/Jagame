@@ -1,0 +1,65 @@
+/* Máy chơi game cổ điển — khung chơi (assets/js/retro-play.js). Menu theo biến CSS của giao diện; màn chơi luôn nền đen kiểu máy. */
+.retro-root.rt-ready { display: block; place-items: unset; background: transparent; color: var(--ink); overflow: visible; min-height: 0; }
+.rt-menu { display: grid; gap: 12px; }
+.rt-card { background: var(--paper, #fff); border: 1px solid var(--line, #ddd); border-radius: var(--radius, 12px); padding: 14px; color: var(--ink, #222); }
+.rt-card h2 { margin: 0 0 6px; font-size: 20px; } .rt-card h3 { margin: 0 0 8px; font-size: 15px; }
+.rt-muted { color: var(--muted, #777); font-size: 13px; margin: 6px 0 0; }
+.rt-msg { margin: 8px 0 0; font-size: 14px; } .rt-msg.warn { color: #b36b00; font-weight: 600; } .rt-msg[hidden] { display: none; }
+.rt-sep { margin: 14px 0 6px; font-size: 13px; color: var(--muted, #777); text-transform: uppercase; letter-spacing: .04em; }
+.rt-btn { font: inherit; color: var(--ink, #222); background: var(--paper, #fff); border: 2px solid var(--line, #ddd); border-radius: var(--radius, 12px); min-height: 44px; min-width: 44px; padding: 0 14px; cursor: pointer; }
+.rt-btn:active { transform: scale(.97); } .rt-btn:disabled { opacity: .45; }
+.rt-btn.rt-primary { background: var(--accent, #e0457b); color: var(--accent-ink, #fff); border-color: transparent; font-weight: 700; }
+.rt-btn.rt-ghost { background: transparent; }
+.rt-btn.rt-big { width: 100%; min-height: 52px; font-size: 17px; margin-top: 8px; }
+.rt-seatpick { display: flex; gap: 8px; margin: 4px 0; }
+.rt-chip { font: inherit; min-height: 44px; flex: 1; border-radius: 999px; border: 2px solid var(--line, #ddd); background: var(--paper, #fff); color: var(--ink, #222); cursor: pointer; }
+.rt-chip.on { background: var(--accent, #e0457b); color: var(--accent-ink, #fff); border-color: transparent; font-weight: 700; }
+.rt-join { display: flex; gap: 8px; margin-top: 10px; }
+.rt-join input { flex: 1; min-width: 0; font: inherit; font-size: 16px; font-weight: 700; letter-spacing: .18em; text-align: center; text-transform: uppercase; min-height: 44px; border-radius: var(--radius, 12px); border: 2px solid var(--line, #ddd); background: var(--bg, #fff); color: var(--ink, #222); }
+.rt-roomcard { margin-top: 6px; } .rt-code { font-size: 40px; font-weight: 800; letter-spacing: .2em; text-align: center; padding: 4px 0; }
+.rt-seats { list-style: none; margin: 0 0 6px; padding: 0; display: grid; gap: 4px; } .rt-seats li.off { opacity: .55; }
+.rt-linkrow { display: flex; gap: 8px; margin: 8px 0; } .rt-linkrow input { flex: 1; min-width: 0; font: inherit; font-size: 16px; min-height: 44px; padding: 0 10px; border-radius: var(--radius, 12px); border: 2px solid var(--line, #ddd); background: var(--bg, #fff); color: var(--ink, #222); }
+.rt-rooms { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.rt-rooms li { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; } .rt-rooms small { color: var(--muted, #777); }
+.rt-rbtn { display: flex; gap: 6px; }
+.rt-help p { margin: 0; font-size: 14px; }
+
+/* màn chơi */
+#rt-stage { position: fixed; inset: 0; z-index: 1000; background: #000; overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; color: #fff; }
+#rt-stage[hidden] { display: none; }
+body.rt-playing { overflow: hidden; }
+#rt-screen { position: absolute; image-rendering: pixelated; image-rendering: crisp-edges; background: #000; }
+#rt-padRoot { position: absolute; left: 0; right: 0; top: 0; bottom: 0; pointer-events: none; z-index: 5; }
+.jgpad-gear { z-index: 6; }
+#rt-bar { position: absolute; z-index: 30; left: calc(8px + env(safe-area-inset-left, 0px)); top: calc(8px + env(safe-area-inset-top, 0px)); display: flex; gap: 8px; align-items: center; transition: opacity .25s, transform .25s; max-width: calc(100% - 100px); }
+#rt-bar.hide { opacity: 0; pointer-events: none; transform: translateY(-8px); }
+#rt-bar button { background: rgba(20, 22, 30, .72); color: #fff; border: 1px solid rgba(255, 255, 255, .25); border-radius: 12px; font-size: 20px; padding: 0; width: 44px; height: 44px; cursor: pointer; flex: none; }
+#rt-names { display: flex; gap: 6px; flex-wrap: wrap; font-size: 12px; } .rt-nm { background: rgba(20, 22, 30, .72); padding: 3px 8px; border-radius: 999px; white-space: nowrap; } .rt-nm.off { opacity: .5; text-decoration: line-through; }
+#rt-stage.land #rt-bar { left: 50%; transform: translateX(-50%); max-width: 70%; } #rt-stage.land #rt-bar.hide { transform: translate(-50%, -8px); }
+#rt-netchip { position: absolute; z-index: 29; left: calc(8px + env(safe-area-inset-left, 0px)); bottom: calc(6px + env(safe-area-inset-bottom, 0px)); font: 11px/1.2 ui-monospace, Menlo, monospace; color: #cfe; background: rgba(0, 0, 0, .45); padding: 3px 7px; border-radius: 8px; pointer-events: none; }
+#rt-stage.land #rt-netchip { left: auto; right: calc(8px + env(safe-area-inset-right, 0px)); bottom: calc(4px + env(safe-area-inset-bottom, 0px)); }
+#rt-overlay { position: absolute; z-index: 40; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; background: rgba(0, 0, 0, .6); color: #fff; font-size: 20px; padding: 24px; }
+#rt-overlay[hidden], #rt-toast[hidden], #rt-panel[hidden], #rt-netchip[hidden] { display: none; }
+#rt-toast { position: absolute; z-index: 45; left: 50%; transform: translateX(-50%); bottom: calc(24px + env(safe-area-inset-bottom, 0px)); max-width: 88vw; background: rgba(20, 22, 30, .92); border: 1px solid #444; padding: 10px 14px; border-radius: 12px; font-size: 14px; text-align: center; }
+#rt-says { position: absolute; z-index: 35; left: 50%; transform: translateX(-50%); top: calc(64px + env(safe-area-inset-top, 0px)); display: grid; gap: 4px; justify-items: center; pointer-events: none; }
+.rt-say { background: rgba(224, 69, 123, .9); color: #fff; padding: 4px 12px; border-radius: 999px; font-size: 15px; font-weight: 700; }
+#rt-panel { position: absolute; z-index: 50; inset: 0; background: rgba(0, 0, 0, .55); display: flex; align-items: center; justify-content: center; padding: 12px; }
+.rt-sheet { background: #1b1f27; border: 1px solid #2c3340; border-radius: 14px; padding: 10px; width: min(560px, 100%); max-height: 92%; overflow: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.rt-sheet h3 { grid-column: 1/-1; margin: 2px 4px; font-size: 14px; color: #9aa3b2; font-weight: 600; }
+.rt-sheet button { min-height: 46px; text-align: left; font: inherit; color: #eceff4; background: #2c3340; border: 1px solid #3a4352; border-radius: 12px; padding: 0 12px; cursor: pointer; }
+.rt-sheet button:disabled { opacity: .45; } .rt-sheet .full { grid-column: 1/-1; } .rt-sheet small { color: #9aa3b2; }
+.rt-says-pick { display: flex; flex-wrap: wrap; gap: 6px; } .rt-says-pick button { min-height: 40px; }
+@media (max-width: 420px) { .rt-sheet { grid-template-columns: 1fr; } }
+/* nút vai SNES */
+.rt-sh { position: absolute; z-index: 8; width: 96px; height: 44px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; color: #fff; background: rgba(20, 22, 30, .42); border: 2px solid rgba(255, 255, 255, .55); border-radius: 12px; touch-action: none; }
+.rt-sh.on { background: var(--accent, #e0457b); box-shadow: 0 0 14px var(--accent, #e0457b); }
+.rt-shl { left: calc(12px + env(safe-area-inset-left, 0px)); } .rt-shr { right: calc(12px + env(safe-area-inset-right, 0px)); }
+/* ngang: Select/Start ở dải trái, trên D-pad (không đè hình) */
+#rt-stage.land .jgpad-g[data-g="small"] { left: calc(16px + env(safe-area-inset-left, 0px)) !important; right: auto !important; top: auto !important; bottom: calc(var(--jgp-u) * 2.4 + 34px + env(safe-area-inset-bottom, 0px)) !important; }
+.jgpad-b[data-id="ta"]::after, .jgpad-b[data-id="tb"]::after { content: "⚡"; position: absolute; right: 6%; top: 2%; font-size: .7em; }
+.jgpad-b[data-id="ta"], .jgpad-b[data-id="tb"] { border-style: dashed; }
+/* SNES: nút vai ở hai góc trên -> đẩy bánh răng ⚙ của JGUI.pad xuống dưới nút R */
+#rt-stage.snes .jgpad-gear { top: calc(60px + env(safe-area-inset-top, 0px)) !important; }
+#rt-stage.snes.land .jgpad-gear { top: calc(60px + env(safe-area-inset-top, 0px)) !important; }
+.rt-sh[hidden]{display:none}
+.rt-join input::placeholder { letter-spacing: 0; font-size: 14px; font-weight: 600; }

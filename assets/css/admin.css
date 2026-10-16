@@ -1,0 +1,94 @@
+/* Jagame — bổ sung trang quản trị (nạp sau app.css/site.css/themes.css trong layout_admin.php). Quản trị mặc áo giao diện
+   đang chọn (nền, phông tiêu đề, màu chính), nhưng giữ bố cục yên tĩnh: thẻ trắng, chữ to, vùng bấm ≥ 44px. */
+.adm .flash { top: 76px; bottom: auto; }
+.adm-top { min-height: 64px; padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
+.adm-top .adm-brand { min-width: 0; flex: 0 1 auto; max-width: calc(100% - 120px); overflow: hidden; text-overflow: ellipsis; min-height: 44px; }
+/* Menu quản trị (POLISH-2 2.12-4): hàng chính ≤ 5 mục dạng chip (.chips), "Sửa trang chủ / Mời bạn bè / Cài đặt / Đăng xuất" trong menu tên .adm-me.
+   ≥ 881px: 1 hàng, không gãy dòng. ≤ 880px: chip cuộn ngang thành hàng 2 dưới thanh trên (không hamburger). */
+.adm-top { flex-wrap: wrap; gap: 8px 12px; padding-top: calc(8px + env(safe-area-inset-top)); padding-bottom: 8px; }
+.adm-top .adm-nav { flex: 1 1 auto; width: auto; margin-left: 8px; padding: 2px 24px 2px 2px; contain: none; }
+.adm-top .adm-nav > a { min-height: 40px; padding: 0 14px; font-weight: 600; font-size: 15px; border-width: 1px; }
+.adm-top .adm-nav > a.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.adm-top .adm-nav .badge { margin-left: 4px; }
+.adm-top .adm-nav > a.on .badge { background: var(--paper); color: var(--ink); }
+.adm-top .notify-link { margin-left: auto; }
+.adm-me { flex: none; }
+.adm-me summary { gap: 6px; }
+.adm-me-caret { color: var(--muted); font-size: 12px; margin-right: 4px; }
+.adm-me .me-pop { right: 0; }
+@media (max-width: 880px) {
+  .adm-top .adm-nav { order: 10; flex: 1 1 100%; margin: 0 calc(-1 * max(20px, env(safe-area-inset-left))) -8px; padding: 2px max(20px, env(safe-area-inset-left)) 8px; width: auto; max-width: none; contain: inline-size; }
+  .adm-me .me-name, .adm-me .adm-me-caret { display: none; }
+  .adm-top .adm-brand { flex: 1 1 0; }
+  .adm-top .notify-link { margin-left: 0; }
+  .adm-me summary { padding: 4px; }
+}
+.adm-main { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+.adm .panel { box-shadow: var(--card-shadow); border-width: var(--card-bw); }
+.adm .panel h2 { font: var(--head-style) var(--head-w) 1.25rem/1.3 var(--f-head); text-transform: var(--head-case); letter-spacing: var(--head-track); }
+.adm details.panel > summary { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-height: 44px; }
+
+/* Lỗi ngay cạnh ô gây lỗi (admin.js) */
+.field-err { display: block; margin-top: 4px; color: var(--danger); font-weight: 500; }
+.field-err[hidden] { display: none; }
+[aria-invalid="true"] { border-color: var(--danger) !important; box-shadow: 0 0 0 1px var(--danger); }
+.err ul { margin: 6px 0 0; padding-left: 20px; }
+.sub-input.is-bad { outline: 2px solid var(--danger); outline-offset: 1px; }
+html { scroll-behavior: auto; }
+
+/* Ô chọn: WebKit vẽ select rất thấp -> tự vẽ, cao ≥ 44px */
+.adm select { max-width: 100%; min-width: 0; text-overflow: ellipsis; -webkit-appearance: none; appearance: none; min-height: 48px; padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 8l5 5 5-5' fill='none' stroke='%238a7b76' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; background-size: 18px; }
+
+@media (max-width: 760px) {
+  .adm .flash { top: auto; bottom: calc(14px + env(safe-area-inset-bottom)); }
+  @keyframes flash-in { from { opacity: 0; transform: translate(-50%, 8px); } }
+  .member { align-items: flex-start; }
+  .member-actions { width: 100%; }
+}
+@media (max-width: 480px) {
+  .sub-input:has(> .sub-pre) { flex-wrap: wrap; }
+  .sub-input:has(> .sub-pre) .sub-pre { flex: 1 1 100%; place-items: center start; padding: 4px 10px; font-size: 12px; border-bottom: 1px solid var(--line); }
+  .sub-input:has(> .sub-pre) input { flex: 1 1 100%; width: 100%; }
+}
+/* Màn cảm ứng: vùng chạm ≥ 44px, chữ ô nhập ≥ 16px (iOS không tự phóng to) */
+@media (pointer: coarse) {
+  .adm .btn-sm { min-height: 44px; }
+  .adm .back, .adm details > summary { min-height: 44px; }
+}
+.app-ver { padding: 18px 16px calc(18px + env(safe-area-inset-bottom)); display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 6px; }
+.app-ver-sep { opacity: .5; }
+.app-ver a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+/* Tên miền riêng: nút chọn + ô mã kết nối (views/admin/_domain_shop.php) */
+.domain-shop { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 10px 0; padding: 12px 14px; border: 1.5px dashed var(--line); border-radius: 14px; }
+.domain-shop .ds-otp { display: grid; gap: 4px; flex: 1 1 260px; }
+.ds-otp-row { display: flex; gap: 8px; }
+.ds-otp-row input { width: 9.5em; margin: 0; font: 600 1.15rem ui-monospace, Menlo, monospace; letter-spacing: .2em; text-align: center; }
+/* P3 kiểm duyệt: huy hiệu 🚩 ở menu ẩn khi 0 (.badge là inline-grid nên [hidden] mặc định không ăn) */
+.adm-nav .badge[hidden] { display: none; }
+
+/* QA10: danh sách thành viên gọn — thao tác ít dùng gập vào "⋯ Thêm" */
+.member-actions { align-items: center; }
+.member-more { position: relative; }
+.member-more > summary { list-style: none; cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; }
+.member-more > summary::-webkit-details-marker { display: none; }
+.member-more-pop { display: flex; flex-direction: column; align-items: stretch; gap: 6px; margin-top: 8px; padding: 10px; min-width: 220px; border-radius: var(--radius); background: var(--paper); border: 1px solid var(--line, rgba(0,0,0,.15)); box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+.member-more-pop .btn { min-height: 44px; justify-content: flex-start; text-align: left; }
+.member-more-pop .member-mute { display: flex; flex-direction: column; gap: 6px; }
+.member-main a[href*="tim="] { display: inline-flex; align-items: center; min-height: 44px; padding: 0 6px; }
+@media (min-width: 881px) { .member-more[open] { z-index: 5; } .member-more-pop { position: absolute; right: 0; z-index: 5; } }
+
+/* N2: máy tính — 9 mục + chuông + avatar vừa 1 hàng ở 1366: chip gọn, tên quán cắt "…", avatar chỉ hiện tên khi thật rộng */
+@media (min-width: 881px) {
+  .adm-top { flex-wrap: nowrap; }
+  .adm-top .adm-brand { max-width: 200px; }
+  .adm-top .adm-brand > span:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .adm-top .adm-nav { min-width: 0; margin-left: 4px; padding-right: 8px; overflow-x: auto; scrollbar-width: none; }
+  .adm-top .adm-nav > a { padding: 0 10px; font-size: 14px; white-space: nowrap; }
+  .adm-top .notify-link { margin-left: 0; }
+}
+@media (min-width: 881px) and (max-width: 1599px) { .adm-me .me-name, .adm-me .adm-me-caret { display: none; } .adm-me summary { padding: 4px; } }
+/* QA55 BUG-5: WebKit giữ min-width <select> theo option dài nhất (khối Sự kiện) -> tràn ngang 390px. */
+.adm label:has(> select) { min-width: 0; max-width: 100%; }
+.adm .stack label > select { width: 100%; overflow: hidden; }
