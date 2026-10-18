@@ -166,7 +166,7 @@ def validate_manifest(m, folder_id=None, need_package=True):
         if not ok:
             errs.append('clock phải là true hoặc mảng 1–8 mốc "phút+giây" (vd "3+2", phút 1–180, giây 0–60)')
     if 'sdk' in m and m['sdk'] not in SDK_VERSIONS:
-        errs.append('sdk phải là "2" (giao thức game v2, GAME-PROTOCOL.md) hoặc bỏ trường')
+        errs.append('sdk phải là "2" (giao thức game v2, CHUAN-GIAO-TIEP.md) hoặc bỏ trường')
     if 'manifest' in m and m['manifest'] != 2:
         errs.append('manifest (phiên bản định dạng) chỉ nhận 2')
     if 'undo_max' in m and not (isinstance(m['undo_max'], int) and not isinstance(m['undo_max'], bool) and 1 <= m['undo_max'] <= 20):
@@ -300,7 +300,7 @@ def collect_package_files(game_dir, m=None):
     return out
 
 
-# ---------------------------------------------------------------- SDK v2 (GAME-PROTOCOL.md mục SDK)
+# ---------------------------------------------------------------- SDK v2 (CHUAN-GIAO-TIEP.md mục SDK)
 SDK_VERSIONS = ('2',)
 SDK_DIR = os.path.join(ROOT, 'shared', 'sdk')        # = <thư mục công cụ>/../shared/sdk (devkit giữ đúng bố cục này)
 SDK_SEP = '\n/* ===== %s (mã game) ===== */\n'
@@ -457,8 +457,20 @@ def _openssl(args, data=None):
     return p.returncode, p.stdout, p.stderr
 
 
+REAL_KEY_DIR = os.path.expanduser('~/.jagame')
+
+
+def real_key_guard(key_path):
+    """JAGAME_NO_REAL_KEY=1 (QA / agent): cấm TUYỆT ĐỐI đọc khóa ký thật (mọi tệp trong ~/.jagame/). Ném StoreError."""
+    if os.environ.get('JAGAME_NO_REAL_KEY') == '1':
+        real = os.path.realpath(REAL_KEY_DIR) + os.sep
+        if os.path.realpath(key_path).startswith(real) or os.path.realpath(key_path) == real.rstrip(os.sep):
+            raise StoreError('JAGAME_NO_REAL_KEY=1: không được đọc khóa thật %s — dùng khóa thử (--key / JAGAME_STORE_KEY)' % key_path)
+
+
 def pubkey_from_private(key_path):
     """PEM khóa công khai (bytes) suy ra từ khóa riêng; kiểm khóa là EC P-256. Không in khóa riêng."""
+    real_key_guard(key_path)
     rc, out, err = _openssl(['pkey', '-in', key_path, '-pubout'])
     if rc != 0:
         raise StoreError('không đọc được khóa riêng %s' % key_path)
@@ -474,8 +486,21 @@ def normalize_pem(pem):
     return ''.join(l.strip() for l in pem.strip().splitlines() if l.strip() and not l.startswith('-----'))
 
 
+def pem_blocks(text):
+    """Mọi khóa công khai PEM trong 1 chuỗi (config store_pubkey có thể chứa khóa chính + khóa dự phòng — STORE-REVIEW.md mục 7)."""
+    if isinstance(text, bytes):
+        text = text.decode('ascii', 'replace')
+    return re.findall(r'-----BEGIN PUBLIC KEY-----.*?-----END PUBLIC KEY-----', text or '', re.S)
+
+
+def key_fingerprint(pem):
+    """Dấu vân tay khóa công khai = 'sha256:' + sha256(DER) hex — cùng cách tính với Store.php key_fp()."""
+    return 'sha256:' + hashlib.sha256(base64.b64decode(normalize_pem(pem))).hexdigest()
+
+
 def sign(data, key_path):
     """Chữ ký ECDSA P-256/SHA-256 dạng DER, trả về chuỗi base64 một dòng."""
+    real_key_guard(key_path)
     with tempfile.TemporaryDirectory() as td:
         src = os.path.join(td, 'data')
         with open(src, 'wb') as f:
@@ -627,7 +652,7 @@ def cross_errors(m):
         if 'turn' in md and 'simultaneous' in md:
             errs.append('mode không gồm cả "turn" lẫn "simultaneous"')
     if 'action' in md:
-        # Game hành động (GAME-PROTOCOL.md): đường chạy riêng — không dùng chung cơ chế theo lượt / tick của khung.
+        # Game hành động (CHUAN-GIAO-TIEP.md): đường chạy riêng — không dùng chung cơ chế theo lượt / tick của khung.
         if len(md) > 1:
             errs.append('mode "action" đứng một mình (không kết hợp turn/simultaneous/realtime/events)')
         for k in ('tick_ms', 'clock', 'undo', 'hint'):
@@ -657,7 +682,13 @@ def cross_errors(m):
         errs.append('session.minutes [ít nhất, nhiều nhất]')
     if m.get('sdk') is not None and m.get('api') != 1:
         errs.append('sdk "2" chạy trên api 1')
+    if 'scored' in m and re.match(r'^\d+\.\d+\.\d+$', str(m.get('app_min', ''))) and semver_tuple(m['app_min']) < SCORED_APP_MIN:
+        # Trường "scored" có từ Jagame 0.4.0 (chuẩn 2.2): hội quán cũ hơn từ chối cài (E_INCOMPAT) thay vì chạy sai
+        errs.append('có "scored" thì app_min phải ≥ %s (bản Jagame đầu tiên hiểu trường này)' % '.'.join(map(str, SCORED_APP_MIN)))
     return errs
+
+
+SCORED_APP_MIN = (0, 4, 0)
 
 
 def _png_size(data):

@@ -9,7 +9,7 @@
  *   node jagame.js play <id> [--port 7788]        chạy thử trong trình duyệt: http://127.0.0.1:7788/tools/play.html?game=<id>
  *   node jagame.js pack <id>                      check rồi đóng GÓI NỘP dist/<id>-<version>.jgsrc.zip (mã nguồn + test/ + biên nhận)
  *   node jagame.js submit <id> [--to <thư mục>]   check rồi chép games/<id>/ sang <repo>/submissions/<id>/ để mở Pull Request
- *   node jagame.js shot <id>                      chụp 2 ảnh màn hình (cần Playwright sẵn trên máy) -> games/<id>/screenshots/
+ *   node jagame.js shot <id> [--no-manifest]      chụp 2 ảnh (cần Playwright) -> games/<id>/screenshots/ + in rõ thay đổi manifest.screenshots
  *   (check <id> kiểm submissions/<id>/ nếu đã có — bản nháp games/<id>/ phải giống hệt, không thì báo chạy lại submit)
  *
  * Bố cục (devkit tải về và  trong repo y hệt): <gốc>/tools/{runner.js,sandbox.js,play.*}, <gốc>/shared/sdk/*,
@@ -186,18 +186,38 @@ function cmdShot(dir) {
       const out = path.join(dir, 'screenshots');
       fs.mkdirSync(out, { recursive: true });
       await page.waitForTimeout(500);
-      await page.locator('.pl-stage').screenshot({ path: path.join(out, '1.png') });
+      // Ảnh phải đúng luật kiểm (cạnh 320–2400 px, ≤ 400 KB): khung bàn nhỏ hơn 320 px thì chụp cả màn 390×844.
+      const snap = async (file) => {
+        const f = path.join(out, file);
+        await page.locator('.pl-stage').screenshot({ path: f });
+        const b = fs.readFileSync(f), w = b.readUInt32BE(16), h = b.readUInt32BE(20);
+        if (w < 320 || h < 320 || w > 2400 || h > 2400 || b.length > 400 * 1024) {
+          await page.screenshot({ path: f });
+          console.log('  ' + file + ': khung bàn ' + w + '×' + h + ' px nằm ngoài 320–2400 px -> chụp cả màn 390×844');
+        }
+      };
+      await snap('1.png');
       for (let i = 0; i < 6; i++) {
         const b = await page.$('#pl-root button:not([disabled])');
         if (b) await b.click().catch(() => {});
         await page.waitForTimeout(700);
       }
-      await page.locator('.pl-stage').screenshot({ path: path.join(out, '2.png') });
+      await snap('2.png');
       const mp = path.join(dir, 'manifest.json');
       const m = JSON.parse(fs.readFileSync(mp, 'utf8'));
-      m.screenshots = ['screenshots/1.png', 'screenshots/2.png'];
-      fs.writeFileSync(mp, JSON.stringify(m, null, 2) + '\n');
-      console.log('Ảnh chụp: ' + path.join(out, '1.png') + ', 2.png (manifest.screenshots đã cập nhật)' + (errs.length ? ' — LỖI JS trên trang: ' + errs.join(' | ') : ' — 0 lỗi JS'));
+      const want = ['screenshots/1.png', 'screenshots/2.png'];
+      const had = JSON.stringify(m.screenshots || null);
+      let note;
+      if (argv.includes('--no-manifest')) note = 'manifest.json KHÔNG đổi (--no-manifest) — tự thêm "screenshots": ' + JSON.stringify(want);
+      else if (had === JSON.stringify(want)) note = 'manifest.json đã có "screenshots": ' + had + ' — không đổi';
+      else {
+        m.screenshots = want;
+        fs.writeFileSync(mp, JSON.stringify(m, null, 2) + '\n');
+        note = 'ĐÃ GHI vào ' + mp + ': "screenshots": ' + JSON.stringify(want) + ' (trước đó: ' + had + '; định dạng lại JSON thụt 2 dấu cách). ' +
+          'Không muốn công cụ sửa manifest: thêm --no-manifest';
+      }
+      console.log('Ảnh chụp: ' + path.join(out, '1.png') + ', 2.png' + (errs.length ? ' — LỖI JS trên trang: ' + errs.join(' | ') : ' — 0 lỗi JS'));
+      console.log(note);
       if (errs.length) process.exitCode = 1;
     } catch (e) {
       console.log('LỖI chụp ảnh: ' + e.message); process.exitCode = 1;
@@ -263,7 +283,7 @@ function cmdSubmit(dir) {
   for (const need of ['README.md']) if (!fs.existsSync(path.join(dir, need))) die('thiếu ' + need + ' (mô tả, luật chơi, tác giả, giấy phép mã + tài sản)');
   if (!['LICENSE', 'LICENSE.md', 'LICENSE.txt'].some((n) => fs.existsSync(path.join(dir, n)))) die('thiếu LICENSE');
   const to = path.resolve(flag('--to', path.join(ROOT, '..', 'submissions')));
-  if (!fs.existsSync(to)) die('không thấy ' + to + ' — chạy trong bản fork của repo JagameServer hoặc chỉ --to <repo>/submissions');
+  if (!fs.existsSync(to)) die('không thấy ' + to + ' — chạy trong bản fork của repo Jagame hoặc chỉ --to <repo>/submissions');
   const dst = path.join(to, m.id);
   fs.rmSync(dst, { recursive: true, force: true });
   const copy = (a, b) => {

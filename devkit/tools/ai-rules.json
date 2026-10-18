@@ -1,6 +1,14 @@
 {
- "$comment": "Luật gửi game Jagame dạng máy đọc. NGUỒN SỰ THẬT: devkit/tools/check_submission.py + pr_paths.py đọc tệp này (bản sao devkit/tools/ai-rules.json). Bản người đọc: developers/AI-RULES.md.",
+ "$comment": "Luật gửi game Jagame dạng máy đọc. NGUỒN SỰ THẬT cho luật máy kiểm: devkit/tools/check_submission.py + pr_paths.py đọc tệp này (bản sao devkit/tools/ai-rules.json). Giao diện lập trình (manifest, hàm, đối tượng, thông điệp): CHUAN-GIAO-TIEP.md ở gốc repo. Quy trình gửi: QUY-TAC-GUI-GAME.md. Bản cho AI agent: developers/AI-RULES.md.",
  "version": 1,
+ "standard": {
+  "file": "CHUAN-GIAO-TIEP.md",
+  "version": "2.2.0",
+  "protocol": 2,
+  "manifest": 2,
+  "api": 1,
+  "sdk": "2"
+ },
  "id": {
   "regex": "^[a-z][a-z0-9-]{1,31}$",
   "folder": "submissions/<id>/",
@@ -15,6 +23,7 @@
    "banmaybay",
    "baucua",
    "bietdoi",
+   "binhchon",
    "cangua",
    "caro",
    "chimbay",
@@ -143,9 +152,10 @@
   "memory_mb": 64,
   "min_tick_ms": 250,
   "room_cpu_ms_per_10s": 1000,
-  "move_max_bytes": 8192,
+  "move_max_bytes": 2048,
   "events_max_bytes": 16384,
-  "max_line_chars": 1000
+  "max_line_chars": 1000,
+  "send_per_sec_conn": 8
  },
  "forbidden_server": [
   {
@@ -344,47 +354,54 @@
    "step": 1,
    "cwd": ".",
    "run": "node devkit/jagame.js new <id> --name \"<Tên>\" --author \"<Tác giả>\"",
-   "pass": "Đã tạo"
+   "pass": "Đã tạo",
+   "note": "rồi viết lại thành gói CỦA BẠN trong `devkit/games/<id>/`; trong lúc viết chạy `node devkit/jagame.js check <id>` bao nhiêu lần cũng được"
   },
   {
    "step": 2,
    "cwd": ".",
    "run": "node devkit/jagame.js shot <id>",
    "pass": "Ảnh chụp:",
-   "optional": true
+   "optional": true,
+   "note": "tùy chọn, cần Playwright; mã thoát 2 = không có -> tự chụp theo hướng dẫn in ra, hoặc ghi lý do ở mục Ảnh của PR"
   },
   {
    "step": 3,
    "cwd": ".",
    "run": "node devkit/jagame.js submit <id>",
-   "pass": "Đã chép sang"
+   "pass": "Đã chép sang",
+   "note": "chép `devkit/games/<id>/` -> `submissions/<id>/`"
   },
   {
    "step": 4,
    "cwd": ".",
    "run": "git checkout -b gui-<id> && git add submissions/<id> && git commit -m \"Gửi game <id> v<version>\"",
-   "pass": ""
+   "pass": "",
+   "note": "`git status` sạch (trừ `devkit/games/`); sửa lại thì: sửa nháp -> bước 3 -> `git commit` -> chạy lại từ bước 5"
   },
   {
    "step": 5,
    "cwd": ".",
    "run": "node devkit/jagame.js check <id>",
    "pass": "KẾT QUẢ: ĐẠT — 0 lỗi",
-   "required_before_pr": true
+   "required_before_pr": true,
+   "note": "kiểm `submissions/<id>/` (báo lỗi nếu bản nháp khác bài gửi)"
   },
   {
    "step": 6,
    "cwd": ".",
    "run": "python3 devkit/check_submission.py submissions/<id>",
    "pass": "KẾT QUẢ: ĐẠT — 0 lỗi",
-   "required_before_pr": true
+   "required_before_pr": true,
+   "note": "đọc từng dòng LƯU Ý: innerHTML bình thường NẾU mọi chữ người dùng đã qua `JGUI.esc()`; thiếu `screenshots/` được phép. Sau bước này viết mô tả PR vào `devkit/games/pr-<id>.md` (KHÔNG commit)"
   },
   {
    "step": 7,
    "cwd": ".",
-   "run": "python3 devkit/check_pr.py --title \"[Gửi game] <id> v<version> — <Tên>\" --body-file pr.md",
+   "run": "python3 devkit/check_pr.py --title \"[Gửi game] <id> v<version> — <Tên>\" --body-file devkit/games/pr-<id>.md",
    "pass": "PR ĐẠT — giống workflow GitHub",
-   "required_before_pr": true
+   "required_before_pr": true,
+   "note": "ứng dụng: tiêu đề `[Gửi ứng dụng] …`. Lần đầu có thể TRƯỢT E_PR_BODY vì chưa có dòng PR ĐẠT của chính nó: chạy `python3 devkit/check_pr.py` (không tham số), dán đầu ra vào mục \"Kết quả 3 lệnh\", chạy lại"
   }
  ],
  "error_codes": {
@@ -523,11 +540,19 @@
   "E_PR_BODY": {
    "cause": "mô tả PR thiếu/để trống mục bắt buộc, ô xác nhận chưa [x], thiếu kết quả 3 lệnh hoặc ảnh chụp",
    "fix": "dán đúng mẫu .github/pull_request_template.md, điền đủ 9 mục ##, dán nguyên đầu ra 3 lệnh, thêm ảnh hoặc đường dẫn screenshots/<tệp>.png"
+  },
+  "E_NOT_OWNER": {
+   "cause": "PR sửa game đã có chủ (submissions/OWNERS.json) nhưng người mở PR không phải tác giả gốc",
+   "fix": "không gửi PR cho game của người khác: mở Issue gắn @tác-giả hoặc PR vào bản fork của tác giả; tác giả bỏ > 90 ngày → Issue xin tiếp quản (QUY-TRINH-DONG-GOP.md luồng 4)"
+  },
+  "E_CHANGELOG": {
+   "cause": "bản cập nhật thiếu submissions/<id>/CHANGELOG.md hoặc CHANGELOG.md chưa ghi phiên bản mới",
+   "fix": "thêm CHANGELOG.md, mục '## <version>' mô tả thay đổi (ghi rõ nếu đổi luật thắng/thua)"
   }
  },
  "pr": {
   "branch": "gui-<id>",
-  "title_regex": "^\\[Gửi game\\] (?P<id>[a-z][a-z0-9-]{1,31}) v(?P<version>(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)) — (?P<name>\\S.*)$",
+  "title_regex": "^\\[Gửi (?:game|ứng dụng)\\] (?P<id>[a-z][a-z0-9-]{1,31}) v(?P<version>(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)) — (?P<name>\\S.*)$",
   "title_example": "[Gửi game] bongbay v0.1.0 — Bóng bay",
   "sections": [
    "Tên game",
@@ -544,6 +569,23 @@
    "KẾT QUẢ: ĐẠT — 0 lỗi",
    "PR ĐẠT — giống workflow GitHub"
   ],
-  "commit_message": "Gửi game <id> v<version>"
+  "commit_message": "Gửi game <id> v<version>",
+  "title_example_app": "[Gửi ứng dụng] binhchon-nho v0.1.0 — Bình chọn nhỏ"
+ },
+ "contribution": {
+  "doc": "QUY-TRINH-DONG-GOP.md",
+  "owners_file": "submissions/OWNERS.json",
+  "owner_is": "GitHub login mở PR được duyệt lần đầu",
+  "update_requires": [
+   "người mở PR = owner (E_NOT_OWNER)",
+   "CHANGELOG.md có phiên bản mới (E_CHANGELOG)",
+   "version tăng theo semver",
+   "giữ tương thích state ván đang lưu / cờ thư (luật ghim theo phiên bản)",
+   "ghi rõ trong PR nếu đổi luật thắng/thua"
+  ],
+  "core_prs": "không nhận — lõi đóng nguồn; báo lỗi qua Issue (bao-loi.md / yeu-cau-tinh-nang.md)",
+  "security": "SECURITY.md — GitHub Security Advisory, không công khai",
+  "others_game": "Issue gắn @tác-giả hoặc PR vào fork của tác giả; tiếp quản khi tác giả im lặng > 90 ngày, chủ kho quyết định",
+  "official_games": "chỉ Issue, không PR"
  }
 }

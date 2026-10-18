@@ -1,0 +1,113 @@
+{
+  "cases": [
+    {
+      "name": "mở phiên: ghế 0 là chủ phiên, đang chờ câu hỏi",
+      "players": 3,
+      "steps": [],
+      "result": null,
+      "view": [
+        { "seat": 0, "match": { "proto": 2, "phase": "ask", "turn": null, "you": 0, "host": 0, "round": 1, "rounds": 3, "q": null } },
+        { "seat": -1, "match": { "you": -1, "mine": null } }
+      ]
+    },
+    {
+      "name": "lỗi: không phải chủ phiên, câu rỗng, thiếu lựa chọn, trùng lựa chọn, sai pha, rác, ghế lạ",
+      "players": 3,
+      "steps": [
+        { "seat": 1, "move": { "type": "ask", "q": "Ăn gì?", "opts": ["A", "B"] }, "error": "Chỉ chủ phiên" },
+        { "seat": 0, "move": { "type": "ask", "q": "   ", "opts": ["A", "B"] }, "error": "Gõ câu hỏi" },
+        { "seat": 0, "move": { "type": "ask", "q": "Ăn gì?", "opts": ["A"] }, "error": "2 đến 4" },
+        { "seat": 0, "move": { "type": "ask", "q": "Ăn gì?", "opts": ["Phở", "Phở"] }, "error": "trùng" },
+        { "seat": 0, "move": { "type": "vote", "i": 0 }, "error": "Chưa tới lúc" },
+        { "seat": 0, "move": { "type": "ask", "q": 5, "opts": ["A", "B"] }, "error": "không hợp lệ" },
+        { "seat": 0, "move": { "type": "hack" }, "error": "không hợp lệ" },
+        { "seat": 9, "move": { "type": "finish" }, "error": "không ngồi" }
+      ],
+      "result": null
+    },
+    {
+      "name": "bỏ phiếu bí mật: người khác và người xem chỉ thấy ai đã chọn, không thấy chọn gì",
+      "players": 3,
+      "steps": [
+        { "seat": 0, "move": { "type": "ask", "q": "  Tối nay ăn gì? ", "opts": ["Phở", "Cơm", ""] } },
+        { "seat": 1, "move": { "type": "vote", "i": 1 } },
+        { "seat": 2, "move": { "type": "vote", "i": 2 }, "error": "không có" }
+      ],
+      "result": null,
+      "view": [
+        { "seat": 1, "match": { "phase": "vote", "mine": 1, "voted": [false, true, false], "q": { "text": "Tối nay ăn gì?", "opts": ["Phở", "Cơm"] } } },
+        { "seat": 2, "match": { "mine": null, "voted": [false, true, false], "last": null } },
+        { "seat": -1, "match": { "mine": null, "voted": [false, true, false] } }
+      ]
+    },
+    {
+      "name": "đổi ý rồi đủ người chọn: tự hiện kết quả chỉ có số đếm",
+      "players": 3,
+      "steps": [
+        { "seat": 0, "move": { "type": "ask", "q": "Đi đâu?", "opts": ["Biển", "Núi"] } },
+        { "seat": 1, "move": { "type": "vote", "i": 0 } },
+        { "seat": 1, "move": { "type": "vote", "i": 1 } },
+        { "seat": 2, "move": { "type": "vote", "i": 1 } },
+        { "seat": 0, "move": { "type": "vote", "i": 0 } }
+      ],
+      "result": null,
+      "view": [
+        { "seat": 2, "match": { "phase": "reveal", "last": { "text": "Đi đâu?", "opts": ["Biển", "Núi"], "tally": [1, 2], "voters": 3 } } },
+        { "seat": -1, "match": { "phase": "reveal", "last": { "tally": [1, 2] } } }
+      ]
+    },
+    {
+      "name": "hạn trả lời: hết giờ thì tự chốt",
+      "players": 2,
+      "options": { "secs": 20 },
+      "steps": [
+        { "seat": 0, "move": { "type": "ask", "q": "Xem phim gì?", "opts": ["Hoạt hình", "Phim tài liệu"] } },
+        { "seat": 1, "move": { "type": "vote", "i": 0 } },
+        { "tick": 21000 }
+      ],
+      "result": null,
+      "view": [ { "seat": 0, "match": { "phase": "reveal", "timer": null, "last": { "tally": [1, 0], "voters": 1 } } } ]
+    },
+    {
+      "name": "chủ phiên rời ở phiên 3 người: ghế kế tiếp làm chủ phiên, phiên chạy tiếp",
+      "players": 3,
+      "steps": [
+        { "seat": 0, "move": { "type": "resign" } },
+        { "seat": 1, "move": { "type": "ask", "q": "Còn chơi không?", "opts": ["Có", "Nghỉ"] } }
+      ],
+      "result": null,
+      "view": [ { "seat": 0, "match": { "youDone": true } }, { "seat": 2, "match": { "host": 1, "phase": "vote" } } ]
+    },
+    {
+      "name": "2 người, 1 người rời: phiên kết thúc",
+      "players": 2,
+      "steps": [ { "seat": 1, "move": { "type": "resign" } } ],
+      "result": { "winners": [], "reason": "resign", "scored": false }
+    },
+    {
+      "name": "hết số câu: kết thúc không ai thắng thua",
+      "players": 1,
+      "options": { "rounds": 3 },
+      "steps": [
+        { "seat": 0, "move": { "type": "ask", "q": "Câu 1?", "opts": ["A", "B"] } },
+        { "seat": 0, "move": { "type": "vote", "i": 0 } },
+        { "seat": 0, "move": { "type": "next" } },
+        { "seat": 0, "move": { "type": "ask", "q": "Câu 2?", "opts": ["A", "B"] } },
+        { "seat": 0, "move": { "type": "close" } },
+        { "seat": 0, "move": { "type": "next" } },
+        { "seat": 0, "move": { "type": "ask", "q": "Câu 3?", "opts": ["A", "B", "C"] } },
+        { "seat": 0, "move": { "type": "vote", "i": 2 } },
+        { "seat": 0, "move": { "type": "next" } },
+        { "seat": 0, "move": { "type": "next" }, "error": "kết thúc" }
+      ],
+      "result": { "winners": [], "reason": "xong-phien", "scored": false },
+      "view": [ { "seat": 0, "match": { "phase": "ended" } } ]
+    },
+    {
+      "name": "chủ phiên kết thúc sớm",
+      "players": 4,
+      "steps": [ { "seat": 2, "move": { "type": "finish" }, "error": "Chỉ chủ phiên" }, { "seat": 0, "move": { "type": "finish" } } ],
+      "result": { "winners": [], "reason": "xong-phien", "scored": false }
+    }
+  ]
+}

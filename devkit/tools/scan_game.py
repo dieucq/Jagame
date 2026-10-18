@@ -15,7 +15,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-# Mục dev trong games/<id>/ theo GAME-PROTOCOL.md §2.1 KHÔNG vào gói: jgame.collect_package_files (luật cũ) chỉ biết bỏ test/,
+# Mục dev trong games/<id>/ theo CHUAN-GIAO-TIEP.md §2.1 KHÔNG vào gói: jgame.collect_package_files (luật cũ) chỉ biết bỏ test/,
 # nên đóng gói từ bản chép tạm đã bỏ các mục này — byte gói y hệt build.py với game không có các mục đó.
 DEV_ONLY = {'store.json', 'CHANGELOG.md', 'LICENSE', 'test'}
 

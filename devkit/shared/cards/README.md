@@ -9,7 +9,7 @@ bộ bài nào, không phông ngoài). Dùng cho Tiến lên, Poker, Ba cây và
 | `cards.css` | Lá (giấy, viền, bóng), lưng (hoa văn theo `--accent`), tay bài, giữa bàn, chồng bài đối thủ, chuyển động, reduced-motion. |
 | `demo.html` | Trang xem: `python3 -m http.server 7791` ở gốc repo → `/shared/cards/demo.html?theme=neon` (`?four=1` bài 4 màu). |
 
-Ảnh mẫu: `GAME-PROTOCOL.md`, `09-labai-codien-neon.png`.
+Ảnh mẫu: `CHUAN-GIAO-TIEP.md`, `09-labai-codien-neon.png`.
 
 ## Hai bố cục mặt bài — tự chọn theo bề rộng lá
 - **Điện thoại** (lá < 88px — tay bài, giữa bàn trên điện thoại): chữ số TO (≈ 38% bề rộng lá) + chất ngay dưới, nằm gọn trong

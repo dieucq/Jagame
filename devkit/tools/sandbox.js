@@ -1,7 +1,7 @@
 'use strict';
 /*
  * Nạp server/game.js của 1 gói trong vm context riêng — MẪU THAM CHIẾU cho Realtime (phía máy, S2) chép theo.
- * GAME-PROTOCOL.md mục 5: CommonJS thuần, không require/process/fetch/timer; chỉ Math, JSON; mỗi lần gọi ≤ 250 ms.
+ * CHUAN-GIAO-TIEP.md: CommonJS thuần, không require/process/fetch/timer; chỉ Math, JSON; mỗi lần gọi ≤ 250 ms.
  *
  * - Context rỗng, tắt eval/new Function (codeGeneration.strings=false), không Date, Math.random ném lỗi.
  * - Mọi dữ liệu qua lại dạng chuỗi JSON (state phải là JSON thuần — máy lưu state dạng JSON).
@@ -97,7 +97,7 @@ function loadGame(src, opts) {
 }
 
 /*
- * Game hành động (manifest mode "action", GAME-PROTOCOL.md): state THƯỜNG TRÚ trong context giống máy (khung Jagame
+ * Game hành động (manifest mode "action", CHUAN-GIAO-TIEP.md): state THƯỜNG TRÚ trong context giống máy (khung Jagame
  * action/khung) — mỗi lần gọi chỉ truyền input/ảnh chụp qua JSON, không chép state. Bộ kiểm dùng để đo ms/nhịp như máy thật.
  *   const a = loadAction(src, { filename });
  *   a.call('init', { players, options, now, seed })      -> {world}

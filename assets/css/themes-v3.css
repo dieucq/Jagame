@@ -30,9 +30,9 @@ html[data-theme="neon"] .tabbar::after { top: -1px; }
 html[data-theme="neon"] .tabbar a.is-on svg { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 80%, transparent)); }
 html[data-theme="neon"] .tabbar a.is-on::before { background: var(--neon-rule); box-shadow: 0 0 10px var(--accent); }
 html[data-theme="neon"] .btn-accent { box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 32%, transparent), 0 0 24px -4px color-mix(in srgb, var(--accent) 70%, transparent); }
-html[data-theme="neon"] :is(.gc-name, .qp-title) { font-size: 1.02rem; line-height: 1.3; }
+html[data-theme="neon"] :is(.gc-name, .qp-title) { font-size: var(--fs-body); line-height: 1.3; }
 html[data-theme="neon"] :is(.pg-title, .ah-row h2, .sec-title) { letter-spacing: -.02em; }
-html[data-theme="neon"] .ah-row h2 { font-size: 1.08rem; }
+html[data-theme="neon"] .ah-row h2 { font-size: var(--fs-subhead); }
 html[data-theme="neon"] .hero-title { line-height: 1.18; text-transform: none; }
 html[data-theme="neon"] .gc { background: color-mix(in srgb, var(--paper) 96%, var(--cyan)); }
 
@@ -97,13 +97,13 @@ html[data-theme="lofi"] :is(.topbar, .tabbar) { --bar-bg: color-mix(in srgb, var
 html[data-theme="lofi"] .qp { background: linear-gradient(120deg, var(--accent), color-mix(in srgb, var(--accent) 80%, #5b2f6b)); }
 html[data-theme="lofi"] .qp::before { background: color-mix(in srgb, #2c0f1c 14%, transparent); }
 html[data-theme="lofi"] .hero-img { border: 8px solid #fffaf5; box-shadow: 0 24px 50px -18px rgba(90, 40, 60, .45); transform: rotate(-1.5deg); }
-html[data-theme="lofi"] .eyebrow { font-style: italic; font-family: "Fraunces", Georgia, serif; text-transform: none; letter-spacing: 0; font-size: 1.15rem; }
+html[data-theme="lofi"] .eyebrow { font-style: italic; font-family: "Fraunces", Georgia, serif; text-transform: none; letter-spacing: 0; font-size: var(--fs-lg); }
 html[data-theme="lofi"] .gc { box-shadow: var(--e-1); }
 @media (hover: hover) { html[data-theme="lofi"] .gc:has(.gc-link):hover { transform: translateY(-4px) rotate(-.6deg); } }
 
 /* ═══ 4. Y2K LẤP LÁNH — tím băng, nút bóng như chrome, chữ phồng (Sigmar One), sao 4 cánh lấp lánh ═══ */
 [data-theme="y2k"] {
-  --bg: #eef0ff; --ink: #1b1640; --accent: #e0157a; --cyan: #2bc4f0; --lilac: #c9b8ff; --lime: #c8f560;
+  --bg: #eef0ff; --ink: #1b1640; --accent: #d8126f; --cyan: #2bc4f0; --lilac: #c9b8ff; --lime: #c8f560;
   --paper: #fff; --soft: color-mix(in srgb, var(--lilac) 32%, var(--bg)); --line: color-mix(in srgb, var(--ink) 14%, var(--bg));
   --muted: color-mix(in srgb, var(--ink) 76%, var(--bg)); --sec-alt: color-mix(in srgb, var(--cyan) 14%, var(--bg));
   --f-head: "Sigmar One", "Be Vietnam Pro", sans-serif; --head-w: 400; --head-track: .005em;
@@ -137,8 +137,8 @@ html[data-theme="y2k"] .btn-accent::after { content: ""; position: absolute; ins
 @media (hover: hover) { html[data-theme="y2k"] .btn-accent:hover::after { transform: translateX(420%) skewX(-20deg); } }
 html[data-theme="y2k"] .qp { background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #5a2bd6)); }
 html[data-theme="y2k"] .qp::before { background: var(--sparkle) center / 220px 200px; border-radius: 0; inset: 0; width: auto; height: auto; opacity: .55; }
-html[data-theme="y2k"] :is(.gc-name, .qp-title) { font-size: 1.08rem; line-height: 1.3; }
-html[data-theme="y2k"] .ah-row h2 { font-size: 1.12rem; }
+html[data-theme="y2k"] :is(.gc-name, .qp-title) { font-size: var(--fs-subhead); line-height: 1.3; }
+html[data-theme="y2k"] .ah-row h2 { font-size: var(--fs-lg); }
 html[data-theme="y2k"] .hero-title { line-height: 1.2; text-shadow: 0 2px 0 #fff, 0 6px 18px color-mix(in srgb, var(--accent) 35%, transparent); }
 html[data-theme="y2k"] .hero-img { border: 6px solid #fff; box-shadow: 0 0 0 2px var(--cyan), 0 24px 46px -16px color-mix(in srgb, var(--accent) 55%, transparent); }
 html[data-theme="y2k"] .gc { box-shadow: var(--e-1); }
@@ -196,6 +196,7 @@ html[data-theme="riso"] .hero-img { border: 3px solid var(--ink); box-shadow: 10
   --hl: var(--teal); --badge-bg: var(--accent); --badge-ink: #fff; --badge-r: 0;
   --orn: url(../img/themes/win98-orn.svg); --ph: url(../img/themes/win98-ph.svg);
 }
+html[data-theme="win98"][style*="--accent-end"] { --title2: var(--accent-end); }   /* màu nhấn riêng: đuôi thanh tiêu đề đi xa màu chữ (QA58a BUG-2) */
 html[data-theme="win98"] .topbar { background: linear-gradient(90deg, var(--accent), var(--title2)); --bar-ink: var(--accent-ink); color: var(--accent-ink); border-bottom: 2px solid #000; }
 html[data-theme="win98"] .topbar .topnav :is(.qs-chip, .hq-chip) { color: var(--accent-ink); }
 html[data-theme="win98"] .topbar .topnav :is(.qs-chip, .hq-chip)::before { background: var(--accent); box-shadow: inset 1px 1px 0 color-mix(in srgb, #000 40%, transparent); }
@@ -360,8 +361,8 @@ html[data-theme="huyenthoai"] .qp { background: linear-gradient(135deg, var(--ac
 html[data-theme="huyenthoai"] .btn-accent { background: linear-gradient(180deg, var(--accent) 40%, color-mix(in srgb, var(--accent) 86%, #6b3d0f)); color: var(--accent-ink);
   box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 45%, transparent), var(--sig-btn-shadow); }
 html[data-theme="huyenthoai"] :is(.pg-title, .ah-row h2, .gc-name, .qp-title) { line-height: 1.2; }
-html[data-theme="huyenthoai"] .ah-row h2 { font-size: 1.3rem; }
-html[data-theme="huyenthoai"] .gc-name { font-size: 1.3rem; }
+html[data-theme="huyenthoai"] .ah-row h2 { font-size: var(--fs-headline); }
+html[data-theme="huyenthoai"] .gc-name { font-size: var(--fs-headline); }
 html[data-theme="huyenthoai"] .gc { box-shadow: var(--card-shadow); border-color: color-mix(in srgb, var(--accent) 40%, var(--bg)); }
 html[data-theme="huyenthoai"] .hero-title { text-shadow: 0 2px 0 #000, 0 0 30px color-mix(in srgb, var(--accent) 40%, transparent); }
 html[data-theme="huyenthoai"] .hero-img { border: 1px solid var(--accent); box-shadow: inset 0 0 0 3px var(--bg), 0 0 0 6px var(--bg), 0 0 0 7px color-mix(in srgb, var(--accent) 60%, transparent), 0 0 60px -10px color-mix(in srgb, var(--accent) 50%, transparent); }
@@ -615,8 +616,8 @@ html[data-theme="cucquang"] body.site .btn:not(:disabled):active { box-shadow: 0
   --ring: linear-gradient(160deg, var(--gold2), var(--accent) 45%, #7a531a);
 }
 html[data-theme="huyenthoai"] .topbar .brand .u-name { font-family: var(--f-ui, "Be Vietnam Pro"), sans-serif; font-weight: 700; letter-spacing: .02em; }
-html[data-theme="huyenthoai"] .pg-h2 { font-size: 1.3rem; }
-html[data-theme="huyenthoai"] .pg-h2 b { font: 500 .82rem/1.3 var(--f-ui, "Be Vietnam Pro"), sans-serif; text-transform: none; letter-spacing: 0; }
+html[data-theme="huyenthoai"] .pg-h2 { font-size: var(--fs-headline); }
+html[data-theme="huyenthoai"] .pg-h2 b { font: 500 var(--fs-footnote)/1.3 var(--f-ui, "Be Vietnam Pro"), sans-serif; text-transform: none; letter-spacing: 0; }
 html[data-theme="huyenthoai"] :is(.pf-band, .me-band) { border-color: color-mix(in srgb, var(--accent) 45%, var(--bg)); box-shadow: inset 0 0 0 3px var(--bg), inset 0 0 0 4px color-mix(in srgb, var(--accent) 40%, transparent); }
 html[data-theme="huyenthoai"] :is(.pf-hero > .ava, .me-ava) { box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px color-mix(in srgb, var(--accent) 70%, transparent), 0 0 34px -6px color-mix(in srgb, var(--accent) 60%, transparent); }
 html[data-theme="huyenthoai"] .ofr-ava .ava { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--accent), 0 0 0 5.5px var(--bg), 0 0 0 6.5px color-mix(in srgb, var(--accent) 45%, transparent); }
@@ -850,6 +851,17 @@ html[data-mode="dark"][data-theme="riso"] :is(.ah-row h2, .jg-end.is-win .jg-end
 html[data-mode="dark"]:is([data-theme="riso"], [data-theme="datnan"]) .rk-pod.is-1 .rk-pod-step { color: #17142b; }
 html[data-mode="dark"][data-theme="datnan"] .tabbar a.is-on svg { color: #241c4a; }
 html[data-mode="dark"]:is([data-theme="win98"], [data-theme="y2k"]) .empty-box { background: var(--paper); }
+/* Tương phản (việc 3): win98 đặt --s-sunk xám cố định -> khi chủ nhà đặt màu nền/chữ riêng, nền lõm phải suy từ màu riêng (chữ sáng trên xám = 1.1:1) */
+html[data-theme="win98"][data-cc] { --s-sunk: color-mix(in srgb, var(--ink) 9%, var(--bg)); }
+/* y2k: hồng #e0157a + chữ ám hồng (oklch suy ra) chỉ 4.16:1 -> chữ trắng trung tính 4.6:1 (màu nhấn riêng của chủ nhà in --accent-ink inline nên không bị ảnh hưởng) */
+html[data-theme="y2k"]:not([data-cc]) { --accent-ink: #fff; }
+/* N17: bìa hồ sơ bacau/lofi ở chế độ tối người chơi — giữ hình (cát + đất nung / hoàng hôn) nhưng hạ về tông tối, không còn mảng sáng chói trên nền tối */
+html[data-mode="dark"][data-theme="bacau"] :is(.pf-band, .me-band) { background: radial-gradient(circle at 12% 100%, color-mix(in srgb, var(--clay) 62%, var(--bg)) 0 44px, transparent 45px),
+  linear-gradient(color-mix(in srgb, var(--ink) 7%, transparent) 1px, transparent 1px) 0 0 / 100% 22px, color-mix(in srgb, var(--sand) 12%, var(--bg)); }
+html[data-mode="dark"][data-theme="lofi"] :is(.pf-band, .me-band) { background:
+  linear-gradient(transparent 62%, color-mix(in srgb, var(--lav) 40%, var(--bg)) 62% 65%, transparent 65% 72%, color-mix(in srgb, var(--lav) 40%, var(--bg)) 72% 74%, transparent 74%),
+  radial-gradient(circle at 50% 100%, color-mix(in srgb, #ffe0b5 58%, var(--bg)) 0 46px, transparent 47px), var(--grain) 0 0 / 180px 180px,
+  linear-gradient(180deg, color-mix(in srgb, var(--peach) 34%, var(--bg)), color-mix(in srgb, var(--rose) 30%, var(--bg)) 55%, color-mix(in srgb, var(--lav) 30%, var(--bg))); }
 
 /* ── Form đăng nhập / đăng ký / ô nhập theo chất từng giao diện ── */
 html[data-theme="riso"] :is(input, textarea, select):not([type=checkbox]):not([type=radio]):not([type=color]):not(.cx-input) { border: 2px solid var(--ink); border-radius: 3px; background: var(--paper); }
@@ -922,3 +934,15 @@ html.t3 :is(.pf-name, .me-head .row-title) { text-transform: none; letter-spacin
 /* QA45 BUG-7 (y2k): sao ✦ trắng không đè chữ — chế độ tối bỏ sao ở nền trang; thẻ nổi bật chỉ giữ sao rất mờ. */
 html[data-theme="y2k"][data-mode="dark"] body.site { background: radial-gradient(90% 380px at 0% -80px, color-mix(in srgb, var(--lilac) 40%, transparent), transparent 70%), var(--bg); }
 html[data-theme="y2k"] .qp::before { opacity: .22; }
+
+/* Tương phản (việc 3) — màu riêng chủ nhà trên giao diện tối huyenthoai (nền sáng có hoa văn sẫm): chữ phụ + bục hạng */
+html[data-theme="huyenthoai"][data-cc] { --muted: color-mix(in srgb, var(--ink) 88%, var(--bg)); }
+html[data-theme="huyenthoai"][data-cc] .rk-pod .rk-pod-step { color: var(--ink); }
+[data-theme="datnan"] { --muted: color-mix(in srgb, var(--ink) 84%, var(--bg)); }   /* chữ phụ trên thẻ đất nặn tím nhạt ≥ 4.5 (việc 3) */
+/* QA58a BUG-2: màu nhấn riêng — lớp phủ/đuôi gradient thẻ Chơi nhanh đi XA màu chữ (--accent-end do cc_vars tính), không tối thêm dưới chữ đen */
+html[data-theme="bacau"][style*="--accent-end"] .qp::before { background: color-mix(in srgb, var(--accent-end) 70%, transparent); }
+html[data-theme="y2k"][style*="--accent-end"] .qp { background: linear-gradient(135deg, var(--accent), var(--accent-end)); }
+html[data-theme="cucquang"][style*="--accent-end"] { --hero-eyebrow: var(--accent-text); }   /* màu nhấn riêng trên đầu trang cực quang tối: dùng chữ nhấn đã tính tương phản */
+html[data-theme="y2k"][style*="--accent-end"] { --hero-eyebrow: color-mix(in oklab, var(--accent-text) 70%, var(--ink)); }   /* màu nhấn riêng trên nền hero tím nhạt y2k */
+html[data-mode="dark"][data-theme="y2k"] .btn-ghost { background: color-mix(in srgb, var(--paper) 92%, var(--lilac)); color: var(--ink); }   /* QA58c BUG-D: nút phụ y2k khi tối — chữ phụ (Tùy chọn bàn) trên mặt chrome xám chỉ 4.3:1 */
+html[data-mode="dark"][data-theme="y2k"] .btn-ghost span { color: inherit; }

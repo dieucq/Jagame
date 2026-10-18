@@ -309,3 +309,31 @@ html.is-standalone [data-install] { display: none !important; }
 .ios-x { position: absolute; right: 6px; top: 6px; width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: none; color: var(--muted); font-size: 22px; cursor: pointer; border-radius: 50%; }
 .ios-x:hover { background: var(--soft); }
 .ios-ok { width: 100%; min-height: 48px; margin-top: 8px; border: 0; border-radius: var(--r-btn); background: var(--ink); color: var(--bg); font: 600 16px var(--f-body); cursor: pointer; }
+
+/* ══ Kit rỗng / lỗi dùng chung (UI-AUDIT-2 N5, UI-PRO 2.9) — PHP u_empty() / JS JG.empty() ══════════════════════════════════════
+   .u-empty-row  rỗng trong trang còn dữ liệu khác: 1 dòng ~64px (hình 44 + 2 dòng + 1 nút nhỏ), nền lõm, KHÔNG viền đứt, không cao hơn khối dữ liệu.
+   .u-empty      rỗng cả trang: hình 96 + tiêu đề 17/700 + 1 câu ≤ 30ch + 1 nút chính.
+   .u-err        lỗi tải trong khối (mẫu Chợ game admin): nền --warn-bg, icon wifi-off, 2 dòng, "Thử lại" là nút chữ — không toast. */
+.u-art { display: block; flex: none; color: var(--ink); }
+.u-empty-row { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 10px 10px 14px; border-radius: var(--r-lg, 18px);
+  background: var(--s-sunk); color: var(--ink); }
+.u-empty-row .u-art { width: 44px; height: 44px; }
+.u-empty-row p, .u-err p { flex: 1; min-width: 0; margin: 0; font-size: var(--fs-callout, 15px); line-height: 1.35; color: var(--muted); }
+.u-empty-row p b, .u-err p b { display: block; color: var(--ink); font-weight: var(--w-med, 600); }
+.u-empty-row .btn { flex: none; margin: 0; }
+.u-empty { display: grid; justify-items: center; gap: 0; padding: 28px 20px; text-align: center; color: var(--ink); }
+.u-empty .u-art { width: 96px; height: 96px; margin: 0 0 12px; }
+.u-empty h3 { margin: 0 0 4px; font: var(--w-bold, 700) var(--fs-subhead, 17px)/1.3 var(--f-ui, var(--f-body)); text-transform: none; letter-spacing: 0; }
+.u-empty p { margin: 0 0 16px; max-width: 30ch; color: var(--muted); font-size: var(--fs-callout, 15px); line-height: 1.45; }
+.u-empty > .btn { margin: 0; }
+.u-err { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 6px 8px 14px; border-radius: var(--r-md, 12px);
+  background: var(--warn-bg); color: var(--ink); }
+.u-err > svg.ic { color: var(--warn); }
+.u-err-retry { flex: none; min-height: 44px; padding: 0 12px; border: 0; border-radius: var(--r-btn, 999px); background: none; color: var(--accent-text);
+  font: var(--w-bold, 700) var(--fs-callout, 15px)/1 var(--f-ui, var(--f-body)); text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; }
+.u-err-retry:hover { background: color-mix(in srgb, var(--warn) 12%, transparent); }
+@media (max-width: 380px) { .u-empty-row { flex-wrap: wrap; } .u-empty-row .btn { margin-left: 56px; } }
+
+/* QA58a BUG-3: khung xương quá hạn -> ẩn khối xương, hiện .u-err (JG.skeleton) */
+.is-sk-err > :is(.sk, .cp-skel, .ofr-sk, .wr-sk, .sr-only) { display: none !important; }
+.sk-err { list-style: none; width: 100%; flex: 1 1 100%; }

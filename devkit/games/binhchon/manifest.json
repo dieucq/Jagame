@@ -1,0 +1,39 @@
+{
+  "manifest": 2,
+  "id": "binhchon",
+  "name": "Bình chọn nhanh",
+  "version": "1.1.0",
+  "api": 1,
+  "sdk": "2",
+  "app_min": "0.1.0",
+  "group": "vui",
+  "color": "#4a7bd8",
+  "players": { "min": 1, "max": 20 },
+  "spectators": true,
+  "desc": "Ứng dụng nhỏ cho cả phòng: chủ phiên đặt câu hỏi, mọi người bấm chọn, xem kết quả ngay — không ai thắng thua",
+  "tags": ["ứng dụng", "bình chọn", "cả nhà", "nhiều người"],
+  "age": 3,
+  "content": ["chu-nguoi-choi"],
+  "languages": ["vi"],
+  "icon": "icon.svg",
+  "entry": { "client": "client/index.js", "server": "server/game.js", "style": "client/style.css" },
+  "mode": ["simultaneous", "realtime"],
+  "tick_ms": 1000,
+  "session": { "minutes": [1, 15] },
+  "needs": { "sound": true, "vibrate": false, "storage": false, "user_text": true },
+  "ui": { "end": "game" },
+  "options": [
+    { "key": "rounds", "label": "Số câu hỏi", "choices": [3, 5, 10], "default": 3 },
+    { "key": "secs", "label": "Hạn trả lời mỗi câu (giây, 0 = không hạn)", "choices": [0, 20, 45], "default": 0 }
+  ],
+  "reasons": { "xong-phien": { "text": "phiên bình chọn kết thúc", "by": "none" } },
+  "howto": [
+    "Người ngồi ghế đầu là chủ phiên: gõ câu hỏi và 2–4 lựa chọn rồi bấm Hỏi cả phòng.",
+    "Mọi người bấm 1 lựa chọn (đổi ý được tới khi chốt). Không ai thấy người khác chọn gì.",
+    "Đủ người chọn, hết giờ hoặc chủ phiên bấm Chốt là hiện kết quả. Không có thắng thua."
+  ],
+  "news": "Hết phiên hiện \"Xong phiên\" — không còn ghi thành ván hòa.",
+  "author": "Jagame",
+  "license": "MIT",
+  "changelog": "1.1.0: kết thúc \"không tính điểm\" (Result.scored = false, chuẩn 2.2) thay cho ván hòa. 1.0.0: bản đầu tiên (mẫu ứng dụng không phải game: 1–20 người, cùng lúc + hạn giờ, bỏ phiếu ẩn danh, kết thúc không thắng thua)."
+}

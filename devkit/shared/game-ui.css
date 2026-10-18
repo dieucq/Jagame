@@ -1,10 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════════════════════════════════════════════
-   Jagame — BỘ GIAO DIỆN CHUNG CHO GAME (bản mẫu tham chiếu, v1 · 07/10/2026) — đọc kèm GAME-PROTOCOL.md
+   Jagame — BỘ GIAO DIỆN CHUNG CHO GAME (bản mẫu tham chiếu, v1 · 07/10/2026) — đọc kèm CHUAN-GIAO-TIEP.md
    ───────────────────────────────────────────────────────────────────────────────────────────────────────
    ⚠ Gói game phải TỰ CHỨA: KHÔNG link tới file này. CHÉP phần cần dùng vào client/style.css của game rồi đổi tiền tố:
        sed 's/jg-/jgx-/g; s/\.jg\b/.jgx/g'      (jgx = tiền tố riêng của game: jgo oanquan, jgb baucua, jgv covua, jgl tienlen, jgn cangua)
    Đổi CẢ lớp (.jg-…) lẫn biến (--jg-…). Không chép mục không dùng (xúc xắc cho game cờ…).
-   Mọi màu/phông/bo góc ĐỌC biến của giao diện trang (20 giao diện, GAME-PROTOCOL.md) — KHÔNG viết html[data-theme=…]
+   Mọi màu/phông/bo góc ĐỌC biến của giao diện trang (20 giao diện, CHUAN-GIAO-TIEP.md) — KHÔNG viết html[data-theme=…]
    trừ khi thật cần nét riêng; kit đã tự ăn theo --card-bw/--card-shadow/--btn-shadow/--r-btn của từng giao diện.
    Chuyển động chỉ transform/opacity. Có prefers-reduced-motion ở cuối file — chép kèm.
    ═══════════════════════════════════════════════════════════════════════════════════════════════════════ */

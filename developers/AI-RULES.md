@@ -1,13 +1,17 @@
-> **Đọc trước khi gửi:** [QUY-TAC-GUI-GAME.md](../QUY-TAC-GUI-GAME.md) — luật gửi game R1–R16 (nguồn chính, cùng developers/AI-RULES.md).
+> **Bắt buộc:** [QUY-TRINH-DONG-GOP.md](../QUY-TRINH-DONG-GOP.md) — 4 luồng đóng góp; lõi đóng nguồn, không nhận PR sửa lõi.
+> **Đọc trước:** [CHUAN-GIAO-TIEP.md](../CHUAN-GIAO-TIEP.md) — chuẩn giao tiếp chính thức (manifest, hàm, đối tượng, thông điệp) · [QUY-TAC-GUI-GAME.md](../QUY-TAC-GUI-GAME.md) — luật gửi R1–R16 · [developers/ai-rules.json](../developers/ai-rules.json) — luật máy đọc.
 
 # AI-RULES — luật viết và gửi game Jagame (dành cho AI agent)
 
 > Đối tượng: AI agent viết code (Claude Code, Codex, Cursor…). Đọc HẾT tệp này trước khi sửa bất cứ thứ gì. Mọi câu ở đây là luật,
 > không phải gợi ý. MUST = bắt buộc · MUST NOT = cấm · SHOULD = nên (bỏ qua phải có lý do). Bản máy đọc: `developers/ai-rules.json`
-> (cùng luật; `devkit/check_submission.py` đọc tệp đó). Chi tiết giao thức cho người: `developers/GIAO-THUC.md`.
+> (cùng luật; `devkit/check_submission.py` đọc tệp đó). **Giao diện lập trình (manifest, hàm, đối tượng, thông điệp, giới hạn): `CHUAN-GIAO-TIEP.md`
+> ở gốc repo — nguồn duy nhất, tệp này không chép lại.** Quy trình gửi: `QUY-TAC-GUI-GAME.md`.
 > Ngôn ngữ giao diện game: tiếng Việt có dấu.
 
 ## 0. Tóm tắt 12 dòng
+0. Việc là gì? Game MỚI → mục 0–8. Cập nhật game ĐÃ CÓ → thêm mục 9. Lỗi hệ thống/lõi hoặc game của người khác → KHÔNG viết mã: mở Issue
+   (`QUY-TRINH-DONG-GOP.md` luồng 1, 4). Lỗi bảo mật → `SECURITY.md`, không công khai.
 1. Mục tiêu: 1 thư mục `submissions/<id>/` chứa 1 game đúng chuẩn + 1 Pull Request chỉ đụng thư mục đó.
 2. Bạn MUST chỉ tạo/sửa tệp trong `submissions/<id>/` (và nháp trong `devkit/games/<id>/`, đã bị `.gitignore`). MUST NOT sửa tệp nào khác.
 3. `<id>` MUST khớp `^[a-z][a-z0-9-]{1,31}$`, MUST NOT nằm trong danh sách id cấm (mục 1).
@@ -15,12 +19,13 @@
    game mẫu (`oantuti` oẳn tù tì, `nhatque` nhặt que kiểu Nim — gồm "đếm tới 21", `xucxac` gieo xúc xắc) hay của game chính thức: người duyệt từ chối.
 5. Luật chơi `server/game.js`: `module.exports = JGCore.game({...})`, hàm thuần trên state JSON, tất định, ngẫu nhiên chỉ `ctx.rng()`.
 6. Giao diện `client/index.js`: `JG.defineGame(function (game) { … })`, chỉ vẽ trong `game.root`, chỉ gửi nước bằng `game.send()`.
-7. MUST NOT dùng API cấm (mục 4.4) — kể cả trong chuỗi; chữ `async`/`await` cấm kể cả trong chú thích.
+7. MUST NOT dùng API cấm (`CHUAN-GIAO-TIEP.md` mục 5.1, 6.5) — kể cả trong chuỗi; chữ `async`/`await` cấm kể cả trong chú thích.
 8. MUST có `test/cases.json`, `README.md`, `LICENSE`.
 9. Đọc `QUY-TAC-GUI-GAME.md` (R1–R16). Chạy lệnh mục 6 ĐÚNG THỨ TỰ; lặp sửa tới khi MỌI lệnh in dòng ĐẠT.
 10. Gặp mã lỗi `[E_…]` → tra bảng mục 7, sửa đúng nguyên nhân, chạy lại từ lệnh trượt.
 11. Chỉ khi `python3 devkit/check_pr.py --title … --body-file …` in `PR ĐẠT — giống workflow GitHub` mới push + mở PR (nhánh `gui-<id>`, tiêu đề + mô tả mục 8).
-12. Không cần hỏi người dùng gì thêm: mọi thứ cần biết nằm trong tệp này + `devkit/games/nhatque/` (mẫu theo lượt) + `devkit/games/xucxac/` (mẫu nhiều người).
+12. Không cần hỏi người dùng gì thêm (trừ tên + liên hệ tác giả khi repo chưa có remote / `user.name` — mục 8): mọi thứ cần biết nằm trong tệp này + `CHUAN-GIAO-TIEP.md` + mẫu `devkit/games/nhatque/` (theo lượt),
+    `devkit/games/xucxac/` (nhiều người), `devkit/games/binhchon/` (ứng dụng không phải game).
 
 ## 1. Đặt tên
 | Thứ | Luật |
@@ -28,275 +33,58 @@
 | id game | MUST khớp `^[a-z][a-z0-9-]{1,31}$`: chữ thường a–z, số, `-`; bắt đầu bằng chữ; 2–32 ký tự. Ví dụ đúng: `bongbay`, `ca-ngua-2`, `dua-xe`. Sai: `BongBay`, `bong_bay`, `1game`, `x`. |
 | Tiền tố cấm | MUST NOT bắt đầu bằng `local-` hoặc `jg-` |
 | id cấm (đã có) | MUST NOT dùng: <!-- RESERVED_IDS -->
-`bacay` `baimau` `banmaybay` `baucua` `bietdoi` `cangua` `caro` `chimbay` `chinquan` `chuyentranh` `cotuong` `coup` `covua` `datbom` `dovui` `ganh` `giaithe` `loto` `masoi` `nhatque` `oanquan` `oantuti` `phom` `poker` `tienlen` `vehinh` `xepgach` `xetang` `xidach` `xucxac`
+`bacay` `baimau` `banmaybay` `baucua` `bietdoi` `binhchon` `cangua` `caro` `chimbay` `chinquan` `chuyentranh` `cotuong` `coup` `covua` `datbom` `dovui` `ganh` `giaithe` `loto` `masoi` `nhatque` `oanquan` `oantuti` `phom` `poker` `tienlen` `vehinh` `xepgach` `xetang` `xidach` `xucxac`
 <!-- /RESERVED_IDS --> (nguồn: `ai-rules.json` → `id.reserved_ids`, `devkit/tools/official_ids.json`) |
 | Thư mục | MUST là `submissions/<id>/`, đúng bằng `manifest.json` → `"id"` |
 | Tên tệp/thư mục | MUST chỉ gồm `A-Z a-z 0-9 . _ - @ +`; MUST NOT bắt đầu bằng `.`; phân biệt hoa/thường; tệp bắt buộc viết đúng như mục 2 (`manifest.json`, `README.md`, `LICENSE` — không `readme.md`, không `License`) |
 | Tiền tố lớp CSS | SHOULD là 2–4 chữ viết tắt id + `-` (vd `bb-` cho `bongbay`), mọi lớp của game dùng tiền tố đó |
 
 ## 2. Cây thư mục bắt buộc
-```
-submissions/<id>/
-├── manifest.json        BẮT BUỘC   JSON object, mục 3
-├── icon.svg             BẮT BUỘC   (hoặc icon.png 256–1024 px vuông) — SVG: viewBox vuông, ≤ 200 KB, không <script>/on*=/href ngoài
-├── server/
-│   └── game.js          BẮT BUỘC   luật chơi (server/ CHỈ chứa .js/.json)
-├── client/
-│   ├── index.js         BẮT BUỘC   giao diện
-│   ├── style.css        TÙY CHỌN   (khai ở manifest.entry.style)
-│   └── assets/…         TÙY CHỌN   svg png jpg jpeg webp gif mp3 ogg m4a woff2 — tài sản tự làm
-├── screenshots/…        TÙY CHỌN   ≤ 6 ảnh png/jpg/webp, mỗi ảnh ≤ 400 KB, cạnh 320–2400 px
-├── test/
-│   └── cases.json       BẮT BUỘC   ca kiểm, mục 5 (test/ chỉ .json .js .md .txt)
-├── README.md            BẮT BUỘC   mô tả, luật chơi, tác giả, giấy phép mã, nguồn + giấy phép từng tài sản không tự làm
-├── LICENSE              BẮT BUỘC   (hoặc LICENSE.md / LICENSE.txt) — khớp manifest.license
-├── CHANGELOG.md         TÙY CHỌN
-└── <id>.jgame           TÙY CHỌN   gói dựng sẵn — kho bỏ qua, tự dựng lại
-```
-Mục gốc cho phép DUY NHẤT: `manifest.json icon.svg icon.png server client screenshots test README.md LICENSE LICENSE.md LICENSE.txt CHANGELOG.md jagame-submit.json <id>.jgame`.
-**CẤM (bị từ chối tự động):** tệp/thư mục chấm (`.DS_Store`, `.env`, `.git`, `.vscode`…) · symlink · submodule · `node_modules/` · `assets/`
-ở gốc (để trong `client/assets/`) · `package.json` · `.ts .tsx .jsx .html .zip .exe .wasm` · ROM/BIOS (`.nes .sfc .smc .gb .gbc .gba .iso .rom`…) ·
-nhị phân không đúng đuôi · đuôi ngoài `json js css svg png jpg jpeg webp gif mp3 ogg m4a woff2 txt md`.
-Giới hạn: ≤ 300 tệp · tổng ≤ 30 MB · gói nén ≤ 10 MB · `server/game.js` sau khi gộp SDK (~26 KB) ≤ 256 KB · mỗi dòng mã ≤ 1000 ký tự (SHOULD ≤ 140).
+Đầy đủ (mục gốc cho phép, đuôi, giới hạn, icon SVG): **`CHUAN-GIAO-TIEP.md` mục 3**. MUST tối thiểu:
+`submissions/<id>/{manifest.json, icon.svg|icon.png, server/game.js, client/index.js, test/cases.json, README.md, LICENSE}` (tùy chọn
+`client/style.css`, `client/assets/…`, `screenshots/…`, `CHANGELOG.md`). MUST NOT: tệp chấm, symlink, `node_modules/`, `package.json`,
+`assets/` ở gốc, `.ts .jsx .html .zip .exe .wasm`, ROM, nhị phân lạ, địa chỉ `http(s)://` ngoài `README.md`/`test/`.
 
 ## 3. Manifest
-MUST là JSON hợp lệ (không chú thích, không dấu phẩy thừa), khớp `devkit/shared/sdk/manifest.schema.json`. MUST NOT thêm trường ngoài bảng.
-
-| Trường | Bắt buộc | Kiểu / giới hạn | Ghi chú |
-|---|---|---|---|
-| `manifest` | MUST | `2` | |
-| `id` | MUST | `^[a-z][a-z0-9-]{1,31}$` | = tên thư mục |
-| `name` | MUST | chuỗi 1–40 | tên hiển thị tiếng Việt |
-| `version` | MUST | `X.Y.Z` | bản đầu `0.1.0` hoặc `1.0.0`; cập nhật MUST tăng |
-| `api` | MUST | `1` | |
-| `sdk` | MUST | `"2"` | công cụ gộp `JGCore`/`JGUI` vào gói |
-| `app_min` | MUST | semver | dùng `"0.1.0"` |
-| `group` | MUST | `co` \| `dangian` \| `vui` \| `bai` | cờ · dân gian · vui cả nhà · bài lá |
-| `players` | MUST | `{"min": a, "max": b}`, 1 ≤ a ≤ b ≤ 50 | |
-| `desc` | MUST | chuỗi 1–160 | 1 câu |
-| `age` | MUST | số nguyên 3–18 | tuổi tối thiểu |
-| `icon` | MUST | `"icon.svg"` \| `"icon.png"` | |
-| `entry` | MUST | `{"client": "client/index.js", "server": "server/game.js", "style"?: "client/style.css"}` | |
-| `changelog` | MUST | chuỗi | |
-| `author` | MUST | chuỗi khác rỗng | |
-| `license` | MUST | mã SPDX, vd `"MIT"` | khớp tệp LICENSE |
-| `mode` | SHOULD | `"turn"` \| `"simultaneous"` \| `"realtime"` \| `"events"` hoặc mảng; MUST NOT `"action"`; MUST NOT `turn`+`simultaneous` | khớp `kind` trong game.js |
-| `tick_ms` | khi có `realtime`/`tick()` | số nguyên 250–60000 | MUST NOT dùng cùng `clock` |
-| `color` | SHOULD | `"#rrggbb"` | |
-| `spectators` | SHOULD | bool | |
-| `tags` | tùy chọn | ≤ 8 chuỗi ≤ 24 | |
-| `content` | khi cần | mảng con của `dau-ao so-hai chu-nguoi-choi ve-tu-do an-vai tinh-gio` | cược → MUST `dau-ao` |
-| `languages` | SHOULD | `["vi"]` | |
-| `howto` | SHOULD | mảng ≤ 10 chuỗi ≤ 400 | cách chơi |
-| `news` | SHOULD | chuỗi ≤ 240 | |
-| `session` | tùy chọn | `{"minutes": [ít, nhiều]}` | |
-| `needs` | SHOULD | `{"sound": bool, "vibrate": bool, "storage": bool, "user_text": bool}` | |
-| `bot` | tùy chọn | bool | `true` → game.js MUST có `bot()` |
-| `bot_simultaneous` | khi game cùng lúc có bot | bool | |
-| `hint` / `hint_max` | tùy chọn | bool / 1–20 | `true` → MUST có `hint()` hoặc `bot()` |
-| `undo` / `undo_max` | tùy chọn | bool / 1–20 | |
-| `clock` | tùy chọn | `true` \| mảng `"phút+giây"` | chỉ game `turn`, không `tick_ms` |
-| `tutorial` | tùy chọn | 1–8 chuỗi hoặc `{text, title?, at?}` | |
-| `ui` | tùy chọn | `{players?: "game"\|"frame", events?: bool, end?: "game"\|"frame", fullscreen?: bool, end_banner?: bool}` | |
-| `options` | tùy chọn | ≤ 10 `{key, label ≤ 60, choices[1–20], default ∈ choices}` | đọc ở `ctx.options[key]` |
-| `reasons` | khi dùng lý do riêng | `{"<mã>": {"text": "…", "by": "winner"\|"loser"\|"none"}}` | mã `^[a-z][a-z0-9-]{1,23}$`, không trùng `reasons.json` |
-| `screenshots` | tùy chọn | ≤ 6 `"screenshots/…"` | tệp MUST tồn tại |
-| `homepage` | MUST NOT | — | địa chỉ `http(s)://` trong manifest bị chặn (`E_EXTERNAL_URL`) |
-| `room`, `resume`, `teams`, `soon`, `unlisted`, `action` | MUST NOT | — | dành cho game chính thức / kho |
-
-**`manifest.json` mẫu hợp lệ hoàn chỉnh** (đổi `id`, `name`, nội dung cho game của bạn):
-```json
-{
-  "manifest": 2,
-  "id": "bongbay",
-  "name": "Bóng bay",
-  "version": "0.1.0",
-  "api": 1,
-  "sdk": "2",
-  "app_min": "0.1.0",
-  "group": "vui",
-  "color": "#ff7aa8",
-  "players": { "min": 2, "max": 4 },
-  "spectators": true,
-  "desc": "Lần lượt bơm bóng, ai làm bóng nổ là thua",
-  "tags": ["nhiều người", "may rủi"],
-  "age": 6,
-  "languages": ["vi"],
-  "icon": "icon.svg",
-  "entry": { "client": "client/index.js", "server": "server/game.js", "style": "client/style.css" },
-  "mode": "turn",
-  "session": { "minutes": [2, 5] },
-  "needs": { "sound": true, "vibrate": false, "storage": false, "user_text": false },
-  "bot": true,
-  "options": [ { "key": "size", "label": "Độ bền bóng", "choices": [10, 20], "default": 10 } ],
-  "reasons": { "no-bong": { "text": "làm nổ bóng", "by": "loser" } },
-  "howto": ["Tới lượt, bấm Bơm 1, 2 hoặc 3 hơi.", "Ai bơm hơi cuối làm bóng nổ là thua."],
-  "news": "Bản đầu tiên.",
-  "author": "Tên tác giả",
-  "license": "MIT",
-  "changelog": "0.1.0: bản đầu tiên."
-}
-```
+Bảng MỌI trường (kiểu, giới hạn, trường cấm trong bài gửi): **`CHUAN-GIAO-TIEP.md` mục 4**. Mẫu hợp lệ hoàn chỉnh: mục 12.1 (game theo lượt)
+và mục 10.2 (ứng dụng không phải game). MUST: `"manifest": 2`, `"api": 1`, `"sdk": "2"`, `author`, `license`, đúng
+`devkit/shared/sdk/manifest.schema.json`; MUST NOT thêm trường ngoài bảng, MUST NOT `homepage` `room` `resume` `teams` `action` `soon` `unlisted`.
 
 ## 4. Chuẩn giao tiếp
-
-### 4.1 Luật chơi `server/game.js` (MUST đúng khuôn này)
-```js
-'use strict';
-// JGCore có sẵn (công cụ gộp SDK lên đầu tệp). MUST NOT require/import gì.
-module.exports = JGCore.game({
-  kind: 'turn',                       // 'turn' | 'simultaneous' | 'realtime' — khớp manifest.mode
-  setup: function (s, ctx) {          // ctx = {players:[{id,name,bot?}], options:{key:value}, rng(), now}
-    s.size = ctx.options.size === 20 ? 20 : 10;   // MUST kiểm/giới hạn option, có mặc định
-    s.air = 0;
-    s.jg.phase = 'play';              // s.jg = phong bì SDK: n (số ghế), turn, phase, out[], done[], end…
-    s.jg.turn = 0;                    // game theo lượt MUST đặt ghế đi trước
-  },
-  moves: {
-    pump: {
-      args: { n: { int: [1, 3] } },   // SDK kiểm kiểu trước khi gọi run; sai → bị từ chối 'bad-move'
-      phase: 'play',
-      turn: true,                     // chỉ ghế đang tới lượt
-      run: function (s, ctx, mv) {    // ctx = {player, move, rng(), now, events[]}; SỬA THẲNG s
-        s.air += mv.n;
-        if (s.air >= s.size) {          // người làm nổ bóng thua, mọi người còn lại thắng
-          JGCore.end(s, { winners: JGCore.Seats.alive(s).filter(function (i) { return i !== ctx.player; }), reason: 'no-bong' });
-          return;                       // run trả undefined = nước được nhận
-        }
-        s.jg.turn = JGCore.Seats.next(ctx.player, s.jg.n, function (q) { return !s.jg.out[q]; });
-        // từ chối: return 'Chữ tiếng Việt cho người chơi'  (state tự quay về như cũ)
-      }
-    }
-  },
-  view: function (s, you, v) {        // you = ghế người nhận, -1 = người xem. Gắn trường RIÊNG vào v; MUST NOT lộ bí mật
-    v.air = s.air; v.size = s.size;
-  },
-  legal: function (s, seat) {         // SHOULD có: mảng mọi nước hợp lệ của ghế; [] nếu không tới lượt/hết ván
-    if (s.jg.end || s.jg.turn !== seat) return [];
-    return [1, 2, 3].map(function (n) { return { type: 'pump', n: n }; });
-  },
-  bot: function (s, seat, ctx) {      // MUST có nếu manifest bot:true. Chỉ ĐỌC s, trả 1 nước hợp lệ hoặc null
-    if (s.jg.end || s.jg.turn !== seat) return null;
-    return { type: 'pump', n: 1 + JGCore.int(ctx.rng, 3) };
-  }
-  // tùy chọn: tick(s, ctx{now, rng}) (cần manifest tick_ms), hint(s, seat, ctx) → {move, text?}, scores(s) → number[n],
-  //           onResign(s, seat, ctx, resignDefault), undo(s, ctx), logView(s, you)
-});
-```
-| Hàm | Tham số | Trả về | Luật |
-|---|---|---|---|
-| `setup(s, ctx)` | `s` có sẵn `s.jg`; `ctx.players`, `ctx.options`, `ctx.rng()`, `ctx.now` | không cần (sửa `s`) | MUST tất định theo `ctx.rng` |
-| `moves.<type>.run(s, ctx, mv)` | `mv = {type: '<type>', …}` ≤ 8 KB | `undefined` = nhận · chuỗi / `{error, code}` = từ chối | `{type:'resign'}` do SDK lo, MUST NOT khai `resign` |
-| `view(s, you, v)` | `you` ∈ 0..n-1 hoặc -1 | không cần (gắn vào `v`) | SDK tự thêm `proto, phase, turn, you, youDone, seats, timer, scores, finishOrder, result` |
-| `legal(s, seat)` | | `Move[]` | bộ kiểm dùng để chơi ngẫu nhiên — có `legal` thì kiểm kỹ hơn |
-| `bot(s, seat, ctx)` | `ctx = {options, rng(), now}` | `Move` \| `null` | ≤ 250 ms (SHOULD ≤ 10 ms) |
-| `tick(s, ctx)` | `ctx = {now, rng()}` | không cần | chỉ khi manifest `tick_ms` |
-| `scores(s)` | | `number[n]` \| `null` | bảng điểm cuối ván |
-| Kết thúc | `JGCore.end(s, {winners:[ghế], reason, draw?})` · `JGCore.endByScore(s, scores, reason, {lowWins?, drawOnTie?})` | | `reason` MUST thuộc `devkit/shared/sdk/reasons.json` hoặc `manifest.reasons` |
-
-Lý do chuẩn hay dùng: `win` (thắng theo luật) · `score` (điểm cao nhất) · `finish` (về đích) · `het-nguoi` · `het-van` · `draw` · `resign` (SDK tự gán).
-SDK `JGCore`: `int(rng,n) pick(rng,arr) shuffle(rng,arr) clone fill(n,v) range sum isInt` · `Seats.next/list/alive/playing` · `Cards.deck/deal/mask` ·
-`Grid.make/inside/run` · `Beans.pay/broke/leaders` · `setDeadline(s,ms)/expired(s)/clearDeadline` · `log(s,{t,…})` · `end/endByScore`.
-
-### 4.2 Giao diện `client/index.js` (MUST đúng khuôn này)
-```js
-JG.defineGame(function (game) {
-  'use strict';
-  var root = game.root;                               // MUST chỉ vẽ trong root
-  root.innerHTML = '<div class="bb"><div class="bb-chips"></div><p class="bb-say"></p></div>';
-  function render(v) {
-    if (!v) return;
-    JGUI.q(root, '.bb-chips').innerHTML = JGUI.chips(game, v);
-    JGUI.q(root, '.bb-say').textContent = v.result ? 'Hết ván' : JGUI.turnText(game, v) + ' · hơi ' + v.air + '/' + v.size;
-    var mine = v.you >= 0 && v.turn === v.you && !v.result;
-    JGUI.bar(root, [1, 2, 3].map(function (n) {
-      return { label: 'Bơm ' + n, key: 'p' + n, primary: n === 1, disabled: !mine,
-               onClick: function () { game.send({ type: 'pump', n: n }); JGUI.sound(game, 'move'); } };
-    }));
-  }
-  game.on('view', render);
-  game.on('error', function (msg) { game.toast(msg); render(game.view); });
-  render(game.view);
-  return { destroy: function () {} };                // MUST trả về; dọn hẹn giờ nếu có
-});
-```
-Được dùng: `game.root · game.me {id,name} · game.seat · game.players [{id,name,seat}] · game.options · game.view · game.send(move) ·
-game.on('view'|'result'|'error'|'event'|'hint'|'chat', fn) · game.toast(text) · game.sound(name) · game.soundNames · game.highlight(sel,{ms,label}) ·
-game.openChat() · game.menu()` · `JGUI.esc q still nameOf turnText sound chips timer bar banner pad` · `JG.storage.get/set` · `JG.haptic('tap'|'ok'|'warn')`.
-Âm hợp lệ: `move move-other turn win lose draw error tick join leave chat send start capture check dice deal chip`.
-MUST: mọi chữ từ người chơi (tên) qua `JGUI.esc()` trước khi vào `innerHTML` (hoặc dùng `textContent`) · chỉ biến CSS của khung
-(`var(--ink) var(--paper) var(--accent) var(--line) var(--soft) var(--muted) var(--radius)`; đồ vật: `var(--jg-obj-ink) var(--jg-obj-paper)`) ·
-vùng bấm ≥ 44 px · không tràn ngang ở 360 px · `@media (prefers-reduced-motion: reduce)` tắt animation.
-
-### 4.3 Tất định + thời gian
-- MUST: cùng state + cùng seed `ctx.rng` → cùng kết quả. Ngẫu nhiên CHỈ `ctx.rng()` / `JGCore.int(ctx.rng, n)`. Hệ thống cấp seed.
-- MUST: state chỉ chứa object/mảng/số/chuỗi/bool/null. MUST NOT Map, Set, hàm, `undefined`, `NaN`, biến toàn cục giữ trạng thái.
-- Thời gian CHỈ qua `ctx.now` (ms) — dùng `JGCore.setDeadline(s, ms)` + `JGCore.expired(s)` trong `tick`.
-
-### 4.4 API CẤM (bộ quét tĩnh — chặn tự động)
-`server/` (đã bỏ chú thích; **chuỗi vẫn bị quét** — đừng viết các chữ này cả trong chuỗi):
-`require` · `import` · `process` · `Date` · `Promise` · `setTimeout`/`setInterval` · `eval(` · `Function(`/`new Function` · `constructor.constructor` ·
-`__proto__` · `Proxy` · `Reflect` · `WebAssembly` · `SharedArrayBuffer`/`Atomics` · `ArrayBuffer` `DataView` `BigInt` `Int8Array`…`Float64Array` ·
-`globalThis[` · và chữ **`async`/`await` ở BẤT KỲ đâu kể cả chú thích**. (Không có `fs`, `net`, `http`, `child_process` — `require` đã bị cấm.)
-`client/`: `fetch(` · `XMLHttpRequest` · `WebSocket` · `EventSource` · `RTCPeerConnection` · `sendBeacon` · `document.cookie` · `localStorage` ·
-`sessionStorage` · `indexedDB` (dùng `JG.storage`) · `window.parent`/`top`/`opener` · `postMessage` · `eval(` · `Function(` · `setTimeout("…")` ·
-`import` · `Worker` · `serviceWorker` · `importScripts` · `WebAssembly` · `<iframe` `<object` `<embed`.
-Mọi tệp chữ (trừ `README.md`, `test/`): MUST NOT chứa `http://` / `https://` (trừ `http://www.w3.org/` trong SVG).
-
-### 4.5 Giới hạn chạy (khu cách ly)
-| Giới hạn | Giá trị |
-|---|---|
-| Mỗi lần gọi `setup/move/view/result/tick/legal` | ≤ 150 ms (bộ kiểm cục bộ báo lỗi > 250 ms; SHOULD < 5 ms) |
-| `bot` / `hint` | ≤ 250 ms (SHOULD < 10 ms) |
-| `server/game.js` sau gộp SDK | ≤ 256 KB |
-| State / view (JSON) | ≤ 256 KB |
-| Bộ nhớ | 64 MB |
-| `tick_ms` | ≥ 250 |
-| CPU mỗi phòng | ≤ 1000 ms / 10 s |
-| Nước đi (JSON) | ≤ 8 KB; `events` ≤ 16 KB |
+Nguồn duy nhất: **`CHUAN-GIAO-TIEP.md`** — luật/logic mục 5, giao diện mục 6, thông điệp mục 7. Khuôn MUST theo:
+- `server/game.js` = `module.exports = JGCore.game({ kind, setup, moves, view, legal?, bot?, tick?, onResign? … })` — khuôn đầy đủ mục 5.2, ví dụ
+  chạy được mục 12.2. State JSON thuần, tất định; ngẫu nhiên CHỈ `ctx.rng()`, thời gian CHỈ `ctx.now`.
+- MUST NOT API cấm (bộ quét đọc cả chuỗi): danh sách mục 5.1 (server) và 6.5 (client); chữ `async`/`await` cấm kể cả trong chú thích.
+- `view(s, you, v)` MUST NOT lộ bí mật của ghế khác / người xem (mục 5.6). Kết thúc bằng `JGCore.end` / `endByScore`, `reason` thuộc
+  `devkit/shared/sdk/reasons.json` hoặc `manifest.reasons` (mục 5.7). Ứng dụng không thắng thua: MUST `JGCore.game({scored: false, …})` +
+  `JGCore.end(s, {scored: false, reason})` ("Xong phiên", không tính điểm — mục 5.7, 10); MUST NOT chia thắng giả.
+- Gói cộng đồng: chữ trong nước đi đi qua bộ lọc từ của hội quán (có thể thành `***` hoặc cả nước bị từ chối — mục 5.4). MUST NOT dùng chữ
+  người gõ làm khóa đối tượng; giữ nước đi phẳng (≤ 8 tầng, ≤ 256 chuỗi).
+- `client/index.js` = `JG.defineGame(function (game) { … return { destroy }; })` — đối tượng `game`, `JGUI`, biến CSS: mục 6; ví dụ mục 12.3.
+  MUST: chữ người dùng qua `JGUI.esc()`, chỉ biến CSS của khung, vùng bấm ≥ 44 px, không tràn ngang ở 360 px, `prefers-reduced-motion`.
+- Giới hạn (mục 5.10, 7): mỗi lần gọi ≤ 150 ms (`bot`/`hint` 250), `server/game.js` sau gộp SDK ≤ 256 KB, state/view ≤ 256 KB, nước đi ≤ 2 KB,
+  `tick_ms` ≥ 250, ≤ ~8 nước/giây.
 
 ## 5. `test/cases.json` (MUST)
-```json
-{"cases": [
-  {"name": "khai cuộc", "players": 2, "steps": [], "result": null,
-   "view": [{"seat": 0, "match": {"proto": 2, "phase": "play", "turn": 0, "air": 0}}, {"seat": -1, "match": {"you": -1}}]},
-  {"name": "sai lượt + nước rác", "steps": [
-     {"seat": 1, "move": {"type": "pump", "n": 1}, "error": "Chưa tới lượt"},
-     {"seat": 0, "move": {"type": "pump", "n": 9}, "error": "không hợp lệ"},
-     {"seat": 0, "move": {"type": "hack"}, "error": "không hợp lệ"},
-     {"seat": 7, "move": {"type": "pump", "n": 1}, "error": "không ngồi"}]},
-  {"name": "đầu hàng 2 người", "steps": [{"seat": 1, "move": {"type": "resign"}}], "result": {"winners": [0], "reason": "resign"}},
-  {"name": "cả ván tới kết thúc", "options": {"size": 10}, "steps": [
-     {"seat": 0, "move": {"type": "pump", "n": 3}}, {"seat": 1, "move": {"type": "pump", "n": 3}},
-     {"seat": 0, "move": {"type": "pump", "n": 3}}, {"seat": 1, "move": {"type": "pump", "n": 1}}],
-   "result": {"winners": [0], "reason": "no-bong"}}
-]}
-```
-- `players` mặc định = `players.min`; `options` mặc định = `default` của manifest; đồng hồ bắt đầu từ 0; `{"tick": ms}` là 1 bước tick.
-- `error` = CHUỖI CON của lỗi trả về; MUST NOT để `""`. Chữ lỗi SDK: `Chưa tới lượt bạn` · `Nước đi không hợp lệ` · `Bạn không ngồi ở bàn này` ·
-  `Ván đã kết thúc` · `Chưa tới lúc làm việc này` · `Bạn đã rời ván rồi`.
-- `view[].match` so KHỚP MỘT PHẦN. MUST có ca: khai cuộc, luật chính, ≥ 3 lỗi (sai lượt, nước rác, ghế lạ), đầu hàng; game có bí mật MUST có
-  ca view ghế khác + người xem KHÔNG thấy bí mật (vd `"match": {"secret": null}`).
-- SHOULD có 1 ca chơi tới kết thúc. Kết quả phụ thuộc giá trị ngẫu nhiên ẩn (số bí mật, bài chia…) thì MAY bỏ ca này — khi đó 200 ván
-  ngẫu nhiên của bộ kiểm là bằng chứng kết thúc; ghi 1 dòng giải thích trong mô tả PR.
-- Ngoài ca kiểm, bộ kiểm chơi 200 ván ngẫu nhiên (từ `legal`/`bot`), nước rác, đầu hàng, so tất định 2 lần, kiểm hợp đồng view/result.
-  Ván ngẫu nhiên MUST kết thúc (không vòng lặp vô tận); 2 người đầu hàng MUST kết thúc ván.
+Định dạng + ca bắt buộc: **`CHUAN-GIAO-TIEP.md` mục 8**; ví dụ đầy đủ mục 12.4 và 10.2. MUST có ca: khai cuộc, luật chính, ≥ 3 lỗi (sai lượt /
+sai pha, nước rác, ghế lạ), rời ván 2 người, (có bí mật) view ghế khác + người xem không thấy bí mật. `error` = chuỗi con, MUST NOT `""`.
+SHOULD có 1 ca chơi tới kết thúc; kết quả phụ thuộc giá trị ngẫu nhiên ẩn thì MAY bỏ ca đó và ghi 1 dòng lý do trong mô tả PR (200 ván ngẫu
+nhiên của bộ kiểm là bằng chứng kết thúc).
 
-## 6. Lệnh tự test — chạy ĐÚNG THỨ TỰ, từ GỐC repo, lặp tới khi tất cả ĐẠT
-| # | Lệnh | ĐẠT khi in |
-|---|---|---|
-| 1 | `node devkit/jagame.js new <id> --name "<Tên>" --author "<Tác giả>"` | `Đã tạo …/devkit/games/<id>` |
-| 2 | (viết game trong `devkit/games/<id>/`) `node devkit/jagame.js check <id>` | dòng cuối `KẾT QUẢ: ĐẠT — 0 lỗi` |
-| 3 | `node devkit/jagame.js shot <id>` (cần Playwright; mã thoát 2 = không có → tự chụp theo hướng dẫn in ra, hoặc ghi lý do ở mục Ảnh của PR) | `Ảnh chụp: … — 0 lỗi JS` |
-| 4 | `node devkit/jagame.js submit <id>` | `Đã chép sang …/submissions/<id>` |
-| 5 | `git checkout -b gui-<id> && git add submissions/<id> && git commit -m "Gửi game <id> v<version>"` | `git status` sạch (trừ `devkit/games/`) |
-| 6 | `node devkit/jagame.js check <id>` (giờ kiểm `submissions/<id>/`) | `KẾT QUẢ: ĐẠT — 0 lỗi` |
-| 7 | `python3 devkit/check_submission.py submissions/<id>` | `KẾT QUẢ: ĐẠT — 0 lỗi, N lưu ý`. MUST đọc từng dòng `LƯU Ý`: `innerHTML` là bình thường NẾU mọi chữ từ người chơi đã qua `JGUI.esc()`; thiếu `screenshots/` được phép |
-| 8 | Viết `devkit/games/pr-<id>.md` theo `.github/pull_request_template.md` (9 mục, mục 8), dán đầu ra bước 6, 7 và 9 | |
-| 9 | `python3 devkit/check_pr.py --title "[Gửi game] <id> v<version> — <Tên>" --body-file devkit/games/pr-<id>.md` | dòng cuối `PR ĐẠT — giống workflow GitHub` |
-Bước 9 lần đầu có thể TRƯỢT `E_PR_BODY` vì chưa có dòng `PR ĐẠT` của chính nó: chạy `python3 devkit/check_pr.py` (không tham số) → dán đầu ra
-vào mục "Kết quả 3 lệnh" → chạy lại bước 9. Sửa mã: sửa trong `devkit/games/<id>/` → `submit` lại → `git commit` → chạy lại từ bước 6
-(`check` báo lỗi nếu bản nháp khác bài gửi). MUST NOT mở PR khi còn bất kỳ dòng `TRƯỢT`. MUST NOT commit `pr-<id>.md`.
+## 6. Trình tự lệnh — ĐÚNG 7 lệnh, ĐÚNG THỨ TỰ, từ GỐC repo, lặp tới khi các bước ✱ ĐẠT
+Giống hệt QUY-TAC-GUI-GAME.md R10 (cùng sinh từ `ai-rules.json` → `commands`):
+<!-- COMMANDS -->
+| # | Lệnh (từ gốc repo) | ĐẠT khi in | Ghi chú |
+|---|---|---|---|
+| 1 | `node devkit/jagame.js new <id> --name "<Tên>" --author "<Tác giả>"` | `Đã tạo` | rồi viết lại thành gói CỦA BẠN trong `devkit/games/<id>/`; trong lúc viết chạy `node devkit/jagame.js check <id>` bao nhiêu lần cũng được |
+| 2 | `node devkit/jagame.js shot <id>` | `Ảnh chụp:` | tùy chọn, cần Playwright; mã thoát 2 = không có -> tự chụp theo hướng dẫn in ra, hoặc ghi lý do ở mục Ảnh của PR |
+| 3 | `node devkit/jagame.js submit <id>` | `Đã chép sang` | chép `devkit/games/<id>/` -> `submissions/<id>/` |
+| 4 | `git checkout -b gui-<id> && git add submissions/<id> && git commit -m "Gửi game <id> v<version>"` | — | `git status` sạch (trừ `devkit/games/`); sửa lại thì: sửa nháp -> bước 3 -> `git commit` -> chạy lại từ bước 5 |
+| 5 ✱ | `node devkit/jagame.js check <id>` | `KẾT QUẢ: ĐẠT — 0 lỗi` | kiểm `submissions/<id>/` (báo lỗi nếu bản nháp khác bài gửi) |
+| 6 ✱ | `python3 devkit/check_submission.py submissions/<id>` | `KẾT QUẢ: ĐẠT — 0 lỗi` | đọc từng dòng LƯU Ý: innerHTML bình thường NẾU mọi chữ người dùng đã qua `JGUI.esc()`; thiếu `screenshots/` được phép. Sau bước này viết mô tả PR vào `devkit/games/pr-<id>.md` (KHÔNG commit) |
+| 7 ✱ | `python3 devkit/check_pr.py --title "[Gửi game] <id> v<version> — <Tên>" --body-file devkit/games/pr-<id>.md` | `PR ĐẠT — giống workflow GitHub` | ứng dụng: tiêu đề `[Gửi ứng dụng] …`. Lần đầu có thể TRƯỢT E_PR_BODY vì chưa có dòng PR ĐẠT của chính nó: chạy `python3 devkit/check_pr.py` (không tham số), dán đầu ra vào mục "Kết quả 3 lệnh", chạy lại |
+<!-- /COMMANDS -->
+MUST NOT mở PR khi còn bất kỳ dòng `TRƯỢT`. MUST NOT commit `devkit/games/pr-<id>.md`.
 
 ## 7. Mã lỗi từ chối
 Bộ kiểm in `TRƯỢT [E_…]` và dòng cuối `KẾT QUẢ: TRƯỢT — … · mã: E_…`. Sửa theo bảng:
@@ -337,6 +125,8 @@ Bộ kiểm in `TRƯỢT [E_…]` và dòng cuối `KẾT QUẢ: TRƯỢT — �
 | `E_BRANCH_NAME` | nhánh PR không phải gui-<id> | git branch -m gui-<id> (đổi tên nhánh hiện tại) rồi push lại |
 | `E_PR_TITLE` | tiêu đề PR sai mẫu "[Gửi game] <id> v<version> — <Tên game>" hoặc lệch manifest (id/version/name) | sửa tiêu đề PR đúng từng ký tự; dấu — là gạch dài (U+2014); version/name lấy đúng từ manifest.json |
 | `E_PR_BODY` | mô tả PR thiếu/để trống mục bắt buộc, ô xác nhận chưa [x], thiếu kết quả 3 lệnh hoặc ảnh chụp | dán đúng mẫu .github/pull_request_template.md, điền đủ 9 mục ##, dán nguyên đầu ra 3 lệnh, thêm ảnh hoặc đường dẫn screenshots/<tệp>.png |
+| `E_NOT_OWNER` | PR sửa game đã có chủ (submissions/OWNERS.json) nhưng người mở PR không phải tác giả gốc | không gửi PR cho game của người khác: mở Issue gắn @tác-giả hoặc PR vào bản fork của tác giả; tác giả bỏ > 90 ngày → Issue xin tiếp quản (QUY-TRINH-DONG-GOP.md luồng 4) |
+| `E_CHANGELOG` | bản cập nhật thiếu submissions/<id>/CHANGELOG.md hoặc CHANGELOG.md chưa ghi phiên bản mới | thêm CHANGELOG.md, mục '## <version>' mô tả thay đổi (ghi rõ nếu đổi luật thắng/thua) |
 <!-- /ERROR_CODES -->
 
 ## 8. Checklist cuối + mẫu PR
@@ -348,7 +138,7 @@ Bộ kiểm in `TRƯỢT [E_…]` và dòng cuối `KẾT QUẢ: TRƯỢT — �
 - [ ] `view` không lộ bí mật; mọi tên người chơi qua `JGUI.esc` (đã soát từng dòng `innerHTML` mà bộ kiểm nêu)
 - [ ] Không push lên `main`; PR mở từ nhánh `gui-<id>` của bản fork
 
-**Tên nhánh:** `gui-<id>` (`E_BRANCH_NAME`). **Tiêu đề PR:** `[Gửi game] <id> v<version> — <Tên game>` — `version`, `Tên game` lấy NGUYÊN từ
+**Tên nhánh:** `gui-<id>` (`E_BRANCH_NAME`). **Tiêu đề PR:** `[Gửi game] <id> v<version> — <Tên game>` (ứng dụng: `[Gửi ứng dụng] <id> v<version> — <Tên>`) — `version`, `Tên game` lấy NGUYÊN từ
 manifest, `—` là gạch dài U+2014 (vd `[Gửi game] bongbay v0.1.0 — Bóng bay`; `E_PR_TITLE`).
 **Mô tả PR** = `.github/pull_request_template.md` điền ĐỦ 9 mục `##`, không còn chỗ `<…>` (`E_PR_BODY`). Ví dụ đầy đủ:
 ~~~markdown
@@ -389,5 +179,14 @@ PR ĐẠT — giống workflow GitHub
 ## Ảnh chụp màn hình
 submissions/bongbay/screenshots/1.png · submissions/bongbay/screenshots/2.png
 ~~~
-`## Tác giả và liên hệ`: MUST là tên + liên hệ của NGƯỜI GỬI (lấy `git config user.name`, tài khoản GitHub của bản fork / `git remote -v`); MUST NOT bịa hay chép email, số điện thoại từ ngữ cảnh khác.
+`## Tác giả và liên hệ`: MUST là tên + liên hệ của NGƯỜI GỬI (lấy `git config user.name`, tài khoản GitHub của bản fork / `git remote -v`). Chưa có remote, chưa có `user.name` hoặc không chắc → MUST DỪNG và HỎI người dùng (đây là chỗ DUY NHẤT được hỏi); MUST NOT bịa, đoán hay chép email, số điện thoại từ ngữ cảnh khác.
 Ghi chú thêm (SHOULD, đặt cuối mục "Mô tả ngắn"): "Viết bởi AI agent <tên công cụ>; người gửi chịu trách nhiệm nội dung"; lý do bỏ ca kiểm hết ván (mục 5) nếu có.
+
+## 9. Cập nhật game đã có (QUY-TRINH-DONG-GOP.md luồng 3–4)
+- MUST kiểm chủ trước: `submissions/OWNERS.json` → `owners["<id>"]`. Khác tài khoản GitHub của người dùng → MUST NOT viết bản cập nhật; mở Issue mẫu
+  `bao-loi.md`/`yeu-cau-tinh-nang.md` gắn `@<chủ>` (`E_NOT_OWNER` nếu cố gửi PR). Game chính thức (id trong danh sách cấm mục 1) → chỉ Issue.
+- MUST gửi lại ĐỦ thư mục `submissions/<id>/` (bản cũ không nằm trong `main`; lấy từ bản fork / máy người dùng), tăng `version` (semver),
+  cập nhật `changelog` + `news` trong manifest, và có `submissions/<id>/CHANGELOG.md` chứa mục `## <version mới>` (`E_CHANGELOG`).
+- MUST giữ tương thích: không đổi dạng state, tên loại nước đi, khóa tùy chọn đang dùng (ván cờ thư / ván lưu chạy theo bản cũ được ghim).
+- Đổi luật thắng/thua/tính điểm → MUST ghi rõ ở mục "Mô tả ngắn" của PR.
+- `check_pr.py` tự kiểm chủ (đọc `submissions/OWNERS.json` của nhánh gốc; tài khoản lấy từ remote `origin` hoặc `--author <login>`).

@@ -14,10 +14,11 @@
 .as-go { flex: none; min-height: 36px; padding: 0 14px; display: inline-flex; align-items: center; border-radius: var(--r-pill, 999px); background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: var(--fs-sm, 14px); }
 .as-unread { flex: none; min-width: 22px; height: 22px; padding: 0 6px; display: inline-grid; place-items: center; border-radius: 11px; background: var(--live, #e5484d); color: #fff; font-size: 12px; }
 .as-btns { flex: none; display: flex; gap: 6px; }
+.as-btns .btn { min-height: 44px; }
 .as-card { flex-wrap: wrap; }
 .as-card .as-btns { margin-left: auto; }
 .as-row.is-done.is-win .as-ico { background: color-mix(in srgb, var(--gold, #e7a412) 30%, var(--paper)); }
-.as-page .pg-h2 small { color: var(--muted); font-weight: 600; }
+.as-page .pg-h2 small { color: var(--muted); font: 600 var(--fs-sm, 14px) var(--f-body); }
 .as-intro { color: var(--muted); margin: 0 0 var(--sp-3, 12px); }
 .as-msg { margin: var(--sp-3, 12px) 0; padding: 12px 14px; border-radius: var(--r-row, 12px); background: var(--soft); font-weight: 600; }
 .as-msg.is-bad { color: var(--danger, #c0392b); }
@@ -62,10 +63,26 @@
 .as-page .pg-h2 { margin-top: var(--sp-5, 24px); }
 
 .as-vac { color: var(--accent-text, var(--ink)); font-weight: 600; white-space: nowrap; }
-.as-vacbox { margin: 8px 0; }
-.as-vacbox p { margin: 0 0 8px; }
-.as-vacbox > p { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; padding: 12px; border-radius: var(--r-row, 14px); background: var(--soft); }
-.as-vacd { padding: 10px 12px; border-radius: var(--r-row, 14px); background: var(--soft); }
-.as-vacd summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
-.as-vacform { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.as-vacform select { font-size: 16px; min-height: 44px; }
+.as-vac .ic { width: 14px; height: 14px; vertical-align: -2px; }
+
+/* ── UI-AUDIT-2 N13: 3 bước minh họa · dòng ván "Tới lượt bạn" · công tắc Nghỉ phép ── */
+.as-steps { list-style: none; margin: 0 0 var(--sp-2, 8px); padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2, 8px); counter-reset: as-step; }
+.as-steps li { position: relative; display: grid; justify-items: center; gap: 6px; text-align: center; counter-increment: as-step; }
+.as-steps li + li::before { content: ""; position: absolute; top: 22px; right: calc(50% + 30px); width: calc(100% - 52px); border-top: 2px dashed color-mix(in srgb, var(--ink) 22%, transparent); }
+.as-step-ic { position: relative; display: grid; place-items: center; width: 48px; height: 48px; border-radius: var(--r-icon, 14px); background: var(--accent-bg, var(--soft)); color: var(--accent-text); }
+.as-step-ic::after { content: counter(as-step); position: absolute; top: -6px; right: -8px; min-width: 20px; height: 20px; display: grid; place-items: center; border-radius: 10px;
+  background: var(--paper); color: var(--ink); border: 1px solid var(--line); font: 700 var(--fs-xs, 12px)/1 var(--f-body); }
+.as-step-ic .ic { width: 24px; height: 24px; }
+.as-steps b { font: 600 var(--fs-sm, 14px)/1.25 var(--f-body); color: var(--ink); }
+.as-intro { font-size: var(--fs-sm, 14px); text-align: center; }
+.as-ico { color: var(--accent-text); }
+.as-ico .ic { width: 20px; height: 20px; }
+.as-row.is-wait .as-ico, .as-card.is-wait .as-ico { color: var(--muted); }
+.as-row.is-done.is-win .as-ico { color: var(--ink); }
+.as-row.is-turn .as-go { min-height: 32px; padding: 0 12px; background: var(--accent-bg, var(--soft)); color: var(--accent-text); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); white-space: nowrap; }
+.as-vacbox:empty { display: none; }
+.as-set .row { cursor: pointer; }
+.as-set-ic { flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--soft); color: var(--accent-text); }
+.as-set-ic .ic { width: 20px; height: 20px; }
+.as-set .row-meta { font-size: var(--fs-sm, 14px); }
+@media (max-width: 380px) { .as-row.is-turn .as-go { padding: 0 8px; } }

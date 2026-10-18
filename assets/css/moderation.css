@@ -28,7 +28,7 @@
 .mod-quote-main { font-size: 15px; white-space: pre-wrap; word-break: break-word; }
 .mod-quote-ctx { margin: 0 0 6px; padding: 0 0 6px 10px; border-left: 3px solid var(--line); font-size: 13px; color: var(--muted); white-space: pre-wrap; word-break: break-word; }
 .mod-quote-ctx b { color: var(--ink); }
-.mod-quote-more { background: none; border: 0; color: var(--accent-text); font: 600 13px var(--f-body); padding: 4px 0; cursor: pointer; min-height: 32px; }
+.mod-quote-more { background: none; border: 0; color: var(--accent-text); font: 600 13px var(--f-body); padding: 4px 0; cursor: pointer; min-height: 44px; }
 .mod-quote-ctx[hidden] { display: none; }
 .mod-photos { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
 .mod-photos a { display: block; width: 72px; height: 72px; border-radius: 10px; overflow: hidden; background: var(--line); }
@@ -86,5 +86,11 @@
   border-radius: 999px; background: color-mix(in srgb, var(--ink) 88%, #223); color: #fff; font: 600 var(--fs-sm)/1.3 var(--f-body); box-shadow: var(--elev-2);
   display: flex; align-items: center; gap: 8px; }
 .jg-quiet-banner[hidden] { display: none; }
+/* UI-2: không nổi đè tiêu đề trang — điện thoại nằm đáy, trên thanh tab (ô soạn tin đang khóa vì giờ yên tĩnh nên banner giải thích đúng chỗ) */
+@media (max-width: 760px) { .jg-quiet-banner { top: auto; bottom: calc(var(--app-tabbar-h, env(safe-area-inset-bottom)) + 12px); } }
+/* QA58a BUG-1: hội thoại / phòng chơi (vào sâu, thanh tab ẩn) hoặc khi đã có thanh khóa ô soạn (.cx-mutedbar "Đang giờ yên tĩnh…") — thanh khóa là nơi báo duy nhất, không hiện 2 lần, không che ô soạn */
+body.tab-deep .jg-quiet-banner, body:has(.chatpage.is-conv) .jg-quiet-banner { display: none !important; }
+@media (min-width: 761px) { body:has(.chatpage .cx-mutedbar:not([hidden])) .jg-quiet-banner { display: none !important; } }   /* máy tính: khung hội thoại luôn hiện cạnh danh sách */
+.jg-quiet-banner svg.ic, .cx-mutedbar svg.ic { flex: none; }
 html.is-quiet .cx-input, html.is-quiet .cx textarea { opacity: .5; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .mod-item.is-new { animation: none; } .mod-photos img { transition: none; } }

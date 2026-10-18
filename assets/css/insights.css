@@ -17,3 +17,11 @@
 .ins-bar { height: 10px; border-radius: 999px; background: var(--soft, color-mix(in srgb, var(--ink) 10%, var(--paper))); overflow: hidden; }
 .ins-bar i { display: block; height: 100%; background: var(--accent); border-radius: inherit; }
 .ins-storage .notice { margin: 0 0 8px; }
+
+/* Sức khỏe → Dung lượng chia nhóm (Quota::groups, QA56 BUG-8) */
+.ins-groups { list-style: none; margin: 12px 0 6px; padding: 0; display: grid; gap: 6px; }
+.ins-groups li { display: grid; grid-template-columns: minmax(0, 9em) auto minmax(0, 1fr); align-items: center; gap: 4px 12px; font-size: .95rem; }
+.ins-groups li b { font-variant-numeric: tabular-nums; text-align: right; min-width: 5.5em; }
+.ins-groups li i { display: block; height: 8px; border-radius: 4px; background: var(--soft, rgba(0,0,0,.08)); overflow: hidden; }
+.ins-groups li em { display: block; height: 100%; background: var(--accent); border-radius: inherit; }
+@media (max-width: 420px) { .ins-groups li { grid-template-columns: 1fr auto; } .ins-groups li i { grid-column: 1 / -1; } }

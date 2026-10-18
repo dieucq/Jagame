@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════════════════════════════════
-   Jagame SDK — jg-core (phía máy chủ) · giao thức game v2 · GAME-PROTOCOL.md
+   Jagame SDK — jg-core (phía máy chủ) · giao thức game v2 · CHUAN-GIAO-TIEP.md
    ───────────────────────────────────────────────────────────────────────────────────────────────────────
    KHÔNG require file này. Manifest khai "sdk": "2" → công cụ (build kho, test_game, play.html, devkit) tự CHÈN nguyên
    file này lên ĐẦU server/game.js lúc đóng gói / chạy thử. Trong game.js dùng thẳng biến toàn cục JGCore.
@@ -14,10 +14,11 @@
 
    Hàm trong moves/tick/onResign SỬA THẲNG s (SDK đã chép sâu trước khi gọi); trả chuỗi / JGCore.err(...) = từ chối nước
    (SDK trả lại state cũ, không đổi gì). Kết thúc ván: JGCore.end(s, {winners, reason, draw?, ranks?}).
+   Phiên ứng dụng không thắng thua: JGCore.end(s, {scored: false, reason}) hoặc JGCore.game({scored: false, …}) (SDK 2.1).
    ═══════════════════════════════════════════════════════════════════════════════════════════════════════ */
 var JGCore = (function () {
   'use strict';
-  var VERSION = '2.0.0';
+  var VERSION = '2.1.0';
 
   /* ───────────────────────── tiện ích dữ liệu ───────────────────────── */
   function isInt(v) { return typeof v === 'number' && isFinite(v) && Math.floor(v) === v; }
@@ -181,6 +182,12 @@ var JGCore = (function () {
   /** Chốt ván: ghi s.jg.end (result() đọc lại). Gọi lại khi đã chốt thì bỏ qua. */
   function end(s, r) {
     if (s.jg.end) return s.jg.end;
+    if (r.scored === false || s.jg.unscored) {
+      // "Không tính điểm" (SDK 2.1): không người thắng, không hòa — khung ghi "Xong phiên", không thống kê/xếp hạng/huy hiệu/tim.
+      s.jg.end = { winners: [], reason: r.reason || 'finish', scored: false };
+      s.jg.phase = 'ended'; s.jg.turn = null; s.jg.deadline = null;
+      return s.jg.end;
+    }
     var winners = (r.winners || []).filter(isInt).slice().sort(function (a, b) { return a - b; });
     var e = { winners: winners, reason: r.reason || 'win' };
     if (r.draw || (!winners.length && r.draw !== false)) e.draw = true;
@@ -241,7 +248,7 @@ var JGCore = (function () {
 
   /**
    * GameDef v2 → module.exports theo API máy v1 (setup/move/view/result/tick/legal/bot/undo/hint).
-   * def: { kind, minAlive, resign, setup, moves | move, view, tick, legal, bot, undo, hint, onResign, turn, phase, timer, scores, result }
+   * def: { kind, minAlive, resign, setup, moves | move, view, tick, legal, bot, undo, hint, onResign, turn, phase, timer, scores, result, scored }
    */
   function game(def) {
     var kind = def.kind || 'turn';
@@ -261,6 +268,7 @@ var JGCore = (function () {
     var api = {
       setup: function (ctx) {
         var s = { jg: envelope(ctx) };
+        if (def.scored === false) s.jg.unscored = true;   // mọi JGCore.end của gói (kể cả rời phòng) -> không tính điểm
         var r = def.setup ? def.setup(s, ctx) : null;
         if (isObj(r) && r !== s) { for (var k in r) if (Object.prototype.hasOwnProperty.call(r, k) && k !== 'jg') s[k] = r[k]; }
         return s;
@@ -328,6 +336,7 @@ var JGCore = (function () {
         if (!state || !state.jg) return null;
         if (state.jg.end) {
           var e = state.jg.end, r = { winners: e.winners.slice(), reason: e.reason };
+          if (e.scored === false) r.scored = false;
           if (e.draw) r.draw = true;
           if (e.ranks) r.ranks = e.ranks.slice();
           return r;

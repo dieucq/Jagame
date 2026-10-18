@@ -4,20 +4,24 @@
     python3 devkit/check_pr.py                     # so với upstream/main, origin/main hoặc main của repo gốc (tự tìm)
     python3 devkit/check_pr.py --base upstream/main
     python3 devkit/check_pr.py --title "[Gửi game] bongbay v0.1.0 — Bóng bay" --body-file pr.md   # + kiểm tiêu đề, mô tả PR
+    python3 devkit/check_pr.py --title "[Gửi ứng dụng] chiadoi v0.1.0 — Chia đội" --body-file pr.md   # ứng dụng không phải game
 
   Bước 1: pr_paths.py — mọi tệp đổi (so với nhánh gốc) phải nằm trong ĐÚNG MỘT submissions/<id>/.
   Bước 2: check_submission.py submissions/<id> --rounds 120.
-  Bước 3: pr_meta.py — tên nhánh PHẢI là gui-<id>; có --title / --body-file thì kiểm cả tiêu đề + 9 mục bắt buộc của mô tả PR.
+  Bước 3: pr_meta.py — tên nhánh PHẢI là gui-<id>; có --title / --body-file thì kiểm cả tiêu đề + 9 mục bắt buộc của mô tả PR;
+          game đã có chủ (submissions/OWNERS.json của nhánh gốc) -> chỉ chủ được cập nhật (E_NOT_OWNER) + phải có CHANGELOG.md (E_CHANGELOG).
+          Tài khoản GitHub của bạn: --author <login>, mặc định lấy từ địa chỉ remote origin (github.com/<login>/…).
 ĐẠT khi in dòng cuối "PR ĐẠT — giống workflow GitHub" (mã thoát 0). Chỉ tính thay đổi ĐÃ COMMIT — giống GitHub.
 """
 import argparse
 import os
+import re
 import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
-UPSTREAM = 'https://github.com/phamduybk/JagameServer.git'
+UPSTREAM = 'https://github.com/phamduybk/Jagame.git'
 
 
 def git(*args, check=True):
@@ -25,6 +29,12 @@ def git(*args, check=True):
     if check and r.returncode != 0:
         sys.exit('LỖI git %s: %s' % (' '.join(args), r.stderr.strip()))
     return r
+
+
+def origin_login():
+    url = git('remote', 'get-url', 'origin', check=False).stdout.strip()
+    m = re.search(r'github\.com[:/]+([A-Za-z0-9-]+)/', url)
+    return m.group(1) if m else None
 
 
 def find_base(want):
@@ -50,9 +60,10 @@ def main():
     ap.add_argument('--rounds', default='120')
     ap.add_argument('--title', help='tiêu đề PR định dùng')
     ap.add_argument('--body-file', help='tệp chứa mô tả PR định dán (theo .github/pull_request_template.md)')
+    ap.add_argument('--author', help='tài khoản GitHub sẽ mở PR (mặc định: chủ remote origin)')
     a = ap.parse_args()
     if git('rev-parse', '--is-inside-work-tree', check=False).returncode != 0:
-        sys.exit('Không phải repo git — clone bản fork của JagameServer rồi chạy trong đó')
+        sys.exit('Không phải repo git — clone bản fork của Jagame rồi chạy trong đó')
     base = find_base(a.base)
     dirty = [l for l in git('status', '--porcelain').stdout.splitlines() if l.strip() and '/devkit/games/' not in '/' + l[3:]]
     if dirty:
@@ -85,11 +96,26 @@ def main():
     branch = git('rev-parse', '--abbrev-ref', 'HEAD').stdout.strip()
     cmd = [sys.executable, '-I', os.path.join(HERE, 'tools', 'pr_meta.py'), '--id', gid,
            '--manifest', os.path.join(REPO, 'submissions', gid, 'manifest.json'), '--branch', branch]
+    author = a.author or origin_login()
+    owners = git('show', base + ':submissions/OWNERS.json', check=False)       # bản của NHÁNH GỐC, như workflow
+    if owners.returncode == 0:
+        op = os.path.join(REPO, '.jg_check_pr_owners.json')
+        open(op, 'w', encoding='utf-8').write(owners.stdout)
+        cmd += ['--owners', op]
+        if author:
+            cmd += ['--author', author]
+        else:
+            print('LƯU Ý: không biết tài khoản GitHub của bạn — thêm --author <login> để kiểm luật "chỉ tác giả gốc cập nhật".')
     if a.title is not None:
         cmd += ['--title', a.title]
     if a.body_file:
         cmd += ['--body-file', a.body_file]
-    if subprocess.run(cmd).returncode != 0:
+    try:
+        meta_rc = subprocess.run(cmd).returncode
+    finally:
+        if os.path.exists(os.path.join(REPO, '.jg_check_pr_owners.json')):
+            os.remove(os.path.join(REPO, '.jg_check_pr_owners.json'))
+    if meta_rc != 0:
         print('\nPR TRƯỢT ở bước 3 (xem mã [E_…] ở trên).')
         return 1
     if a.title is None or not a.body_file:

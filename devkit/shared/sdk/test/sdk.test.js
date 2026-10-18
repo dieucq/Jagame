@@ -109,3 +109,43 @@ test('manifest schema: 20 game kho + trò mẫu không có LỖI; bắt được
   assert.deepStrictEqual(t.errors, []); assert.deepStrictEqual(t.warnings, []);
   assert.ok(mc.svgErrors(Buffer.from('<svg viewBox="0 0 9 9"><g></g></g></svg>'), 'i').some((x) => /XML/.test(x)));
 });
+
+test('SDK 2.1 "không tính điểm": end({scored:false}) không thắng/không hòa; game({scored:false}) -> cả rời phòng cũng không tính điểm', () => {
+  const J = core();
+  assert.strictEqual(J.VERSION, '2.1.0');
+  const s = { jg: { n: 3, out: [false, false, false], done: [], finish: [], end: null } };
+  assert.deepStrictEqual(J.end(s, { winners: [1], reason: 'xong', scored: false }), { winners: [], reason: 'xong', scored: false });
+  assert.strictEqual(s.jg.phase, 'ended');
+  const mk = (flag) => loadGame("'use strict';\n" + coreSrc + `
+module.exports = JGCore.game({ kind: 'simultaneous', ${flag}
+  setup: function (s) { s.n = 0; },
+  moves: { chot: { run: function (s) { JGCore.end(s, { winners: [], reason: 'xong', scored: false }); } } },
+  view: function (s, you, v) { v.n = s.n; }
+});`, { timeout: 1000 });
+  const P = (n) => Array.from({ length: n }, (_, i) => ({ id: i, name: 'N' + i }));
+  let g = mk('');
+  let st = g.call('setup', { ctx: { players: P(2), options: {}, now: 1 }, seed: 1 });
+  let r = g.call('move', { state: st, ctx: { player: 0, move: { type: 'chot' }, now: 2 }, seed: 1 });
+  assert.deepStrictEqual(g.call('result', { state: r.state }), { winners: [], reason: 'xong', scored: false });
+  assert.strictEqual(g.call('view', { state: r.state, seat: 0 }).result.scored, false, 'view.result mang scored:false');
+  r = g.call('move', { state: st, ctx: { player: 0, move: { type: 'resign' }, now: 2 }, seed: 1 });
+  assert.deepStrictEqual(g.call('result', { state: r.state }), { winners: [1], reason: 'resign' }, 'không khai scored ở game(): rời phòng = người kia thắng');
+  g = mk('scored: false,');
+  st = g.call('setup', { ctx: { players: P(2), options: {}, now: 1 }, seed: 1 });
+  r = g.call('move', { state: st, ctx: { player: 0, move: { type: 'resign' }, now: 2 }, seed: 1 });
+  assert.deepStrictEqual(g.call('result', { state: r.state }), { winners: [], reason: 'resign', scored: false }, 'game({scored:false}): rời phòng không tính điểm');
+});
+
+test('contract: Result.scored chỉ nhận false, không đi cùng winners/draw/ranks; manifest "scored" cần app_min ≥ 0.4.0', () => {
+  const { makeChecker } = require(path.join(SDK, 'contract.js'));
+  const run = (r) => { const c = makeChecker({ sdk: '2', reasons: { xong: { text: 'Xong', by: 'none' } } }); c.np = 2; c.result(r); const out = []; return { n: c.report((l) => out.push(l)), out }; };
+  assert.strictEqual(run({ winners: [], reason: 'xong', scored: false }).n, 0);
+  assert.match(run({ winners: [], reason: 'xong', scored: false }).out.join('\n'), /không tính điểm/);
+  assert.strictEqual(run({ winners: [0], reason: 'xong', scored: false }).n, 1);
+  assert.strictEqual(run({ winners: [], reason: 'xong', scored: false, draw: true }).n, 1);
+  assert.strictEqual(run({ winners: [0], reason: 'win', scored: true }).n, 1);
+  const mc = require(path.join(SDK, 'manifest-check.js'));
+  const base = { manifest: 2, id: 'x1', app_min: '0.1.0', scored: false, players: { min: 1, max: 2 }, api: 1 };
+  assert.ok(mc.crossErrors(base).some((e) => /scored.*0\.4\.0/.test(e)));
+  assert.deepStrictEqual(mc.crossErrors({ ...base, app_min: '0.4.0' }).filter((e) => /scored/.test(e)), []);
+});

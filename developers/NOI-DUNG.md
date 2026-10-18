@@ -5,7 +5,7 @@ Jagame là nơi **gia đình và bạn bè** (từ 8 tuổi) chơi cùng nhau. M
 ## 1. Nội dung bị từ chối
 - **Cờ bạc tiền thật** dưới mọi hình thức: quy đổi, mua bán, nạp, phần thưởng có giá trị thật. Game có cược chỉ dùng **"đậu ảo"**
   (khai `content: ["dau-ao"]`, mô tả ghi "(đậu ảo, không tiền thật)"), mỗi ván bắt đầu lại.
-- Quảng cáo, liên kết ra ngoài, thu thập dữ liệu cá nhân, gọi mạng (giao diện không có mạng — xem GIAO-THUC.md mục 10.1).
+- Quảng cáo, liên kết ra ngoài, thu thập dữ liệu cá nhân, gọi mạng (giao diện không có mạng — xem ../CHUAN-GIAO-TIEP.md mục 6.5).
 - Bạo lực ghê rợn, máu me, tình dục, thù ghét, phân biệt đối xử, chính trị, tôn giáo gây chia rẽ, chất kích thích, tự hại.
 - Yếu tố đáng sợ quá mức với tuổi khai (`age`); có yếu tố sợ thì khai `content: ["so-hai"]`.
 - Chế giễu, chê bai người thua; câu chữ thô tục.

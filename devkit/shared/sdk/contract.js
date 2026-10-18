@@ -1,6 +1,6 @@
 'use strict';
 /*
- * Bộ kiểm HỢP ĐỒNG GIAO THỨC GAME v2 (GAME-PROTOCOL.md mục 4–7) — dùng bởi tools/runner.js (test_game) và devkit.
+ * Bộ kiểm HỢP ĐỒNG GIAO THỨC GAME v2 (CHUAN-GIAO-TIEP.md) — dùng bởi tools/runner.js (test_game) và devkit.
  * Soi mọi view()/result() mà bộ kiểm gọi trong ca kiểm + ván ngẫu nhiên:
  *   - game v2 (manifest "sdk" hoặc "manifest": 2): sai = LỖI (trượt);
  *   - game v1: chỉ CẢNH BÁO (gom theo loại, in 1 lần) — game cũ vẫn đạt.
@@ -21,6 +21,7 @@ function makeChecker(manifest) {
   const issues = new Map();          // thông điệp -> số lần
   const missing = new Set();         // trường chuẩn v2 vắng mặt (v1)
   const reasons = new Set();
+  let unscored = 0;                  // số kết quả "không tính điểm" gặp
   const note = (msg) => issues.set(msg, (issues.get(msg) || 0) + 1);
   const c = { strict, np: 0 };
 
@@ -46,11 +47,19 @@ function makeChecker(manifest) {
   c.result = function (r) {
     const np = c.np;
     if (r === null || r === undefined) return;
-    if (typeof r !== 'object' || Array.isArray(r)) return note('result() phải trả null hoặc {winners, reason, draw?, ranks?}');
+    if (typeof r !== 'object' || Array.isArray(r)) return note('result() phải trả null hoặc {winners, reason, draw?, ranks?, scored?}');
     if (!Array.isArray(r.winners) || !r.winners.every((w) => isInt(w) && w >= 0 && w < np) || new Set(r.winners).size !== r.winners.length) note('result.winners phải là mảng ghế không trùng');
     if (r.draw !== undefined && typeof r.draw !== 'boolean') note('result.draw phải là true/false');
     if (r.draw === true && Array.isArray(r.winners) && r.winners.length === 1) note('result.draw = true mà chỉ 1 người thắng');
     if (r.ranks !== undefined && !(Array.isArray(r.ranks) && r.ranks.length === np)) note('result.ranks phải là mảng ' + np + ' hạng (1 = nhất)');
+    // "Không tính điểm" (chuẩn 2.2): chỉ có giá trị false; khi đó không người thắng, không hòa, không hạng.
+    if (r.scored !== undefined && r.scored !== false) note('result.scored chỉ dùng giá trị false (không tính điểm) — bỏ trường này khi ván có tính điểm');
+    if (r.scored === false) {
+      unscored += 1;
+      if (Array.isArray(r.winners) && r.winners.length) note('result.scored = false (không tính điểm) mà vẫn có người thắng');
+      if (r.draw === true) note('result.scored = false không đi cùng draw: true');
+      if (r.ranks !== undefined) note('result.scored = false không đi cùng ranks');
+    }
     if (typeof r.reason !== 'string' || !REASON_RE.test(r.reason)) note('result.reason phải khớp ' + REASON_RE);
     else {
       reasons.add(r.reason);
@@ -67,7 +76,8 @@ function makeChecker(manifest) {
     for (const [msg, n] of issues) lines.push(msg + (n > 1 ? ' (' + n + ' lần)' : ''));
     const head = strict ? 'Hợp đồng v2 (game khai sdk/manifest 2 — sai là TRƯỢT):' : 'Hợp đồng v2 (game v1 — chỉ CẢNH BÁO, không trượt):';
     log(head);
-    if (!lines.length) log('  ĐẠT   view/result đúng chuẩn v2; lý do kết thúc gặp: ' + ([...reasons].join(', ') || '—'));
+    if (!lines.length) log('  ĐẠT   view/result đúng chuẩn v2; lý do kết thúc gặp: ' + ([...reasons].join(', ') || '—')
+      + (unscored ? ' · ' + unscored + ' kết quả không tính điểm (scored: false)' : ''));
     else lines.forEach((l) => log('  ' + (strict ? 'TRƯỢT  ' : 'Lưu ý  ') + l));
     return strict ? issues.size : 0;
   };

@@ -1,0 +1,4 @@
+{
+ "$comment": "Chủ sở hữu game cộng đồng (GitHub login) — DO CHỦ KHO GHI khi duyệt lần đầu (review_queue.py). Chỉ chủ được gửi bản cập nhật (E_NOT_OWNER). Không sửa tay qua PR: tệp nằm ngoài submissions/<id>/ (E_PATH_OUTSIDE). QUY-TRINH-DONG-GOP.md.",
+ "owners": {}
+}

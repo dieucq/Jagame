@@ -17,10 +17,13 @@
 .retro-cardcover { aspect-ratio: 4 / 5; font-size: var(--fs-lg); position: relative; }
 .retro-cardcover img, .retro-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .retro-cardcover i, .retro-cover i { font-style: normal; }
-.retro-empty { display: grid; justify-items: center; gap: var(--sp-3); text-align: center; padding: var(--sp-8) var(--sp-4); }
-.retro-empty h2 { margin: 0; }
-.retro-empty p { margin: 0; max-width: 36ch; }
-.retro-empty-ico { font-size: 56px; line-height: 1; }
+/* UI-AUDIT-2 N13: rỗng = kit .u-empty (hình joystick 96) + 1 nút chính + 1 nút chữ */
+.retro-empty { padding-top: var(--sp-6, 32px); }
+.retro-empty p { max-width: 34ch; }
+.retro-textbtn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; margin-top: var(--sp-2, 8px); padding: 0 14px; border: 0; border-radius: var(--r-pill, 999px);
+  background: none; color: var(--accent-text); font: 600 var(--fs-md, 16px) var(--f-body); text-decoration: none; cursor: pointer; }
+.retro-textbtn:hover { background: var(--accent-bg, var(--soft)); }
+.retro-textbtn:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 70%, transparent); outline-offset: 2px; }
 .retro-hubcard { display: flex; align-items: center; gap: var(--sp-3); padding: 14px var(--sp-4); min-height: 64px; color: var(--ink); text-decoration: none; background: var(--paper);
   border: var(--card-bw) solid var(--line); border-radius: var(--radius); box-shadow: var(--elev-1); }
 .retro-hubico { font-size: 28px; }
@@ -89,3 +92,4 @@
 .retro-hub .retro-tools { margin-top: var(--sp-3); }
 .retro-covertitle { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; align-content: center; padding-top: 2px; }
 .retro-covertitle { font-size: clamp(.72rem, 3vw, .9rem); }
+.retro-empty .retro-textbtn:not(:hover) { background: transparent; box-shadow: none; border: 0; }

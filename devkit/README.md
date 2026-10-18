@@ -1,8 +1,8 @@
 # Jagame devkit — bộ công cụ viết game cho Jagame
 
 Jagame là web game + chat tự host cho gia đình, bạn bè (điện thoại là chính). Một game là **1 thư mục tự chứa**: luật chơi chạy ở máy
-chủ trong khu cách ly + giao diện chạy trong trình duyệt. Tài liệu đầy đủ: **`GAME-PROTOCOL.md`** (cùng thư mục) và thư mục
-`developers/` của repo (Bắt đầu nhanh, Giao diện, Quy tắc nội dung, Gửi game).
+chủ trong khu cách ly + giao diện chạy trong trình duyệt. Chuẩn giao tiếp chính thức: **`CHUAN-GIAO-TIEP.md`** (cùng thư mục — bản
+gốc ở gốc repo) · quy trình gửi: `QUY-TAC-GUI-GAME.md` ở gốc repo · hướng dẫn thêm: thư mục `developers/` (Bắt đầu nhanh, Giao diện, Nội dung).
 
 ## Cần gì
 - **Node ≥ 22.2** (không `npm install`). Kiểm: `node -v`.
@@ -17,16 +17,17 @@ node jagame.js play bongbay                   # chơi thử: http://127.0.0.1:77
 node jagame.js submit bongbay                 # check rồi chép sang ../submissions/bongbay/ (trong bản fork của repo)
 python3 check_submission.py ../submissions/bongbay   # bộ kiểm bài gửi (thêm luật thư mục, giấy phép, khu cách ly) — phải ĐẠT
 ```
-Chơi thử: `&players=3` (số người), `&bot=1` (máy chơi ghế khác), `&tick=0` (dừng đồng hồ). Game mẫu chạy được ngay:
-`node jagame.js play oantuti` · `play nhatque` · `play xucxac`.
+Chơi thử: `&players=3` (số người), `&bot=1` (máy chơi ghế khác), `&tick=0` (dừng đồng hồ). Mẫu chạy được ngay:
+`node jagame.js play oantuti` · `play nhatque` · `play xucxac` · `play binhchon` (ứng dụng không phải game).
 
 ## Bố cục
 ```
 jagame.js              công cụ dòng lệnh (new · check · play · pack · submit)
 check_submission.py    tự kiểm bài gửi trước khi mở Pull Request
-GAME-PROTOCOL.md       chuẩn giao tiếp game (bản cho người viết game)
+CHUAN-GIAO-TIEP.md     chuẩn giao tiếp chính thức (game + ứng dụng nhỏ)
 template/oantuti/      trò mẫu cho `new`
-games/                 game của bạn + 3 game mẫu: oantuti (cùng lúc + đồng hồ), nhatque (theo lượt + gợi ý), xucxac (2–6 người + ngẫu nhiên)
+games/                 game của bạn + 4 mẫu: oantuti (cùng lúc + đồng hồ), nhatque (theo lượt + gợi ý), xucxac (2–6 người + ngẫu nhiên),
+                       binhchon (ứng dụng không phải game: bình chọn 1–20 người, phiếu bí mật, không thắng thua)
 shared/sdk/            SDK: server/jg-core.js, client/jg-ui.js, manifest.schema.json, reasons.json (công cụ tự gộp vào gói)
 shared/game-ui.css     bộ lớp giao diện mẫu để CHÉP vào client/style.css (đổi tiền tố)
 tools/                 bộ chạy kiểm (runner.js + sandbox.js), trang chơi thử play.html, bộ kiểm bài gửi

@@ -1,4 +1,4 @@
-<!-- Đọc trước khi gửi: QUY-TAC-GUI-GAME.md. Tiêu đề PR PHẢI là: [Gửi game] <id> v<version> — <Tên game>
+<!-- Đọc trước khi gửi: CHUAN-GIAO-TIEP.md (chuẩn giao tiếp) + QUY-TAC-GUI-GAME.md (luật gửi). Tiêu đề PR PHẢI là: [Gửi game] <id> v<version> — <Tên game>  (ứng dụng không phải game: [Gửi ứng dụng] <id> v<version> — <Tên>)
      PR CHỈ được đụng submissions/<id>/, nhánh gui-<id>. Điền ĐỦ 9 mục dưới; máy kiểm từ chối mục trống (E_PR_BODY). -->
 ## Tên game
 <Tên game> (id `<id>`, phiên bản `<version>`, bản mới / cập nhật)

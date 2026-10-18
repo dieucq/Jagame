@@ -1,3 +1,5 @@
+> Chuẩn giao tiếp (biến CSS, khung cách ly, đối tượng `game`): [../CHUAN-GIAO-TIEP.md](../CHUAN-GIAO-TIEP.md). Trang này chỉ nói về mỹ thuật.
+
 # Hướng dẫn giao diện game
 
 Mục tiêu: mọi game nhìn như **một** sản phẩm — cùng khung, cùng nhịp, cùng cách báo lượt/thắng/thua — mà mỗi game vẫn có "đồ vật" riêng
@@ -10,17 +12,8 @@ Mục tiêu: mọi game nhìn như **một** sản phẩm — cùng khung, cùng
 - **Bàn chơi là nhân vật chính** (≥ 55% chiều cao màn điện thoại); chip, nút, khay là khung mỏng quanh nó.
 
 ## 2. Biến CSS — bắt buộc
-Mọi màu/phông/bo góc đọc biến của khung, luôn kèm giá trị dự phòng `var(--x, …)`:
-
-| Biến | Dùng cho |
-|---|---|
-| `--bg` `--paper` `--soft` | nền trang · nền thẻ/ô · nền nhạt |
-| `--ink` `--muted` `--line` | chữ · chữ phụ · đường kẻ |
-| `--accent` `--accent-ink` `--accent-text` `--on-accent` | điểm nhấn · chữ trên nền accent · chữ màu accent |
-| `--radius` `--r-btn` `--shadow` `--card-bw` `--card-line` `--card-shadow` `--btn-bw` `--btn-shadow` | bo góc, viền, bóng |
-| `--f-head` | phông tiêu đề (số, banner) |
-| `--jg-obj-ink` `--jg-obj-paper` `--jg-obj-line` | **đồ vật thật** (lá bài, mặt quân, xúc xắc, tờ dò): mực/giấy CỐ ĐỊNH |
-| `--jg-dock-h` · `--jg-safe-bottom` · `--jg-stage-h` | chiều cao thanh nút đáy · chừa chỗ đáy · chiều cao dùng được khi xoay ngang |
+Danh sách biến, chế độ tối và luật điện thoại trước là một phần của chuẩn giao tiếp: [../CHUAN-GIAO-TIEP.md](../CHUAN-GIAO-TIEP.md) mục 6.3.
+Thêm về mỹ thuật:
 
 - **Đồ vật không dùng `--ink`/`--paper`**: giao diện tối đảo màu → chữ trắng trên giấy trắng. Dùng `--jg-obj-*`.
 - Không đặt chữ `#fff`/`#000` cố định trên nền `var(--ink)` / `var(--paper)`.

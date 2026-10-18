@@ -1,5 +1,5 @@
 /*
- * Oẳn tù tì — TRÒ MẪU của devkit Jagame, viết theo GIAO THỨC GAME v2 (GAME-PROTOCOL.md) bằng SDK jg-core.
+ * Oẳn tù tì — TRÒ MẪU của devkit Jagame, viết theo GIAO THỨC GAME v2 (CHUAN-GIAO-TIEP.md) bằng SDK jg-core.
  * manifest "sdk": "2" → công cụ tự chèn jg-core.js lên đầu file này (biến JGCore có sẵn). KHÔNG require gì.
  * Luật sandbox: đồng bộ, tất định, state là JSON thuần; ngẫu nhiên CHỈ qua ctx.rng; giờ CHỈ qua ctx.now (ms).
  *

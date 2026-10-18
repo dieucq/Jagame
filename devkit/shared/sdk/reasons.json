@@ -1,5 +1,5 @@
 {
- "$comment": "Lý do kết thúc CHUẨN (result.reason) — GAME-PROTOCOL.md mục 6. by: winner = việc của người thắng, loser = việc của người thua (khung gắn tên người thua), none = hòa/trung tính. Game có lý do riêng khai manifest \"reasons\". Bản sao trong jg-core.js REASONS phải khớp (runner tự kiểm).",
+ "$comment": "Lý do kết thúc CHUẨN (result.reason) — CHUAN-GIAO-TIEP.md by: winner = việc của người thắng, loser = việc của người thua (khung gắn tên người thua), none = hòa/trung tính. Game có lý do riêng khai manifest \"reasons\". Bản sao trong jg-core.js REASONS phải khớp (runner tự kiểm).",
  "reasons": {
   "resign": {
    "text": "đầu hàng",

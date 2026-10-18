@@ -1,4 +1,5 @@
-> **Đọc trước khi gửi:** [QUY-TAC-GUI-GAME.md](QUY-TAC-GUI-GAME.md) — luật gửi game R1–R16 (nguồn chính, cùng developers/AI-RULES.md).
+> **Bắt buộc:** [QUY-TRINH-DONG-GOP.md](QUY-TRINH-DONG-GOP.md) — 4 luồng đóng góp (báo lỗi · game mới · cập nhật game của mình · sửa game người khác); lõi đóng nguồn, không nhận PR sửa lõi.
+> **Đọc trước:** [CHUAN-GIAO-TIEP.md](CHUAN-GIAO-TIEP.md) — chuẩn giao tiếp chính thức (manifest, hàm, đối tượng, thông điệp) · [QUY-TAC-GUI-GAME.md](QUY-TAC-GUI-GAME.md) — luật gửi R1–R16 · [developers/ai-rules.json](developers/ai-rules.json) — luật máy đọc.
 
 # Jagame · Hội quán game của riêng tụi mình 🎮
 
@@ -37,8 +38,9 @@ Trình duyệt tự mở **http://localhost:6969** → đặt tên hội quán v
 Tải bản mới, chép đè lên thư mục cũ (giữ nguyên `database/`, `uploads/`, `cloudflared/`), chạy lại. Game thì không cần làm gì — tự cập nhật từ kho.
 
 ## Dành cho nhà phát triển
-Ai cũng viết được game cho Jagame và gửi lên **Chợ game**: tài liệu ở [`developers/`](developers/README.md) (tiếng Việt, tóm tắt
-[English](developers/README.en.md)), bộ công cụ ở [`devkit/`](devkit/README.md) — chỉ cần Node + Python.
+Ai cũng viết được game hoặc ứng dụng nhỏ (bình chọn, bảng điểm, đố vui tự soạn…) cho Jagame và gửi lên **Chợ game**. Chuẩn giao tiếp
+chính thức: [`CHUAN-GIAO-TIEP.md`](CHUAN-GIAO-TIEP.md) (có tóm tắt tiếng Anh); hướng dẫn thêm ở [`developers/`](developers/README.md)
+([English](developers/README.en.md)); bộ công cụ ở [`devkit/`](devkit/README.md) — chỉ cần Node + Python.
 ```bash
 node devkit/jagame.js new bongbay --name "Bóng bay" --author "Tên bạn"   # tạo game từ trò mẫu
 node devkit/jagame.js play bongbay                                      # chơi thử trong trình duyệt

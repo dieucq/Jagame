@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://game.jagame.vn/schema/manifest-2.json",
   "title": "Jagame — manifest.json của 1 gói game (v1 + v2)",
-  "description": "Dùng chung cho devkit `jagame check`, build kho (jgame.py), kiểm khi nộp, kiểm khi chủ nhà cài thủ công. GAME-PROTOCOL.md mục 3. Bộ kiểm chỉ dùng tập con JSON Schema: type, required, properties, additionalProperties, enum, const, pattern, minimum, maximum, minLength, maxLength, minItems, maxItems, uniqueItems, items, anyOf, $ref (#/$defs/…). Luật chéo (default ∈ choices, min ≤ max, tick_ms ↔ mode, file tồn tại, icon/ảnh hợp lệ) nằm trong mã bộ kiểm. Manifest có \"manifest\": 2 bị kiểm CHẶT (sai = trượt); manifest v1 (không có trường này) sai schema chỉ CẢNH BÁO.",
+  "description": "Dùng chung cho devkit `jagame check`, build kho (jgame.py), kiểm khi nộp, kiểm khi chủ nhà cài thủ công. CHUAN-GIAO-TIEP.md Bộ kiểm chỉ dùng tập con JSON Schema: type, required, properties, additionalProperties, enum, const, pattern, minimum, maximum, minLength, maxLength, minItems, maxItems, uniqueItems, items, anyOf, $ref (#/$defs/…). Luật chéo (default ∈ choices, min ≤ max, tick_ms ↔ mode, file tồn tại, icon/ảnh hợp lệ) nằm trong mã bộ kiểm. Manifest có \"manifest\": 2 bị kiểm CHẶT (sai = trượt); manifest v1 (không có trường này) sai schema chỉ CẢNH BÁO.",
   "type": "object",
   "required": [
     "id",
@@ -253,7 +253,7 @@
     "action": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Game hành động thời gian thực (mode \"action\", GAME-PROTOCOL.md): luật THƯỜNG TRÚ trong 1 worker/phòng, khung chạy nhịp + gửi ảnh chụp theo vùng nhìn.",
+      "description": "Game hành động thời gian thực (mode \"action\", CHUAN-GIAO-TIEP.md): luật THƯỜNG TRÚ trong 1 worker/phòng, khung chạy nhịp + gửi ảnh chụp theo vùng nhìn.",
       "properties": {
         "tick_hz": {
           "type": "integer",
@@ -386,6 +386,10 @@
     "resume": {
       "type": "boolean",
       "description": "false = ván không khôi phục được sau khi máy chủ khởi động lại (game giữ trạng thái ngoài state). Mặc định true."
+    },
+    "scored": {
+      "type": "boolean",
+      "description": "false = gói KHÔNG tính điểm (ứng dụng: chia đội, bình chọn…): mọi kết thúc là \"Xong phiên\" — không thắng/thua/hòa, không thống kê, xếp hạng, huy hiệu, tim thưởng. Mặc định true. Cần app_min ≥ 0.4.0 (bản Jagame đầu tiên có trường này, chuẩn 2.2). Từng phiên cũng khai được bằng Result.scored = false."
     },
     "undo": {
       "type": "boolean"

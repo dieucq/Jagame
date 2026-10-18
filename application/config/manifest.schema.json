@@ -387,6 +387,10 @@
       "type": "boolean",
       "description": "false = ván không khôi phục được sau khi máy chủ khởi động lại (game giữ trạng thái ngoài state). Mặc định true."
     },
+    "scored": {
+      "type": "boolean",
+      "description": "false = gói KHÔNG tính điểm (ứng dụng: chia đội, bình chọn…): mọi kết thúc là \"Xong phiên\" — không thắng/thua/hòa, không thống kê, xếp hạng, huy hiệu, tim thưởng. Mặc định true. Cần app_min ≥ 0.4.0 (bản Jagame đầu tiên có trường này, chuẩn 2.2). Từng phiên cũng khai được bằng Result.scored = false."
+    },
     "undo": {
       "type": "boolean"
     },

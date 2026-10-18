@@ -13,6 +13,7 @@ const path = require('node:path');
 const SCHEMA = JSON.parse(fs.readFileSync(path.join(__dirname, 'manifest.schema.json'), 'utf8'));
 const STD_REASONS = JSON.parse(fs.readFileSync(path.join(__dirname, 'reasons.json'), 'utf8')).reasons;
 const REASON_RE = /^[a-z][a-z0-9-]{1,23}$/;
+const SCORED_APP_MIN = [0, 4, 0];   // = jgame.py SCORED_APP_MIN
 const ASYNC_RE = /\b(?:async|await)\b/;
 const LIMITS = { zip: 20 * 1024 * 1024, unzipped: 60 * 1024 * 1024, files: 500, icon: 200 * 1024, shot: 400 * 1024, server: 1024 * 1024 };
 const ALLOWED_EXT = new Set(['json', 'js', 'css', 'svg', 'png', 'jpg', 'jpeg', 'webp', 'gif', 'mp3', 'ogg', 'm4a', 'woff2', 'txt', 'md']);
@@ -85,7 +86,7 @@ function crossErrors(m) {
     if (md.includes('turn') && md.includes('simultaneous')) errs.push('mode không gồm cả "turn" lẫn "simultaneous"');
   }
   if (md.includes('action')) {
-    // Game hành động (GAME-PROTOCOL.md): đường chạy riêng — không dùng chung cơ chế theo lượt / tick của khung.
+    // Game hành động (CHUAN-GIAO-TIEP.md): đường chạy riêng — không dùng chung cơ chế theo lượt / tick của khung.
     if (md.length > 1) errs.push('mode "action" đứng một mình (không kết hợp turn/simultaneous/realtime/events)');
     ['tick_ms', 'clock', 'undo', 'hint'].forEach((k) => { if (m[k]) errs.push('mode "action" không dùng ' + k); });
     const a = m.action || {};
@@ -105,6 +106,13 @@ function crossErrors(m) {
   const sm = m.session && m.session.minutes;
   if (Array.isArray(sm) && sm.length === 2 && sm[0] > sm[1]) errs.push('session.minutes [ít nhất, nhiều nhất]');
   if (m.sdk !== undefined && m.api !== 1) errs.push('sdk "2" chạy trên api 1');
+  if (m.scored !== undefined && /^\d+\.\d+\.\d+$/.test(String(m.app_min || ''))) {
+    // Trường "scored" có từ Jagame 0.4.0 (chuẩn 2.2): hội quán cũ hơn từ chối cài (E_INCOMPAT) thay vì chạy sai
+    const v = String(m.app_min).split('.').map(Number), need = SCORED_APP_MIN;
+    if (v[0] < need[0] || (v[0] === need[0] && (v[1] < need[1] || (v[1] === need[1] && v[2] < need[2])))) {
+      errs.push('có "scored" thì app_min phải ≥ ' + need.join('.') + ' (bản Jagame đầu tiên hiểu trường này)');
+    }
+  }
   return errs;
 }
 

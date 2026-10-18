@@ -60,7 +60,7 @@ if (HAS_BOT && !game.has('bot')) {
   process.exit(1);
 }
 if (!HAS_BOT && game.has('bot')) console.log('Lưu ý: game.js có bot() nhưng manifest chưa khai "bot": true -> máy tự host KHÔNG bật máy chơi');
-// Đồng hồ cờ + xin đi lại do KHUNG phòng chơi xử lý (khung Jagame GAME-PROTOCOL.md mục 5): game chỉ cần view.turn đúng.
+// Đồng hồ cờ + xin đi lại do KHUNG phòng chơi xử lý (khung Jagame CHUAN-GIAO-TIEP.md): game chỉ cần view.turn đúng.
 const HAS_UNDO = manifest.undo === true;
 const UNDO_FN = game.has('undo');   // hàm tùy chọn undo(state, {player, now, rng}) -> {state, error?}; không có thì khung khôi phục bản chụp
 if (manifest.clock) console.log('Đồng hồ cờ: manifest clock = ' + JSON.stringify(manifest.clock) + ' (khung giữ giờ theo view.turn, hết giờ thua het-gio)');
@@ -151,7 +151,7 @@ function match(got, want) {
   return got !== null && typeof got === 'object' && Object.keys(want).every((k) => match(got[k], want[k]));
 }
 
-/* ---------- 0. Game hành động (GAME-PROTOCOL.md): chạy RESIDENT như máy — nhịp, bot, ảnh chụp theo vùng nhìn, join/leave, tất định ---------- */
+/* ---------- 0. Game hành động (CHUAN-GIAO-TIEP.md): chạy RESIDENT như máy — nhịp, bot, ảnh chụp theo vùng nhìn, join/leave, tất định ---------- */
 if (IS_ACTION) runAction();
 if (!game) {
   fails += contract.report((l) => console.log(l));
@@ -416,7 +416,7 @@ function playRandom(seed, record) {
     if (!r.state) throw new Error('move() không trả state');
     state = r.state;
     moves.push([seat, mv]);
-    // room.dropin (vào/ra giữa ván): rời không phải thua — bỏ ràng buộc "2 người, 1 rời = hết ván" (GAME-PROTOCOL §8.6).
+    // room.dropin (vào/ra giữa ván): rời không phải thua — bỏ ràng buộc "2 người, 1 rời = hết ván" (CHUAN-GIAO-TIEP.md).
     if (mv.type === 'resign' && !call('result', { state }) && np === 2 && !(manifest.room && manifest.room.dropin)) throw new Error('đầu hàng nhưng ván chưa kết thúc');
     if (mv.type === 'resign' && !call('result', { state })) contract.afterResign(call('view', { state, seat }));
     // Game có undo() riêng: thỉnh thoảng xin đi lại như khung sẽ gọi — phải trả {state} (hoặc {state, error}), không ném lỗi,
@@ -452,7 +452,7 @@ if (!game.has('legal') && !HAS_BOT && !TICK_MS) {
 } else {
   console.log('Ván ngẫu nhiên (' + ROUNDS + ' ván, seed ' + SEED + (HAS_BOT ? ', có máy chơi' : '') +
     (TICK_MS ? ', đồng hồ giả + tick mỗi ' + TICK_MS + ' ms' : '') + '):');
-  const tally = { win: 0, draw: 0, resign: 0, moves: 0, ticks: 0, raced: 0, undos: 0, hints: 0 };
+  const tally = { win: 0, draw: 0, resign: 0, none: 0, moves: 0, ticks: 0, raced: 0, undos: 0, hints: 0 };
   let roundFails = 0;
   for (let i = 0; i < ROUNDS; i++) {
     const seed = (SEED + 1000 + i) >>> 0;
@@ -465,7 +465,7 @@ if (!game.has('legal') && !HAS_BOT && !TICK_MS) {
       tally.raced += out.raced;
       tally.undos += out.undos;
       tally.hints += out.hints;
-      if (out.res.draw) tally.draw++; else if (out.res.reason === 'resign') tally.resign++; else tally.win++;
+      if (out.res.scored === false) tally.none++; else if (out.res.draw) tally.draw++; else if (out.res.reason === 'resign') tally.resign++; else tally.win++;
     } catch (e) {
       roundFails++;
       if (roundFails <= 5) bad('ván seed ' + seed + ': ' + e.message);
@@ -473,7 +473,7 @@ if (!game.has('legal') && !HAS_BOT && !TICK_MS) {
   }
   if (roundFails > 5) bad('... tổng ' + roundFails + ' ván lỗi');
   console.log('  ' + (roundFails ? '✗' : 'ĐẠT') + '   ' + ROUNDS + ' ván: thắng ' + tally.win + ', đầu hàng ' + tally.resign +
-    ', hòa ' + tally.draw + ', trung bình ' + Math.round(tally.moves / ROUNDS) + ' nước/ván' +
+    ', hòa ' + tally.draw + (tally.none ? ', không tính điểm ' + tally.none : '') + ', trung bình ' + Math.round(tally.moves / ROUNDS) + ' nước/ván' +
     (TICK_MS ? ', ' + Math.round(tally.ticks / ROUNDS) + ' tick/ván' + (tally.raced ? ', ' + tally.raced + ' nước gửi trễ bị từ chối đúng' : '') : '') +
     (UNDO_FN ? ', ' + tally.undos + ' lần undo()' : '') + (HINT_FN ? ', ' + tally.hints + ' nước theo gợi ý ' + HINT_FN + '()' : '') + '; 20 ván đầu chơi lại tất định');
   if (eventMoves) {

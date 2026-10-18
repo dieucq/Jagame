@@ -23,7 +23,7 @@ html.cm .ss-card { border: var(--cm-bw, 3px) solid var(--cm-line, var(--ink)); b
 .ss-card-ic { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--r-icon, 14px); background: color-mix(in srgb, var(--accent) 16%, var(--paper)); color: var(--accent-text); }
 .ss-card-ic svg { width: 24px; height: 24px; }
 .ss-card-main { flex: 1; min-width: 0; display: grid; gap: 2px; }
-.ss-card-main b { font: 700 16px/1.25 var(--f-body); overflow-wrap: anywhere; }
+.ss-card-main b { font: 700 var(--fs-body)/1.25 var(--f-body); overflow-wrap: anywhere; }
 .ss-card-sub { color: var(--muted); font-size: var(--fs-sm, .9rem); line-height: 1.35; overflow-wrap: anywhere; }
 .ss-card-chev { flex: none; color: var(--muted); font-size: 1.5rem; line-height: 1; }
 .ss-bar { display: block; height: 6px; margin-top: 4px; border-radius: 99px; background: color-mix(in srgb, var(--ink) 12%, var(--paper)); overflow: hidden; }
@@ -40,7 +40,7 @@ html.cm .ss-hero-card { border: var(--cm-bw, 3px) solid var(--cm-line, var(--ink
 .ss-ring::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--paper); }
 .ss-ring b, .ss-ring small { position: relative; line-height: 1.1; }
 .ss-ring b { font: var(--head-w, 700) 26px/1 var(--f-head, var(--f-body)); font-variant-numeric: tabular-nums; }
-.ss-ring small { color: var(--muted); font-size: 12px; }
+.ss-ring small { color: var(--muted); font-size: var(--fs-xs, 12px); }
 .ss-hero-main { flex: 1; min-width: 0; display: grid; gap: 4px; justify-items: start; }
 .ss-season { margin: 0; font: var(--head-w, 700) var(--fs-lg, 1.25rem)/1.2 var(--f-head, var(--f-body)); }
 .ss-dates { margin: 0; color: var(--muted); font-size: var(--fs-sm, .9rem); }
@@ -58,7 +58,7 @@ html.cm .ss-hero-card { border: var(--cm-bw, 3px) solid var(--cm-line, var(--ink
 .ss-row { display: flex; align-items: center; gap: var(--sp-3, 12px); min-height: 60px; padding: 8px var(--sp-3, 12px); border-bottom: 1px solid var(--line); min-width: 0; }
 .ss-row:last-child { border-bottom: 0; }
 .ss-row.is-me { background: color-mix(in srgb, var(--accent) 10%, var(--paper)); border-radius: var(--r-btn, 12px); }
-.ss-rank { flex: none; width: 28px; text-align: center; font: var(--head-w, 700) 1rem var(--f-head, var(--f-body)); font-variant-numeric: tabular-nums; color: var(--muted); }
+.ss-rank { flex: none; width: 28px; text-align: center; font: var(--head-w, 700) var(--fs-body) var(--f-head, var(--f-body)); font-variant-numeric: tabular-nums; color: var(--muted); }
 .ss-rank.r1 { color: color-mix(in srgb, #f0b90b 70%, var(--ink)); }
 .ss-rank.r2 { color: color-mix(in srgb, #9aa5b1 70%, var(--ink)); }
 .ss-rank.r3 { color: color-mix(in srgb, #d98a4a 70%, var(--ink)); }
@@ -66,19 +66,25 @@ html.cm .ss-hero-card { border: var(--cm-bw, 3px) solid var(--cm-line, var(--ink
 .ss-name { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ss-name em { color: var(--muted); font-style: normal; font-weight: 500; }
 .ss-pts { flex: none; display: grid; justify-items: end; line-height: 1.1; }
-.ss-pts b { font: var(--head-w, 700) 1.15rem var(--f-head, var(--f-body)); font-variant-numeric: tabular-nums; }
-.ss-pts small { color: var(--muted); font-size: 11px; }
+.ss-pts b { font: var(--head-w, 700) var(--fs-lg) var(--f-head, var(--f-body)); font-variant-numeric: tabular-nums; }
+.ss-pts small { color: var(--muted); font-size: var(--fs-xs, 12px); }
 .ss-gap { padding: 2px 0; text-align: center; color: var(--muted); letter-spacing: 4px; }
 .ss-empty-row { padding: var(--sp-4, 16px); text-align: center; }
 .ss-parts { list-style: none; margin: 0; padding: 0 var(--sp-3, 12px) var(--sp-3, 12px); display: grid; gap: 4px; }
 .ss-parts li { display: flex; align-items: baseline; gap: 8px; min-height: 44px; padding: 6px 0; border-bottom: 1px solid var(--line); }
 .ss-parts li > span { flex: 1; }
-.ss-parts li > b { font: var(--head-w, 700) 1.1rem var(--f-head, var(--f-body)); }
-.ss-parts li > small { color: var(--muted); font-size: 12px; }
+.ss-parts li > b { font: var(--head-w, 700) var(--fs-lg) var(--f-head, var(--f-body)); }
+.ss-parts li > small { color: var(--muted); font-size: var(--fs-xs, 12px); }
 .ss-sheet-body { padding: 0 var(--sp-4, 16px) var(--sp-4, 16px); }
 .ss-formula { margin: 0; padding-left: 1.1em; display: grid; gap: 10px; line-height: 1.45; }
-.ss-badge { display: inline-block; margin-left: 4px; padding: 1px 8px; border-radius: 99px; font: 700 12px/1.6 var(--f-body); background: color-mix(in srgb, var(--accent) 16%, var(--paper)); color: var(--accent-text); vertical-align: middle; }
+.ss-badge { display: inline-block; margin-left: 4px; padding: 1px 8px; border-radius: 99px; font: 700 var(--fs-caption)/1.6 var(--f-body); background: color-mix(in srgb, var(--accent) 16%, var(--paper)); color: var(--accent-text); vertical-align: middle; }
 .ss-badge.k-gold { background: color-mix(in srgb, #f0b90b 26%, var(--paper)); color: var(--ink); }
 .ss-badge.k-silver { background: color-mix(in srgb, #9aa5b1 28%, var(--paper)); color: var(--ink); }
 .ss-badge.k-bronze { background: color-mix(in srgb, #d98a4a 28%, var(--paper)); color: var(--ink); }
 @media (max-width: 380px) { .ss-hero-card { flex-direction: column; text-align: center; } .ss-hero-main { justify-items: center; } }
+
+/* UI-AUDIT-2 N10: 1 chữ ký/màn — thẻ mùa giữ viền dày, "Xếp hạng" ở đầu trang là liên kết chữ (không viền/bóng) */
+.ss-rank-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border-radius: var(--r-pill, 999px); color: var(--accent-text); font: 600 var(--fs-md, 16px) var(--f-body); text-decoration: none; }
+.ss-rank-link:hover { background: var(--accent-bg, var(--soft)); }
+.ss-rank-link .ic { width: 18px; height: 18px; flex: none; }
+.ss-badge { font-size: var(--fs-xs, 12px); }

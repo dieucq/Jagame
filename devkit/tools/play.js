@@ -1,5 +1,5 @@
 /*
- * Khung phòng chơi GIẢ cho play.html — cài đặt JG.defineGame theo đúng hợp đồng client (GAME-PROTOCOL.md mục 5):
+ * Khung phòng chơi GIẢ cho play.html — cài đặt JG.defineGame theo đúng hợp đồng client (CHUAN-GIAO-TIEP.md):
  *   game = {root, me:{id,name}, seat, players:[{id,name,seat}], options, view, send(move), on(evt, fn), toast, sound, soundNames}
  * Máy chủ giả: chạy server/game.js của game trong trình duyệt, state luôn đi qua JSON như máy thật, rng tất định.
  * Đồng hồ THẬT: ctx.now = Date.now() ở setup/move/bot/tick; manifest tick_ms + tick() -> setInterval gọi tick như máy chủ (ô "⏱ tick"
@@ -271,7 +271,7 @@
   }
 
   /*
-   * Game hành động (manifest mode "action", GAME-PROTOCOL.md mục 18): giả khung action — state THƯỜNG TRÚ (sim sửa thẳng), nhịp tick_hz,
+   * Game hành động (manifest mode "action", CHUAN-GIAO-TIEP.md): giả khung action — state THƯỜNG TRÚ (sim sửa thẳng), nhịp tick_hz,
    * ảnh chụp send_hz cho ghế đang chọn (vùng nhìn quanh me / cả sân cho người xem), minimap 1 Hz, view 3 s, bot() cho ghế máy, ?lag=ms trễ 1 chiều.
    * game.input(i) -> q; on('snap', fn(s, meta{k, ack, rtt})) nhận ảnh chụp ĐẦY ĐỦ (khung thật giải delta xong mới gọi).
    */
@@ -380,7 +380,7 @@
       soundNames: SOUND_NAMES.slice(),
       sound: function (name) {
         if (SOUND_NAMES.indexOf(name) >= 0) log('♪ ' + name, 'snd');
-        else log('♪ ' + name + ' — tên âm lạ, khung thật sẽ im lặng (xem GAME-STORE.md mục 5)', 'err');
+        else log('♪ ' + name + ' — tên âm lạ, khung thật sẽ im lặng (xem CHUAN-GIAO-TIEP.md)', 'err');
       }
     };
     setSeat(0);

@@ -12,7 +12,7 @@ Các bước (mỗi bước sinh 1 hoặc nhiều dòng ✓/✗ trong báo cáo,
   1. Gói: zip hợp lệ, ≤ 10 MB, ≤ 300 tệp, giải nén AN TOÀN (zip-slip, symlink, tên ẩn/lạ, mã hóa, trùng tên, cỡ giải nén đếm lúc đọc).
   2. Cấu trúc: manifest.json, icon, entry client/server/style, test/cases.json, mục gốc được phép (store.json bị cấm — do admin quản).
   3. Manifest: luật jgame.validate_manifest + JSON Schema/luật chéo (jgame.check_manifest_v2) + id/phiên bản/tác giả/giấy phép.
-  4. Quét tĩnh (GAME-SUBMIT §1.5): server (eval, Function, require, process, Date, async/await…), client (fetch, WebSocket,
+  4. Quét tĩnh (CHUAN-GIAO-TIEP.md): server (eval, Function, require, process, Date, async/await…), client (fetch, WebSocket,
      localStorage, postMessage, iframe, URL ngoài…), mã nén; cảnh báo (innerHTML, chuỗi entropy cao, từ cấm, ảnh quá lớn).
   5. Kiểm luật chơi rút gọn: tools/runner.js của kho (cases.json + N ván ngẫu nhiên + nước rác + tất định + ≤ 250 ms/lần gọi) chạy
      bằng node trong thư mục tạm, giới hạn thời gian/CPU/bộ nhớ, môi trường sạch, `node --permission` (chặn ghi tệp/tiến trình con)
@@ -50,7 +50,7 @@ MAX_UNPACKED = 30 * 1024 * 1024
 TOP_OK = {'manifest.json', 'icon.svg', 'icon.png', 'client', 'server', 'screenshots', 'README.md', 'LICENSE.md', 'LICENSE.txt',
           'test', 'jagame-submit.json', 'CHANGELOG.md', 'LICENSE'}
 EXT_OK = {'json', 'js', 'css', 'svg', 'png', 'jpg', 'jpeg', 'webp', 'gif', 'mp3', 'ogg', 'm4a', 'woff2', 'txt', 'md'}
-QJS_CALL_MS = 150                 # hạn mỗi lần gọi trong khu cách ly (game Cộng đồng) — GAME-PROTOCOL mục 20
+QJS_CALL_MS = 150                 # hạn mỗi lần gọi trong khu cách ly (game Cộng đồng) — CHUAN-GIAO-TIEP.md
 QJS_SLOW_MS = 25                  # vm chậm hơn mức này thì QuickJS dễ chạm hạn
 QJS_MAX_SOURCE = 256 * 1024       # server/game.js đã gộp SDK
 QJS_MIN_TICK = 250
@@ -64,7 +64,7 @@ class Report:
         self.checks = []
 
     def add(self, group, title, status, detail='', items=None, code=None):
-        c = {'group': group, 'title': title, 'status': status, 'detail': detail, 'items': (items or [])[:12]}
+        c = {'group': group, 'title': title, 'status': status, 'detail': detail, 'items': (items or [])[:12], 'n_items': len(items or [])}
         if code:
             c['code'] = code
         self.checks.append(c)
@@ -80,6 +80,10 @@ class Report:
 
     def n(self, status):
         return sum(1 for c in self.checks if c['status'] == status)
+
+    def n_warn(self):
+        """Số lưu ý ĐÚNG như phần chi tiết: mục có danh sách con (·) đếm từng dòng con, mục không có thì đếm 1."""
+        return sum(max(1, c.get('n_items', len(c['items']))) for c in self.checks if c['status'] == 'warn')
 
 
 def ext_of(name):
@@ -592,7 +596,7 @@ def dynamic_check(jg, srcdir, work, rounds, timeout, rep):
 
 
 def isolation_limits(jg, m, pf, rep):
-    """Giới hạn khu cách ly (game Cộng đồng chạy QuickJS) — GAME-PROTOCOL mục 20. Trả False nếu có lỗi chặn."""
+    """Giới hạn khu cách ly (game Cộng đồng chạy QuickJS) — CHUAN-GIAO-TIEP.md Trả False nếu có lỗi chặn."""
     G = 'Khu cách ly (game Cộng đồng)'
     bad = []
     srv = m['entry']['server']
@@ -785,6 +789,8 @@ def print_report(res, title):
         print('  %s%s  %s%s' % (mark.get(c['status'], c['status']), tag, c['title'], (' — ' + c['detail']) if c['detail'] else ''))
         for it in c['items']:
             print('           · ' + it)
+        if c.get('n_items', 0) > len(c['items']):
+            print('           · … và %d dòng nữa' % (c['n_items'] - len(c['items'])))
     codes = sorted({c['code'] for c in res['checks'] if c['status'] == 'fail' and c.get('code')})
     print('\nKẾT QUẢ: %s — %d lỗi, %d lưu ý%s' % ('ĐẠT' if res['ok'] else 'TRƯỢT', res['errors'], res['warnings'],
                                                  (' · mã: ' + ' '.join(codes)) if codes else ''))
@@ -829,7 +835,7 @@ def main_dir(argv):
         shutil.rmtree(root, ignore_errors=True)
     res['checks'] = rep.checks
     res['errors'] = rep.n('fail')
-    res['warnings'] = rep.n('warn')
+    res['warnings'] = rep.n_warn()
     res['ok'] = rep.n('fail') == 0 and rep.n('ok') > 0
     res['duration_ms'] = int((time.time() - t0) * 1000)
     data = res.pop('_jgame', None)
@@ -883,7 +889,7 @@ def main():
         shutil.rmtree(work, ignore_errors=True)
     res['checks'] = rep.checks
     res['errors'] = rep.n('fail')
-    res['warnings'] = rep.n('warn')
+    res['warnings'] = rep.n_warn()
     res['ok'] = rep.n('fail') == 0 and rep.n('ok') > 0
     res['duration_ms'] = int((time.time() - t0) * 1000)
     res.pop('_jgame', None)
@@ -965,7 +971,7 @@ def check_source(jg, srcdir, work, a, rep, res):
     except jg.StoreError as e:
         errs.append(str(e))
     if m.get('manifest') != 2:
-        errs.append('thiếu "manifest": 2 — bài nộp mới phải theo manifest v2 (GAME-PROTOCOL.md mục 3, 15)')
+        errs.append('thiếu "manifest": 2 — bài nộp mới phải theo manifest v2 (CHUAN-GIAO-TIEP.md)')
     if gid.startswith(('local-', 'jg-')):
         errs.append('id không được bắt đầu bằng "local-" hoặc "jg-" (dành riêng)')
     if not str(m.get('author') or '').strip():

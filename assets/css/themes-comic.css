@@ -25,14 +25,14 @@ html.cm .topbar { border-bottom: var(--cm-bw) solid var(--cm-line); }
 /* G1: "chữ ký" của nhóm comic = nét mực + bóng lệch của ô truyện (--cm-*), chỉ cho .is-sig (UI-PRO 2.4) */
 html.cm { --sig-bw: var(--cm-bw); --sig-line: var(--cm-line); --sig-shadow: var(--cm-drop); --sig-btn-shadow: 4px 4px 0 var(--cm-line); }
 html.cm .site-foot { border-top: var(--cm-bw) solid var(--cm-line); }
-html.cm .brand-name { font-size: 1.3rem; }
+html.cm .brand-name { font-size: var(--fs-headline); }
 
 /* Nút: viền mực + bóng cứng, nhấn lún */
 html.cm :is(.btn-accent, .btn-guest):not(:is(.ed-bar, .ed-pop, .ed-modal) *):not(.btn-sm) { border: var(--cm-bw) solid var(--cm-line); box-shadow: 4px 4px 0 var(--cm-line); font-family: var(--f-btn); font-weight: var(--f-btn-w, 600); }
 html.cm .btn-ghost:not(:is(.ed-bar, .ed-pop, .ed-modal) *):not(.btn-sm) { border: var(--cm-bw) solid var(--cm-line); box-shadow: 3px 3px 0 var(--cm-line); }
 html.cm body:is(.site, .bare) .btn:not(:disabled):not(:is(.ed-bar, .ed-pop, .ed-modal) *):not(.btn-sm):hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--cm-line); }
 html.cm body:is(.site, .bare) .btn:not(:disabled):not(:is(.ed-bar, .ed-pop, .ed-modal) *):not(.btn-sm):active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--cm-line); }
-html.cm .quick-go { font-size: 21px; letter-spacing: .01em; }
+html.cm .quick-go { font-size: var(--fs-xl); letter-spacing: .01em; }
 
 /* Ô truyện: mọi khung chính viền mực đậm + bóng cứng lệch */
 html.cm :is(.notice-board, .quick-play:not(.quick-page), .bare-card) { border: var(--cm-bw) solid var(--cm-line); box-shadow: var(--cm-drop); }
@@ -71,7 +71,7 @@ html.cm .game-card:hover::before, html.cm .game-card:focus-within::before { opac
 html.cm .game-card:active { transform: scale(.95) rotate(1deg); box-shadow: 1px 1px 0 var(--cm-line); transition-duration: .12s; }
 html.cm .game-icon { border: 2.5px solid var(--cm-line); }
 html.cm .game-card:hover .game-icon { animation: cm-wiggle .55s var(--cm-ease-in); }
-html.cm .game-name { font-size: 1.35rem; }
+html.cm .game-name { font-size: var(--fs-xl); }
 html.cm .badge-soon, html.cm .badge-new { border: 2px solid var(--cm-line); }
 @keyframes cm-wiggle { 0%, 100% { transform: none; } 25% { transform: rotate(-12deg) scale(1.12); } 50% { transform: rotate(9deg) scale(1.08); } 75% { transform: rotate(-4deg) scale(1.1); } }
 
@@ -202,7 +202,7 @@ html[data-theme="thamtu"] {
   --f-btn: var(--f-body);
 }
 html[data-theme="thamtu"] body.site { background-image: linear-gradient(color-mix(in srgb, var(--ink) 5%, transparent) 1px, transparent 1px); background-size: 100% 30px; }
-html[data-theme="thamtu"] .eyebrow { font: 700 .95rem/1.2 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; letter-spacing: .14em; color: #ffe27a;
+html[data-theme="thamtu"] .eyebrow { font: 700 var(--fs-callout)/1.2 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; letter-spacing: .14em; color: #ffe27a;
   border: 2.5px dashed currentColor; padding: 7px 12px; transform: rotate(-3deg); }
 html[data-theme="thamtu"] .hero-title { font-style: italic; }
 html[data-theme="thamtu"] .hero-img { box-shadow: 10px 10px 0 #000; border-color: #000; }
@@ -272,7 +272,7 @@ html[data-theme="ngocrong"] .hero-title { font-size: clamp(3.3rem, 13vw, 7rem); 
   text-shadow: 4px 4px 0 var(--accent), 8px 8px 0 var(--ink); }
 html[data-theme="ngocrong"] .eyebrow { background: var(--gold); border: 3px solid var(--ink); padding: 6px 14px; transform: skew(-10deg); box-shadow: 4px 4px 0 var(--ink); font-weight: 700; }
 html[data-theme="ngocrong"] .hero-tagline { background: #fff; border: 3px solid var(--ink); padding: 12px 18px; border-radius: 6px; color: var(--ink); font-weight: 600; box-shadow: 5px 5px 0 var(--ink); }
-html[data-theme="ngocrong"] :is(.btn-accent:not(.btn-sm), .quick-go):not(:is(.ed-bar, .ed-pop, .ed-modal) *) { text-transform: uppercase; letter-spacing: .06em; font-size: 1.25rem; }
+html[data-theme="ngocrong"] :is(.btn-accent:not(.btn-sm), .quick-go):not(:is(.ed-bar, .ed-pop, .ed-modal) *) { text-transform: uppercase; letter-spacing: .06em; font-size: var(--fs-headline); }
 html[data-theme="ngocrong"] .quick-go { font-size: 24px; }
 html[data-theme="ngocrong"] .sec-hero .slot-empty { background: radial-gradient(circle at 50% 45%, #fff9d0, #ffcf4a 55%, #ff9a1f); }
 html[data-theme="ngocrong"] .sec-hero .slot-ph { background: #8a2c00; }
@@ -376,7 +376,7 @@ html[data-theme="ninja"] .sec:nth-of-type(odd):not(.sec-hero) .cm-r:nth-child(ev
 html[data-theme="ninja"] .hero-title { line-height: 1.12; font-size: clamp(3.2rem, 12vw, 6.6rem); }
 html[data-theme="ninja"] .hero-title::after { content: ""; display: block; width: min(300px, 70vw); height: 16px; margin-top: 10px; background: var(--accent);
   -webkit-mask: url(../img/themes/ninja-band.svg) 0 0 / 100% 100%; mask: url(../img/themes/ninja-band.svg) 0 0 / 100% 100%; }
-html[data-theme="ninja"] .eyebrow { font: 400 1.05rem/1.2 "Anton", sans-serif; letter-spacing: .16em; background: var(--accent); color: var(--ink); padding: 6px 12px; transform: skew(-10deg); }
+html[data-theme="ninja"] .eyebrow { font: 400 var(--fs-subhead)/1.2 "Anton", sans-serif; letter-spacing: .16em; background: var(--accent); color: var(--ink); padding: 6px 12px; transform: skew(-10deg); }
 html[data-theme="ninja"] .hero-tagline { position: relative; margin: 0 18px; background: #fff3d9; color: var(--ink); padding: 12px 18px; font-weight: 600; max-width: 42ch;
   border-top: 3px solid #000; border-bottom: 3px solid #000; box-shadow: inset 0 -8px 0 color-mix(in srgb, #c9a46a 30%, transparent); }
 html[data-theme="ninja"] .hero-tagline::before, html[data-theme="ninja"] .hero-tagline::after { content: ""; position: absolute; top: -9px; bottom: -9px; width: 18px;
@@ -436,7 +436,7 @@ html[data-theme="butchi"] .sec-hero { padding-left: max(70px, env(safe-area-inse
 html[data-theme="butchi"] .hero-title { line-height: 1.2; text-shadow: none; }
 html[data-theme="butchi"] .hero-title::after { content: ""; display: block; width: min(80%, 360px); height: 16px; margin-top: 4px; background: var(--c-red);
   -webkit-mask: url(../img/themes/butchi-squiggle.svg) 0 0 / 100% 100%; mask: url(../img/themes/butchi-squiggle.svg) 0 0 / 100% 100%; animation: cm-boil .5s steps(1) infinite; }
-html[data-theme="butchi"] .eyebrow { background: var(--c-yel); color: var(--ink); padding: 4px 12px; border-radius: 4px 14px 6px 12px; transform: rotate(-3deg); text-transform: none; letter-spacing: .02em; font: 700 1.05rem/1.3 "Mali", sans-serif; }
+html[data-theme="butchi"] .eyebrow { background: var(--c-yel); color: var(--ink); padding: 4px 12px; border-radius: 4px 14px 6px 12px; transform: rotate(-3deg); text-transform: none; letter-spacing: .02em; font: 700 var(--fs-subhead)/1.3 "Mali", sans-serif; }
 html[data-theme="butchi"] .hero-img { border-width: 3px; box-shadow: 5px 6px 0 var(--ink); }
 html[data-theme="butchi"] :is(.quick-play, .notice-board, .bare-card) { border-radius: 24px 8px 28px 10px / 10px 26px 8px 24px; }
 html[data-theme="butchi"] .hero-img::before { content: ""; position: absolute; top: -10px; left: 14%; width: 80px; height: 26px; z-index: 2; background: color-mix(in srgb, var(--c-grn) 55%, transparent); transform: rotate(-6deg); }
@@ -597,7 +597,7 @@ html[data-theme="batquai"] .sec-title { box-shadow: inset 0 0 0 3px #fff, inset 
 html[data-theme="batquai"] .sec-title::after { content: ""; position: absolute; right: 10px; bottom: 8px; border: 7px solid transparent; border-top: 9px solid var(--accent); animation: bq-blink 1s steps(2) infinite; }
 @keyframes bq-blink { 50% { opacity: 0; } }
 html[data-theme="batquai"] .hero-title { color: var(--accent-text); line-height: 1.14; text-shadow: 3px 3px 0 #fff, 6px 6px 0 var(--ink); }
-html[data-theme="batquai"] .brand-name { font: 700 1.2rem/1.2 var(--f-body); text-transform: uppercase; letter-spacing: .02em; }
+html[data-theme="batquai"] .brand-name { font: 700 var(--fs-headline)/1.2 var(--f-body); text-transform: uppercase; letter-spacing: .02em; }
 html[data-theme="batquai"] .eyebrow { background: var(--ink); color: var(--yel); padding: 6px 14px; border-radius: 999px; }
 html[data-theme="batquai"] .hero-tagline { background: #fff; border: 3px solid var(--ink); border-radius: 14px; padding: 12px 16px; color: var(--ink); box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 5px var(--ink); }
 html[data-theme="batquai"] .hero-img { box-shadow: 0 10px 0 var(--ink); border-width: 4px; }
@@ -710,3 +710,78 @@ html.cm .quick-page .quick-alt { margin-top: 8px; }
   --e-3: 0 0 0 1px color-mix(in srgb, var(--ink) 12%, transparent), 0 24px 60px -16px rgba(0, 0, 0, .7);
   --scrim: rgba(0, 0, 0, .62);
 }
+
+/* ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   N15 (UI-AUDIT-2 §2) — butchi + thandong mang chất riêng xuống trang app (khuôn THEMES-2026 §5): thẻ, tiêu đề mục, avatar hồ sơ, bong bóng chat,
+   bàn cờ (.jgv), mặt bàn bài (.jgl-felt/.jgk-card), ô rỗng. Màu suy từ biến; nét giấy/ô li chỉ là đường kẻ trong suốt => chế độ tối vẫn ổn.
+   ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+/* ── BÚT CHÌ NGHỊCH — ô li vở học trò ở nền thẻ (lề đỏ), gạch chân nét sáp ở tiêu đề mục, avatar vòng sáp lệch ── */
+[data-theme="butchi"] {
+  --oli: linear-gradient(90deg, transparent 0 13px, color-mix(in srgb, var(--c-red) 42%, transparent) 13px 14.5px, transparent 14.5px),
+    linear-gradient(color-mix(in srgb, var(--c-blu) 17%, transparent) 1px, transparent 1px) 0 0 / 100% 20px,
+    linear-gradient(90deg, color-mix(in srgb, var(--c-blu) 11%, transparent) 1px, transparent 1px) 0 0 / 20px 100%,
+    linear-gradient(color-mix(in srgb, var(--c-blu) 7%, transparent) 1px, transparent 1px) 0 0 / 100% 5px;
+}
+html[data-theme="butchi"] body.site { background-image: linear-gradient(color-mix(in srgb, var(--c-blu) 7%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--c-blu) 5%, transparent) 1px, transparent 1px); }
+html[data-theme="butchi"] :is(.qs-card, .list, .u-empty-row, .empty-box, .bdg, .rc, .jg-end-card) { background: var(--oli), var(--paper); }
+html[data-theme="butchi"] .gc { --card-bg: var(--paper); background: var(--oli), var(--paper); }
+html[data-theme="butchi"] :is(.qs-card, .u-empty-row, .rc) { border: 1.5px solid color-mix(in srgb, var(--ink) 24%, transparent); }
+html[data-theme="butchi"] .empty-box { border: 2.5px dashed var(--ink); border-radius: var(--r-md); }
+html[data-theme="butchi"] .u-empty-row { border-radius: var(--r-md); }
+html[data-theme="butchi"] .qs-bar i { background: repeating-linear-gradient(-60deg, var(--c-red) 0 5px, color-mix(in srgb, var(--c-red) 70%, #fff) 5px 7px); }
+/* gạch chân nét sáp dưới tiêu đề mục (trang chủ app, hub, hồ sơ, nhiệm vụ…) */
+html[data-theme="butchi"] :is(.ah-row h2, .pg-h2 > span:first-child) { position: relative; }
+html[data-theme="butchi"] :is(.ah-row h2, .pg-h2 > span:first-child)::after { content: ""; position: absolute; left: -3px; bottom: -9px; width: min(100%, 8.5em); height: 10px; pointer-events: none;
+  background: var(--c-red); -webkit-mask: url(../img/themes/butchi-underline.svg) 0 0 / 100% 100% no-repeat; mask: url(../img/themes/butchi-underline.svg) 0 0 / 100% 100% no-repeat; }
+html[data-theme="butchi"] .pg-h2 > span:first-child::after { background: var(--c-blu); width: min(100%, 6em); }
+html[data-theme="butchi"] .ah-row:nth-of-type(3n+2) h2::after { background: var(--c-grn); }
+html[data-theme="butchi"] .ah-row:nth-of-type(3n) h2::after { background: var(--c-yel); }
+/* avatar hồ sơ: vòng sáp vàng + bóng mực lệch; bìa = trang vở có lề đỏ + mặt trời sáp */
+html[data-theme="butchi"] :is(.pf-hero > .ava, .me-ava) { box-shadow: 0 0 0 3px var(--c-yel), 3px 4px 0 3px var(--ink); }
+html[data-theme="butchi"] :is(.pf-band, .me-band) { border: 2.5px solid var(--ink); box-shadow: 3px 4px 0 var(--ink); border-radius: var(--r-md);
+  background: radial-gradient(circle at 86% 34%, var(--c-yel) 0 24px, color-mix(in srgb, var(--c-yel) 30%, transparent) 25px 34px, transparent 35px),
+    linear-gradient(90deg, transparent 0 54px, color-mix(in srgb, var(--c-red) 55%, transparent) 54px 56px, transparent 56px),
+    linear-gradient(color-mix(in srgb, var(--c-blu) 22%, transparent) 1.5px, transparent 1.5px) 0 0 / 100% 22px, var(--paper); }
+html[data-theme="butchi"] .ofr-ava .ava { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4.5px var(--c-yel); }
+html[data-theme="butchi"] .cx { --bub-r: 20px; --bub-r-s: 6px; }
+html[data-theme="butchi"] .cx .msg.is-other:not(.is-emoji, .is-sticker, .is-image, .is-deleted) .msg-bubble { background: var(--oli), var(--paper); }
+html[data-theme="butchi"] .cx .msg.is-me:not(.is-emoji, .is-sticker, .is-image, .is-deleted) .msg-bubble { box-shadow: 2px 3px 0 var(--ink); }
+html[data-theme="butchi"] .jgv { --jgv-sq-l: #fffef4; --jgv-sq-d: #a9c2ff; --jgv-co-l: #4f76d6; --jgv-co-d: #fffef4; }
+html[data-theme="butchi"] .jgv-frame { border-radius: var(--r-md); box-shadow: 3px 4px 0 var(--ink); }
+html[data-theme="butchi"] .jgl-felt { background: radial-gradient(60% 40% at 30% 20%, color-mix(in srgb, #fff 10%, transparent), transparent 70%), #2f6b4f;
+  box-shadow: inset 0 0 0 6px #a8743f, inset 0 0 0 8px var(--ink), 3px 4px 0 var(--ink); border-radius: 14px 6px 12px 8px; }
+html[data-theme="butchi"] .jgk-card { --jgk-back: var(--c-blu); }
+html[data-theme="butchi"] .jg-end.is-win .jg-end-word { text-shadow: 3px 3px 0 var(--c-yel); }
+html[data-theme="butchi"] .jg-end-burst { color: var(--c-yel); }
+
+/* ── THẦN ĐỒNG — giấy dó (sợi) + viền triện son mảnh bên trong thẻ/bong bóng, ký hiệu ấn triện đầu tiêu đề mục, bàn chàm khung vàng đất ── */
+[data-theme="thandong"] { --glyph: var(--orn); --trien: inset 0 0 0 3px var(--paper), inset 0 0 0 4.5px color-mix(in srgb, var(--accent) 72%, transparent); }
+html[data-theme="thandong"] .ah-row h2::before { content: ""; display: inline-block; width: 1em; height: 1em; margin-right: .42em; vertical-align: -.1em; transform: rotate(-4deg);
+  background: var(--accent); -webkit-mask: var(--glyph) center / contain no-repeat; mask: var(--glyph) center / contain no-repeat; }
+html[data-theme="thandong"] :is(.qs-card, .list, .u-empty-row, .empty-box, .bdg, .rc, .jg-end-card) { background: var(--hero-pattern), var(--paper); }
+html[data-theme="thandong"] .gc { background: var(--hero-pattern), var(--card-bg, var(--paper)); }
+html[data-theme="thandong"] :is(.qs-card, .list) { box-shadow: var(--cm-drop), var(--trien); }
+html[data-theme="thandong"] :is(.u-empty-row, .bdg.is-on, .rc) { box-shadow: var(--trien); }
+html[data-theme="thandong"] .empty-box { border: 2px solid color-mix(in srgb, var(--accent) 55%, var(--paper)); border-radius: 4px; box-shadow: var(--trien); }
+html[data-theme="thandong"] .qs-bar i { background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 60%, var(--dat))); }
+html[data-theme="thandong"] :is(.qs-ic, .row-ic) { border-radius: 4px; box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 45%, transparent); }
+/* avatar hồ sơ: khung son + vàng đất, bóng chàm lệch như tranh in; bìa = giấy dó, mặt trời son, mái đình */
+html[data-theme="thandong"] :is(.pf-hero > .ava, .me-ava) { box-shadow: 0 0 0 3px var(--paper), 0 0 0 6px var(--accent), 5px 6px 0 6px var(--cham); }
+html[data-theme="thandong"] :is(.pf-band, .me-band) { box-shadow: var(--cm-drop), var(--trien);
+  background: url(../img/themes/thandong-roof.svg) right -30px bottom -10px / 250px auto no-repeat, radial-gradient(circle at 16% 42%, var(--accent) 0 24px, transparent 25px),
+    var(--hero-pattern), linear-gradient(180deg, color-mix(in srgb, var(--dat) 30%, var(--paper)), var(--paper)); }
+html[data-theme="thandong"] .ofr-ava .ava { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
+html[data-theme="thandong"] .cx { --bub-r: 6px; --bub-r-s: 2px; }
+html[data-theme="thandong"] .cx .msg.is-other:not(.is-emoji, .is-sticker, .is-image, .is-deleted) .msg-bubble { background: var(--hero-pattern), var(--paper); box-shadow: var(--trien); }
+html[data-theme="thandong"] .cx .msg.is-me:not(.is-emoji, .is-sticker, .is-image, .is-deleted) .msg-bubble { box-shadow: inset 0 0 0 3px var(--accent), inset 0 0 0 4px color-mix(in srgb, var(--accent-ink) 55%, transparent); }
+html[data-theme="thandong"] .jgv { --jgv-sq-l: #f6ead0; --jgv-sq-d: #c9a063; --jgv-co-l: #8a6a3a; --jgv-co-d: #f6ead0; }
+html[data-theme="thandong"] .jgv-frame { border-color: var(--ink); box-shadow: 5px 5px 0 var(--cham), inset 0 0 0 3px var(--paper); }
+html[data-theme="thandong"] .jgl-felt { border-radius: 6px; background: var(--hero-pattern), radial-gradient(80% 60% at 50% 30%, #2c4f8a, var(--cham) 75%);
+  box-shadow: inset 0 0 0 4px var(--dat), inset 0 0 0 7px var(--cham), inset 0 0 0 8px color-mix(in srgb, var(--dat) 60%, transparent), 5px 5px 0 var(--ink); }
+html[data-theme="thandong"] .jgk-card { --jgk-back: var(--accent); }
+html[data-theme="thandong"] .jg-end.is-win .jg-end-word { color: var(--accent-text); text-shadow: 3px 3px 0 var(--dat); }
+html[data-theme="thandong"] .jg-end-burst { color: var(--dat); opacity: .7; }
+/* N15 — lưới bìa vuông trang chủ app / hub: viền triện ở bìa (thandong), bìa ô li có lề (butchi) */
+html[data-theme="thandong"] .ah-games .is-app .gc:not(.is-feature) .gc-cover { box-shadow: 3px 3px 0 var(--cham), inset 0 0 0 3px var(--paper), inset 0 0 0 4.5px color-mix(in srgb, var(--accent) 72%, transparent); border-radius: 4px; }
+html[data-theme="butchi"] .ah-games .is-app .gc { background: none; }
+html[data-theme="butchi"] .ah-games .is-app .gc:not(.is-feature) .gc-cover { border-radius: var(--r-md); }

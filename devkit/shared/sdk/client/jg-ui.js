@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════════════════════════════════
-   Jagame SDK — jg-ui (phía trình duyệt) · giao thức game v2 · GAME-PROTOCOL.md mục "Client"
+   Jagame SDK — jg-ui (phía trình duyệt) · giao thức game v2 · CHUAN-GIAO-TIEP.md
    Manifest "sdk": "2" → công cụ tự chèn file này lên ĐẦU client/index.js (biến JGUI có sẵn). Không phụ thuộc thư viện ngoài.
    Chỉ dùng biến CSS của khung (--accent --accent-ink --paper --ink --line --soft --muted --radius --f-head) → hợp mọi giao diện.
    Mọi chữ từ người chơi đi qua JGUI.esc() trước khi vào innerHTML.
@@ -9,7 +9,7 @@
      JGUI.timer(el, view.timer)            → đồng hồ đếm lùi tự chạy trong el; trả hàm dừng
      JGUI.bar(root, [{label, onClick, primary?, disabled?, key?}]) → thanh .jg-dock dính đáy, đặt --jg-dock-h trên root
      JGUI.banner(root, text, ms?)          → dải thông báo ngắn trên bàn (tự ẩn)
-     JGUI.pad(root, {stick, buttons, small, onChange}) → điều khiển cảm ứng (joystick/D-pad + nút) + bàn phím + tay cầm — GAME-PROTOCOL.md §19
+     JGUI.pad(root, {stick, buttons, small, onChange}) → điều khiển cảm ứng (joystick/D-pad + nút) + bàn phím + tay cầm — CHUAN-GIAO-TIEP.md
      JGUI.turnText(game, view)             → "Lượt của bạn" / "Lượt của An" / "" theo view.turn
    ═══════════════════════════════════════════════════════════════════════════════════════════════════════ */
 var JGUI = (function () {
@@ -142,7 +142,7 @@ var JGUI = (function () {
     return v.turn === v.you ? 'Lượt của bạn' : 'Lượt của ' + nameOf(game, v.turn);
   }
 
-  /* ───────────────────────────── JGUI.pad — điều khiển cảm ứng dùng chung (GAME-PROTOCOL.md "Điều khiển cảm ứng JGUI.pad") ───────────────────────────── */
+  /* ───────────────────────────── JGUI.pad — điều khiển cảm ứng dùng chung (CHUAN-GIAO-TIEP.md) ───────────────────────────── */
   var PAD_CSS = '' +
     '.jgpad{position:absolute;left:0;top:0;right:0;bottom:0;z-index:20;pointer-events:none;touch-action:none;-webkit-user-select:none;user-select:none;' +
     '-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;font-family:var(--f-head,inherit);--jgp-o:.62;--jgp-u:72px;--jgp-dz:0px}' +

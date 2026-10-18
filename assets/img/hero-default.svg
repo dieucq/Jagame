@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="slot-ph hero-art" aria-hidden="true" focusable="false" stroke-linejoin="round" stroke-linecap="round">
+<!-- N12: minh họa đầu trang mặc định (khi chủ nhà chưa đặt ảnh bìa) — 2 người ngồi chơi caro. Màu theo biến giao diện khi nhúng inline (hero.php). -->
+<ellipse cx="200" cy="238" rx="178" ry="10" style="fill:var(--ink,#17142b);opacity:.12"/>
+<g style="fill:var(--accent,#2f54eb)">
+<path d="M150 58l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/>
+<path d="M262 38l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/>
+</g>
+<path d="M200 96c-14-10-26-2-24 9 2 10 14 17 24 25 10-8 22-15 24-25 2-11-10-19-24-9z" style="fill:var(--heart,#ff4d6d);stroke:var(--ink,#17142b)" stroke-width="3"/>
+<g style="stroke:var(--ink,#17142b)" stroke-width="3">
+<path d="M18 248c0-62 26-88 57-88s57 26 57 88z" style="fill:var(--accent,#2f54eb)"/>
+<circle cx="75" cy="118" r="34" fill="#f6cfa8"/>
+<path d="M41 118c0-34 68-34 68 0-10-14-56-16-68 0z" style="fill:var(--ink,#17142b)"/>
+<path d="M268 248c0-62 26-88 57-88s57 26 57 88z" style="fill:var(--heart,#ff4d6d)"/>
+<circle cx="325" cy="118" r="34" fill="#dca57a"/>
+<circle cx="325" cy="78" r="12" style="fill:var(--ink,#17142b)"/>
+<path d="M291 116c0-32 68-32 68 0-8-12-58-14-68 0z" style="fill:var(--ink,#17142b)"/>
+</g>
+<g style="fill:var(--ink,#17142b)">
+<circle cx="64" cy="122" r="3.5"/><circle cx="88" cy="122" r="3.5"/>
+<circle cx="313" cy="124" r="3.5"/><circle cx="335" cy="124" r="3.5"/>
+</g>
+<g fill="none" style="stroke:var(--ink,#17142b)" stroke-width="3">
+<path d="M66 134q10 9 20 0"/>
+<circle cx="322" cy="138" r="4"/>
+</g>
+<g style="fill:var(--heart,#ff4d6d);opacity:.35"><circle cx="56" cy="132" r="5"/><circle cx="96" cy="132" r="5"/></g>
+<path d="M110 175h180l30 50H80z" style="fill:var(--paper,#fff);stroke:var(--ink,#17142b)" stroke-width="3.5"/>
+<path d="M80 225h240v10H80z" style="fill:var(--ink,#17142b)"/>
+<g fill="none" style="stroke:var(--ink,#17142b);opacity:.45" stroke-width="2">
+<path d="M100 192h200M90 208h220M155 175l-15 50M200 175v50M245 175l15 50"/>
+</g>
+<g fill="none" stroke-width="3.5">
+<ellipse cx="137" cy="184" rx="10" ry="5" style="stroke:var(--accent,#2f54eb)"/>
+<ellipse cx="231" cy="217" rx="11" ry="5" style="stroke:var(--accent,#2f54eb)"/>
+<path d="M213 196l16 8M229 196l-16 8M162 213l16 8M178 213l-16 8" style="stroke:var(--ink,#17142b)"/>
+</g>
+<path d="M112 184q22-24 40-36" fill="none" style="stroke:var(--accent,#2f54eb)" stroke-width="15"/>
+<circle cx="154" cy="146" r="9" fill="#f6cfa8" style="stroke:var(--ink,#17142b)" stroke-width="3"/>
+<circle cx="168" cy="134" r="9" style="fill:var(--paper,#fff);stroke:var(--accent,#2f54eb)" stroke-width="4"/>
+<path d="M298 196q-14-26 4-50" fill="none" style="stroke:var(--heart,#ff4d6d)" stroke-width="15"/>
+<circle cx="304" cy="146" r="9" fill="#dca57a" style="stroke:var(--ink,#17142b)" stroke-width="3"/>
+</svg>

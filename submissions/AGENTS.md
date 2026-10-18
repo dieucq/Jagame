@@ -1,4 +1,4 @@
-> **Đọc trước khi gửi:** [../QUY-TAC-GUI-GAME.md](../QUY-TAC-GUI-GAME.md) — luật R1–R16; chi tiết [../developers/AI-RULES.md](../developers/AI-RULES.md).
+> **Đọc trước:** [CHUAN-GIAO-TIEP.md](../CHUAN-GIAO-TIEP.md) — chuẩn giao tiếp chính thức (manifest, hàm, đối tượng, thông điệp) · [QUY-TAC-GUI-GAME.md](../QUY-TAC-GUI-GAME.md) — luật gửi R1–R16 · [developers/ai-rules.json](../developers/ai-rules.json) — luật máy đọc.
 
 # submissions/AGENTS.md — luật cho AI agent trong thư mục này
 - Mỗi game = 1 thư mục `submissions/<id>/`, `<id>` khớp `^[a-z][a-z0-9-]{1,31}$` và bằng `manifest.json` → `"id"` (R1, R2).

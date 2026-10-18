@@ -78,7 +78,7 @@ html.cm .mk-feat { border: var(--cm-bw) solid var(--cm-line); box-shadow: var(--
 .mk-src.is-local { --c: var(--warn); }
 .mk-new { display: inline-flex; align-items: center; min-height: 22px; padding: 0 8px; border-radius: var(--r-pill); background: var(--live); color: #fff; font: 800 11.5px/1 var(--f-body); letter-spacing: .06em; text-transform: uppercase; }
 .mk-tag { display: inline-flex; align-items: center; min-height: 22px; padding: 0 8px; border-radius: var(--r-pill); background: var(--soft); color: var(--ink); font: 700 var(--fs-xs)/1 var(--f-body); white-space: nowrap; }
-.mk-tag.is-up { background: color-mix(in srgb, var(--accent) 16%, var(--paper)); color: var(--accent-text); }
+.mk-tag.is-up { background: var(--accent-bg, color-mix(in srgb, var(--accent) 12%, var(--paper))); color: var(--accent-text); }   /* nền nhấn chuẩn --accent-bg (cc_vars tính chữ nhấn trên nền này) */
 .mk-tag.is-hid { background: color-mix(in srgb, var(--ink) 9%, var(--paper)); color: var(--muted); }
 .mk-tag.is-warn { background: color-mix(in srgb, var(--warn) 16%, var(--paper)); color: color-mix(in oklab, var(--warn) 72%, var(--ink)); }
 
@@ -369,3 +369,15 @@ html.cm .mk-preview { border: var(--cm-bw) solid var(--cm-line); box-shadow: var
   .mk-feat-act .mk-get.is-lg { min-width: 0; min-height: 44px; padding: 0 18px; font-size: var(--fs-sm); }
   .mk-feat-act .btn-sm { min-height: 44px; }
 }
+
+/* N11 (UI-AUDIT-2) Chợ game quản trị — danh sách Đã cài: nút từng dòng là nút phụ yên (không vòng mực/bóng cứng của sticker/comic);
+   "Mở" = nút ghost nhạt, "Cập nhật" giữ màu nhấn nhưng phẳng. Chữ ký chỉ còn ở hành động chính (Cập nhật tất cả, nút lớn ở trang chi tiết). */
+.adm .mk-man .mk-get:not(.is-busy):not(:disabled) { box-shadow: none; }
+.adm .mk-man .mk-get { min-width: 100px; }
+.adm .mk-man .mk-get.is-open:not(:disabled), .adm .mk-man .mk-get.is-play:not(:disabled) { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--hair-strong); font-weight: 600; }
+.adm .mk-man .mk-get.is-open:not(:disabled):hover, .adm .mk-man .mk-get.is-play:not(:disabled):hover { background: var(--s-sunk); }
+.adm .mk-man .mk-get.is-update { font-weight: 700; }
+@media (pointer: coarse) { .adm .mk .btn-sm { min-height: 44px; } }
+@media (max-width: 760px) { .adm .mk-get, .adm .mk .btn-sm { min-height: 44px; } }
+.adm .mk-man .mk-sw { min-height: 44px; min-width: 52px; align-content: center; cursor: pointer; }
+.adm .mk-sec-h a { display: inline-flex; align-items: center; min-height: 44px; }

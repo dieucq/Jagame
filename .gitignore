@@ -21,5 +21,6 @@ application/logs/*
 !/devkit/games/oantuti/
 !/devkit/games/nhatque/
 !/devkit/games/xucxac/
+!/devkit/games/binhchon/
 .DS_Store
 __pycache__/
