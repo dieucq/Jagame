@@ -38,8 +38,9 @@ bash run_mac.sh
 
 **Windows 10/11 (64-bit):** bấm đúp **`run_window.bat`** (Windows cảnh báo thì bấm *More info → Run anyway*; tường lửa hỏi thì bấm *Allow*). Bản Windows chạy đủ cổng realtime (chơi game, chat) như macOS/Linux. Bản Windows mới được kiểm ít trên máy thật hơn macOS/Linux — gặp lỗi xin [báo ở đây](https://github.com/phamduybk/Jagame/issues).
 
-Gói tải về chỉ khoảng 10 MB: **lần chạy đầu cần Internet** để máy tự tải PHP + Node + cloudflared chính thức (khoảng 90 MB tải về, chiếm
-~220 MB trên ổ, chỉ 1 lần, cửa sổ hiện tiến độ %) — bạn không phải cài gì thêm.
+Gói ở [jagame.vn](https://jagame.vn/#tai-ve) (Windows, macOS Apple chip / Intel, Linux x64 / ARM64, ~80–90 MB) đã **kèm sẵn PHP + Node +
+cloudflared** chính thức: giải nén là chạy, không cần Internet lần đầu, không cài gì thêm. Bản mã trên GitHub này không kèm runtime: lần chạy
+đầu máy tự tải (~90 MB, cửa sổ hiện tiến độ %).
 
 Trình duyệt tự mở **http://localhost:6969** → đặt tên hội quán và tài khoản chủ nhà → xong (máy tự cài sẵn 12 trò). Vào **Quản trị → Mời bạn bè** để gửi link qua Zalo, Messenger.
 

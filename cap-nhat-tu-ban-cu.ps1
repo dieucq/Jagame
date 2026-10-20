@@ -105,6 +105,13 @@ if (-not (Stop-Dir $New)) { Fail 'Khong dung duoc ban moi dang chay. Dong cua so
 Say ''
 Say '2/3  Chep du lieu sang ban moi'
 $Side = Join-Path $New ('_du-lieu-ban-moi-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
+# Goi moi kem san cloudflared.exe (ban moi hon): giu chuong trinh CUA GOI MOI, khong de ban trong cloudflared\ cu de len.
+$CfNew = Join-Path $New 'cloudflared\cloudflared.exe'
+$CfKeep = ''
+if (Test-Path -LiteralPath $CfNew) {
+    $CfKeep = Join-Path $New '.cloudflared-goi-moi.exe'
+    try { Copy-Item -LiteralPath $CfNew -Destination $CfKeep -Force -ErrorAction Stop } catch { $CfKeep = '' }
+}
 foreach ($d in $DataDirs) {
     $src = Join-Path $Old $d
     $dst = Join-Path $New $d
@@ -122,6 +129,7 @@ foreach ($d in $DataDirs) {
     if ($LASTEXITCODE -ge 8) { Write-Host 'LOI'; Fail "Chep $d\ loi (o day hoac khong co quyen?). Thu muc cu van nguyen." }
     Write-Host 'xong'
 }
+if ($CfKeep) { Move-Item -LiteralPath $CfKeep -Destination $CfNew -Force -ErrorAction SilentlyContinue }
 $oldRt = Join-Path $Old 'runtime'
 $newRt = Join-Path $New 'runtime'
 if ((Test-Path -LiteralPath $oldRt) -and -not (Test-Path -LiteralPath (Join-Path $newRt 'node'))) {
@@ -157,5 +165,8 @@ Say 'Dung ban moi vai hom thay on roi hay xoa thu muc cu (tu nay luon chay tu th
 if ($NoRun) { exit 0 }
 Say ''
 Say 'Dang chay ban moi...'
-& (Join-Path $New 'run_window.bat')
+# Goi thang run_window.ps1 (khong qua cmd /c "...bat"): duong dan co dau cach + ( ) & hoac chu co dau bi cmd tach sai.
+$psExe = (Get-Process -Id $PID).Path
+if (-not $psExe) { $psExe = 'powershell.exe' }
+& $psExe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $New 'run_window.ps1')
 exit $LASTEXITCODE

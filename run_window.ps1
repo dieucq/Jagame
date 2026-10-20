@@ -4,22 +4,36 @@
 #   JAGAME_PORT=9000      cong goc khac (ban thi lui +1/+2)
 #   JAGAME_NO_BROWSER=1   khong tu mo trinh duyet      JAGAME_NO_FETCH=1  khong tu tai PHP/Node
 #   -FetchOnly            chi tai runtime (PHP + Node) roi thoat
+#   -Check                chi kiem goi co du PHP + Node + cloudflared KEM SAN (VC++ DLL tuy chon) (tren Windows: chay thu tung cai) roi thoat
+#                         0 = du, 2 = thieu. Khong tai gi. release.py chay tren goi vua giai nen (pwsh) - ngoai Windows chi kiem tep.
+# Goi jagame-windows tu 0.5.1 KEM SAN runtime\node\node.exe + runtime\php\ (giai nen la chay). Chi goi cu / goi thieu runtime moi
+# tu tai: Invoke-WebRequest -> curl.exe -> WebClient, giai nen .NET -> tar.exe; moi buoc + ly do loi ghi vao database\setup.log.
 # Trinh duyet / cloudflared -> PORT (Node gateway) -> 127.0.0.1:PHP_PORT (php -S, chi nghe loopback).
 # File nay CHI chua ky tu ASCII (PowerShell 5.1 doc file khong BOM theo bang ma ANSI).
-param([switch]$FetchOnly)
+param([switch]$FetchOnly, [switch]$Check)
 
 $ErrorActionPreference = 'Continue'
 $ProgressPreference = 'SilentlyContinue'
-try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 } catch {}
+# TLS 1.2 (+1.3 neu .NET co): PowerShell 5.1 mac dinh TLS 1.0 -> nodejs.org / windows.php.net tu choi
+try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]12288 }
+catch { try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 } catch {} }
 
 $NodeVer = '24.21.0'          # >= 22.13 (node:sqlite khong can co)
 $PhpSeries = '8.3'            # PHP Windows NTS x64 (windows.php.net), phien ban cu the lay tu releases.json
 $ScriptDir = $PSScriptRoot
 
-function Say($m) { Write-Host $m }
+$script:SetupLog = ''
+function Log($m) {
+    # Nhat ky cai dat (database\setup.log) - khach gui lai file nay khi bao loi. Khong bao gio lam hong luong chinh.
+    if (-not $script:SetupLog) { return }
+    try { [IO.File]::AppendAllText($script:SetupLog, ((Get-Date -Format 'yyyy-MM-dd HH:mm:ss') + '  ' + $m + "`r`n"), [Text.Encoding]::UTF8) } catch {}
+}
+function Say($m) { Write-Host $m; Log $m }
 function Fail($m, $code) {
     Write-Host ''
     Write-Host "[LOI] $m"
+    Log "[LOI] $m"
+    if ($script:SetupLog) { Write-Host "      Nhat ky chi tiet: $script:SetupLog (gui file nay cho nguoi ho tro)." }
     if ($code -eq $null) { $code = 2 }
     exit $code
 }
@@ -47,39 +61,120 @@ if (Test-Path -LiteralPath (Join-Path $ScriptDir 'router.php')) {
 }
 $CfConfDir = Join-Path $WebRoot 'cloudflared'
 $DbDir = Join-Path $WebRoot 'database'
+$FullPkgHint = 'Tai goi day du (da kem san PHP + Node, khong can Internet lan dau) o https://jagame.vn/#tai-ve, giai nen ra thu muc moi roi chay lai.'
+if (-not $env:JAGAME_CHILD) {
+    try {
+        New-Item -ItemType Directory -Force -Path $DbDir -ErrorAction Stop | Out-Null
+        $script:SetupLog = Join-Path $DbDir 'setup.log'
+        if ((Test-Path -LiteralPath $script:SetupLog) -and ((Get-Item -LiteralPath $script:SetupLog).Length -gt 1MB)) { Remove-Item -LiteralPath $script:SetupLog -Force }
+        Log ('==== run_window.ps1  ' + $ScriptDir)
+        Log ('Windows ' + [Environment]::OSVersion.Version + '  64bit=' + [Environment]::Is64BitOperatingSystem + '  PowerShell ' + $PSVersionTable.PSVersion + '  .NET CLR ' + [Environment]::Version)
+    } catch {}
+}
 
-# ---- Tai runtime (PHP + Node) ----
+# ---- Tai runtime (PHP + Node) - CHI khi goi thieu runtime (goi cu) ----
+function Err-Text($e) {
+    # Ly do that cua loi (thong bao cua Invoke-WebRequest / Expand-Archive / .NET), 1 dong
+    $m = ''
+    try { $m = [string]$e.Exception.Message } catch {}
+    try { if ($e.Exception.InnerException) { $m += ' | ' + [string]$e.Exception.InnerException.Message } } catch {}
+    if (-not $m) { $m = [string]$e }
+    return ($m -replace '\s+', ' ').Trim()
+}
+$script:CurlExe = ''
+if ($env:SystemRoot) {
+    $cx = Join-Path $env:SystemRoot 'System32\curl.exe'   # co san tu Windows 10 1803
+    if (Test-Path -LiteralPath $cx) { $script:CurlExe = $cx }
+}
 function Get-File($urls, $out) {
     if ((Test-Path -LiteralPath $out) -and ((Get-Item -LiteralPath $out).Length -gt 0)) { return $true }
+    $part = "$out.part"
     foreach ($u in $urls) {
-        for ($i = 0; $i -lt 2; $i++) {
-            try {
-                Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile "$out.part" -TimeoutSec 600
-                Move-Item -LiteralPath "$out.part" -Destination $out -Force
-                return $true
-            } catch {
-                Remove-Item -LiteralPath "$out.part" -Force -ErrorAction SilentlyContinue
+        # 3 cach, moi cach thu 2 lan: Invoke-WebRequest (proxy he thong) -> curl.exe (TLS rieng cua Windows) -> WebClient
+        foreach ($how in @('iwr', 'curl', 'webclient')) {
+            if ($how -eq 'curl' -and -not $script:CurlExe) { continue }
+            for ($i = 1; $i -le 2; $i++) {
+                Remove-Item -LiteralPath $part -Force -ErrorAction SilentlyContinue
+                $why = ''
+                try {
+                    if ($how -eq 'iwr') {
+                        Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $part -TimeoutSec 600 -ErrorAction Stop
+                    } elseif ($how -eq 'curl') {
+                        # curl.exe nhan tham so theo bang ma ANSI: duong dan co chu co dau (C:\Users\Nguyen...) -> chay TRONG thu muc dich,
+                        # ten tep tuong doi (ASCII)
+                        Push-Location -LiteralPath (Split-Path -Parent $part)
+                        try { $o = (& $script:CurlExe -fsSL --retry 2 --connect-timeout 20 -o (Split-Path -Leaf $part) $u 2>&1 | Out-String).Trim() }
+                        finally { Pop-Location }
+                        if ($LASTEXITCODE -ne 0) { throw "curl.exe ma $LASTEXITCODE $o" }
+                    } else {
+                        $wc = New-Object Net.WebClient
+                        try { $wc.DownloadFile($u, $part) } finally { $wc.Dispose() }
+                    }
+                    if ((Test-Path -LiteralPath $part) -and ((Get-Item -LiteralPath $part).Length -gt 0)) {
+                        Move-Item -LiteralPath $part -Destination $out -Force -ErrorAction Stop
+                        Log "  tai xong ($how): $u"
+                        return $true
+                    }
+                    $why = 'tep tai ve rong'
+                } catch { $why = Err-Text $_ }
+                Say "  [!] Tai loi ($how, lan $i): $u"
+                Say "      Ly do: $why"
+                Start-Sleep -Seconds 2
             }
         }
         Say "  [!] Khong tai duoc $u, thu nguon khac..."
     }
+    Remove-Item -LiteralPath $part -Force -ErrorAction SilentlyContinue
     return $false
 }
 function Get-Sha($file) { return (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLower() }
-# Giai nen chi cac muc can (zip Node ~100 MB gom npm...): $pick nhan ten muc trong zip, tra duong dan dich (rong = bo qua).
+# Giai nen chi cac muc can (zip Node ~100 MB gom npm...): $pick nhan ten muc trong zip (dau /), tra duong dan dich (rong = bo qua).
+# Cach 1 .NET ZipFile; loi (thieu assembly, duong dan dai, file bi khoa...) -> cach 2 tar.exe (Windows 10 1803+) ra thu muc tam roi chep.
 function Expand-Picked($zip, $dest, $pick) {
-    Add-Type -AssemblyName System.IO.Compression.FileSystem
-    $z = [IO.Compression.ZipFile]::OpenRead($zip)
     try {
-        foreach ($e in $z.Entries) {
-            if ($e.FullName.EndsWith('/')) { continue }
-            $rel = & $pick $e.FullName
+        Add-Type -AssemblyName System.IO.Compression.FileSystem -ErrorAction Stop
+        $z = [IO.Compression.ZipFile]::OpenRead($zip)
+        try {
+            foreach ($e in $z.Entries) {
+                if ($e.FullName.EndsWith('/')) { continue }
+                $rel = & $pick $e.FullName
+                if (-not $rel) { continue }
+                $t = Join-Path $dest $rel
+                New-Item -ItemType Directory -Force -Path (Split-Path -Parent $t) | Out-Null
+                [IO.Compression.ZipFileExtensions]::ExtractToFile($e, $t, $true)
+            }
+        } finally { $z.Dispose() }
+        return $true
+    } catch {
+        Say ('  [!] Giai nen (.NET) loi: ' + (Err-Text $_))
+    }
+    $tar = ''
+    if ($env:SystemRoot) { $tar = Join-Path $env:SystemRoot 'System32\tar.exe' }
+    if ($env:JAGAME_TEST_TAR) { $tar = $env:JAGAME_TEST_TAR }   # chi de thu tren may khong phai Windows
+    if (-not $tar -or -not (Test-Path -LiteralPath $tar)) { Say '  [!] Khong co tar.exe de thu cach khac.'; return $false }
+    # tar.exe (bsdtar) cung nhan tham so ANSI -> chay trong thu muc chua zip, moi tham so la ten tuong doi ASCII
+    $zdir = Split-Path -Parent $zip
+    $tname = 'x-' + [Guid]::NewGuid().ToString('N').Substring(0, 8)
+    $tmp = Join-Path $zdir $tname
+    try {
+        New-Item -ItemType Directory -Force -Path $tmp | Out-Null
+        Push-Location -LiteralPath $zdir
+        try { $o = (& $tar -xf (Split-Path -Leaf $zip) -C $tname 2>&1 | Out-String).Trim() } finally { Pop-Location }
+        if ($LASTEXITCODE -ne 0) { Say "  [!] tar.exe loi (ma $LASTEXITCODE): $o"; return $false }
+        $base = (Resolve-Path -LiteralPath $tmp).ProviderPath.TrimEnd('\') + '\'
+        foreach ($f in (Get-ChildItem -LiteralPath $tmp -Recurse -File -Force)) {
+            $rel = & $pick ($f.FullName.Substring($base.Length) -replace '\\', '/')
             if (-not $rel) { continue }
             $t = Join-Path $dest $rel
             New-Item -ItemType Directory -Force -Path (Split-Path -Parent $t) | Out-Null
-            [IO.Compression.ZipFileExtensions]::ExtractToFile($e, $t, $true)
+            Copy-Item -LiteralPath $f.FullName -Destination $t -Force -ErrorAction Stop
         }
-    } finally { $z.Dispose() }
+        Log '  giai nen bang tar.exe: xong'
+        return $true
+    } catch {
+        Say ('  [!] Giai nen (tar.exe) loi: ' + (Err-Text $_))
+        return $false
+    } finally { Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue }
 }
 function Install-Node {
     $cache = Join-Path $RuntimeDir '.cache'
@@ -94,22 +189,29 @@ function Install-Node {
         $p = $line -split '\s+'
         if ($p.Length -ge 2 -and $p[1] -eq $name) { $want = $p[0].ToLower() }
     }
-    if (-not $want -or $want -ne (Get-Sha $zip)) {
+    $got = Get-Sha $zip
+    if (-not $want -or $want -ne $got) {
         Remove-Item -LiteralPath $zip -Force -ErrorAction SilentlyContinue
-        Say "  [LOI] SHA-256 cua $name khong khop (chay lai de tai lai)."
+        Say "  [LOI] SHA-256 cua $name khong khop (can $want, nhan $got) - tep tai ve bi hong/bi thay (proxy, mang). Chay lai de tai lai."
         return $false
     }
     $nodeDir = Join-Path $RuntimeDir 'node'
-    if (Test-Path -LiteralPath $nodeDir) { Remove-Item -LiteralPath $nodeDir -Recurse -Force }
-    Expand-Picked $zip $nodeDir {
+    if (Test-Path -LiteralPath $nodeDir) { Remove-Item -LiteralPath $nodeDir -Recurse -Force -ErrorAction SilentlyContinue }
+    $ok = Expand-Picked $zip $nodeDir {
         param($n)
         $r = ($n -split '/', 2)[1]
         if ($r -eq 'node.exe' -or $r -eq 'LICENSE') { return $r }
         return ''
     }
     Remove-Item -LiteralPath $zip -Force -ErrorAction SilentlyContinue
+    if (-not $ok) { return $false }
+    Start-Sleep -Milliseconds 500
+    if (-not (Test-Path -LiteralPath (Join-Path $nodeDir 'node.exe'))) {
+        Say '  [LOI] Da giai nen node.exe nhung tep bien mat - thuong do chuong trinh diet virus xoa/cach ly. Them thu muc jagame vao danh sach loai tru roi chay lai.'
+        return $false
+    }
     Say "  node v$NodeVer (sha256 ok)"
-    return (Test-Path -LiteralPath (Join-Path $nodeDir 'node.exe'))
+    return $true
 }
 $PhpExts = @('curl', 'exif', 'fileinfo', 'gd', 'mbstring', 'openssl', 'pdo_sqlite', 'sqlite3', 'zip')
 function Install-Php {
@@ -117,13 +219,16 @@ function Install-Php {
     New-Item -ItemType Directory -Force -Path $cache | Out-Null
     $base = 'https://windows.php.net/downloads/releases'
     $path = ''; $sha = ''
+    $relFile = Join-Path $cache 'php-releases.json'
+    Remove-Item -LiteralPath $relFile -Force -ErrorAction SilentlyContinue
+    if (-not (Get-File @("$base/releases.json") $relFile)) { Say '  [LOI] Khong tai duoc danh sach ban PHP (windows.php.net).'; return $false }
     try {
-        $rel = (Invoke-WebRequest -UseBasicParsing -Uri "$base/releases.json" -TimeoutSec 60).Content | ConvertFrom-Json
+        $rel = [IO.File]::ReadAllText($relFile) | ConvertFrom-Json
         $s = $rel.$PhpSeries
         $b = $s.'nts-vs16-x64'
         if (-not $b) { $b = $s.'nts-vs17-x64' }
         $path = $b.zip.path; $sha = $b.zip.sha256.ToLower()
-    } catch {}
+    } catch { Say ('  [LOI] Doc releases.json loi: ' + (Err-Text $_)) }
     if (-not $path) { Say '  [LOI] Khong doc duoc danh sach ban PHP tu windows.php.net.'; return $false }
     $zip = Join-Path $cache $path
     if (-not (Get-File @("$base/$path", "$base/archives/$path") $zip)) { return $false }
@@ -133,9 +238,9 @@ function Install-Php {
         return $false
     }
     $phpDir = Join-Path $RuntimeDir 'php'
-    if (Test-Path -LiteralPath $phpDir) { Remove-Item -LiteralPath $phpDir -Recurse -Force }
+    if (Test-Path -LiteralPath $phpDir) { Remove-Item -LiteralPath $phpDir -Recurse -Force -ErrorAction SilentlyContinue }
     $exts = $PhpExts
-    Expand-Picked $zip $phpDir {
+    $ok = Expand-Picked $zip $phpDir {
         param($n)
         if ($n -notmatch '/') {
             if ($n -match '^(icu[a-z]+[0-9]*|php8phpdbg|libenchant2|libpq|libsodium|glib-2|gmodule-2|gobject-2)\.dll$') { return '' }
@@ -146,12 +251,16 @@ function Install-Php {
         return ''
     }
     Remove-Item -LiteralPath $zip -Force -ErrorAction SilentlyContinue
+    if (-not $ok) { return $false }
     # Goi cacert.pem (curl/openssl can de goi HTTPS toi api.jagame.vn) - kiem sha256 theo curl.se
     $ssl = Join-Path $phpDir 'extras\ssl'
     New-Item -ItemType Directory -Force -Path $ssl | Out-Null
     $ca = Join-Path $ssl 'cacert.pem'
     $caSha = ''
-    try { $caSha = ((Invoke-WebRequest -UseBasicParsing -Uri 'https://curl.se/ca/cacert.pem.sha256' -TimeoutSec 60).Content -split '\s+')[0].ToLower() } catch {}
+    $caShaFile = Join-Path $cache 'cacert.pem.sha256'
+    if (Get-File @('https://curl.se/ca/cacert.pem.sha256') $caShaFile) {
+        try { $caSha = ([IO.File]::ReadAllText($caShaFile) -split '\s+')[0].ToLower() } catch {}
+    }
     if ((Get-File @('https://curl.se/ca/cacert.pem') $ca) -and $caSha -and ($caSha -ne (Get-Sha $ca))) {
         Remove-Item -LiteralPath $ca -Force
         Say '  [!] cacert.pem sai SHA-256 - da bo (HTTPS tu PHP co the loi).'
@@ -163,8 +272,12 @@ function Install-Php {
               'max_file_uploads = 50', 'max_input_vars = 5000', 'max_execution_time = 300', 'expose_php = Off',
               'display_errors = Off', 'log_errors = On')
     Set-Content -LiteralPath (Join-Path $phpDir 'php.ini') -Value $ini -Encoding Ascii
+    if (-not (Test-Path -LiteralPath (Join-Path $phpDir 'php.exe'))) {
+        Say '  [LOI] Da giai nen php.exe nhung tep bien mat - thuong do chuong trinh diet virus xoa/cach ly.'
+        return $false
+    }
     Say "  php (NTS x64, $path)"
-    return (Test-Path -LiteralPath (Join-Path $phpDir 'php.exe'))
+    return $true
 }
 
 # ---- Tim runtime ----
@@ -173,10 +286,17 @@ function Find-Php {
     foreach ($p in $c) { if (Test-Path -LiteralPath $p) { return $p } }
     return ''
 }
+$script:NodeWhy = ''
 function Test-Node($exe) {
     if (-not $exe -or -not (Test-Path -LiteralPath $exe)) { return $false }
-    & $exe -e 'const [a,b]=process.versions.node.split(".").map(Number); process.exit(a>22||(a===22&&b>=13)?0:1)' 2>&1 | Out-Null
-    return ($LASTEXITCODE -eq 0)
+    $o = ''
+    try {
+        $o = (& $exe -e 'const [a,b]=process.versions.node.split(".").map(Number); console.log(process.version); process.exit(a>22||(a===22&&b>=13)?0:1)' 2>&1 | Out-String).Trim()
+        if ($LASTEXITCODE -eq 0) { Log "  node: $exe $o"; return $true }
+        $script:NodeWhy = "$exe chay ra ma $LASTEXITCODE`: $o"
+    } catch { $script:NodeWhy = "$exe khong chay duoc: " + (Err-Text $_) }
+    Log "  [!] $script:NodeWhy"
+    return $false
 }
 function Find-Node {
     $b = Join-Path $RuntimeDir 'node\node.exe'
@@ -187,38 +307,20 @@ function Find-Node {
 }
 
 if (-not [Environment]::Is64BitOperatingSystem) { Fail 'Jagame can Windows 64-bit (PHP + Node chi co ban 64-bit).' }
-
-$PhpExe = Find-Php
-$NodeExe = Find-Node
-if (($FetchOnly -or ((-not $PhpExe -or -not $NodeExe) -and -not $env:JAGAME_NO_FETCH))) {
-    Say '  Lan dau chay: dang tai PHP + Node (~70 MB, chi 1 lan, can Internet)...'
-    New-Item -ItemType Directory -Force -Path $RuntimeDir | Out-Null
-    if ($FetchOnly -or -not $PhpExe) { if (-not (Install-Php)) { Say '  [!] Chua tai duoc PHP.' } }
-    if ($FetchOnly -or -not $NodeExe) { if (-not (Install-Node)) { Say '  [!] Chua tai duoc Node.' } }
-    Remove-Item -LiteralPath (Join-Path $RuntimeDir '.cache') -Recurse -Force -ErrorAction SilentlyContinue
-    $PhpExe = Find-Php
-    $NodeExe = Find-Node
-    if ($FetchOnly) { exit 0 }
-}
-if (-not $PhpExe) {
-    $s = Get-Command php.exe -ErrorAction SilentlyContinue
-    if ($s) { $PhpExe = $s.Source }
-}
-if (-not $PhpExe) { Fail "Khong tim thay php.exe.`n      Kiem tra ket noi Internet roi chay lai (tu tai lan dau), hoac giai nen lai day du goi jagame-windows.zip." }
-if (-not $NodeExe) { Fail "Khong tim thay Node.js (>= 22.13).`n      Kiem tra ket noi Internet roi chay lai (tu tai lan dau), hoac giai nen lai day du goi jagame-windows.zip." }
-if (-not (Test-Path -LiteralPath (Join-Path $RtDir 'server.js'))) { Fail 'Thieu thu muc Realtime\ (cong realtime).' }
-if (-not (Test-Path -LiteralPath (Join-Path $RtDir 'node_modules\socket.io\package.json'))) {
-    $npm = Get-Command npm.cmd -ErrorAction SilentlyContinue
-    if ($Layout -eq 'dev' -and $npm) {
-        Say '  Cai thu vien cho Realtime\ (lan dau)...'
-        Push-Location $RtDir
-        & $npm.Source install --omit=dev --no-audit --no-fund
-        Pop-Location
+if ([Environment]::OSVersion.Version.Major -lt 10) { Fail 'Jagame can Windows 10 hoac 11 (Node.js 24 khong chay tren Windows 7/8.1).' }
+# May ARM (Surface Pro X, Snapdragon...): goi Windows la x64. Windows 11 ARM chay x64 qua gia lap (cham hon, van dung duoc);
+# Windows 10 ARM chi gia lap x86 32-bit -> khong chay duoc.
+$CpuArch = [string]$env:PROCESSOR_ARCHITEW6432
+if (-not $CpuArch) { $CpuArch = [string]$env:PROCESSOR_ARCHITECTURE }
+if ($CpuArch -eq 'ARM64') {
+    if ([Environment]::OSVersion.Version.Build -lt 22000) {
+        Fail "Goi nay danh cho Windows may Intel/AMD (x64), may ban la Windows 10 tren chip ARM - Windows 10 ARM khong chay duoc chuong trinh x64.`n      Nang cap len Windows 11 (chay duoc goi x64 qua gia lap) hoac dung may Intel/AMD / Mac / Linux: https://jagame.vn/#tai-ve"
     }
-    if (-not (Test-Path -LiteralPath (Join-Path $RtDir 'node_modules\socket.io\package.json'))) { Fail 'Thieu Realtime\node_modules (tai lai goi day du).' }
+    Say '  [!] May chip ARM (Windows 11): goi x64 chay qua gia lap cua Windows - hoat dong binh thuong nhung cham hon.'
 }
 
-# File tai bang trinh duyet bi danh dau "tu Internet" (SmartScreen hoi/chan exe): go dau 1 lan cho runtime + cloudflared.
+# File tai bang trinh duyet bi danh dau "tu Internet" (SmartScreen hoi/chan exe): go dau 1 lan cho runtime + cloudflared
+# TRUOC khi chay thu node.exe/php.exe kem goi.
 foreach ($d in @($RuntimeDir, $LegacyPhpDir, $CfToolDir)) {
     $mark = Join-Path $d '.unblocked'
     if ((Test-Path -LiteralPath $d) -and -not (Test-Path -LiteralPath $mark)) {
@@ -227,7 +329,6 @@ foreach ($d in @($RuntimeDir, $LegacyPhpDir, $CfToolDir)) {
     }
 }
 
-# ---- Visual C++ Runtime: php.exe (vs16/vs17) can VCRUNTIME140.dll + VCRUNTIME140_1.dll ban x64 ----
 function Test-Vc {
     $sys = Join-Path $env:SystemRoot 'System32'
     if (-not [Environment]::Is64BitProcess) { $sys = Join-Path $env:SystemRoot 'Sysnative' }
@@ -244,29 +345,149 @@ function Test-Vc {
     }
     return $true
 }
+
+if ($Check) {
+    $onWin = ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)
+    # vcruntime140*.dll KHONG bat buoc trong goi (mac dinh khong kem): thieu thi lan chay dau tu cai VC++ Redistributable cua Microsoft
+    $need = @('node\node.exe', 'php\php.exe', 'php\php.ini', 'php\php8.dll', 'php\extras\ssl\cacert.pem')
+    foreach ($x in $PhpExts) { $need += "php\ext\php_$x.dll" }
+    $miss = @()
+    foreach ($n in $need) { if (-not (Test-Path -LiteralPath (Join-Path $RuntimeDir $n))) { $miss += "runtime\$n" } }
+    $cf = Join-Path $CfToolDir 'cloudflared.exe'
+    if (-not (Test-Path -LiteralPath $cf)) { $miss += 'cloudflared\cloudflared.exe' }
+    $vcNote = 'kem goi'
+    if (-not (Test-Path -LiteralPath (Join-Path $RuntimeDir 'php\vcruntime140.dll'))) { $vcNote = 'khong kem goi - lan chay dau tu cai vc_redist cua Microsoft neu may thieu' }
+    Say "  VC++ Runtime: $vcNote"
+    if ($onWin -and $miss.Count -eq 0) {
+        $ne = Join-Path $RuntimeDir 'node\node.exe'
+        if (-not (Test-Node $ne)) { $miss += "node.exe khong chay ($script:NodeWhy)" }
+        $pe = Join-Path $RuntimeDir 'php\php.exe'
+        $PhpExe = $pe
+        if (-not (Test-Vc)) {
+            Say '  VC++ Runtime: may nay chua co - lan chay that se tu tai + cai vc_redist cua Microsoft (php.exe chua chay thu duoc).'
+        } else {
+            Push-Location -LiteralPath $WebRoot
+            try { $m = (& $pe -c "$PhpRel\php.ini" -m 2>&1 | Out-String) } finally { Pop-Location }
+            foreach ($x in @('sqlite3', 'gd', 'curl', 'mbstring', 'openssl', 'zip')) { if ($m -notmatch "(?m)^$x\s*$") { $miss += "php thieu $x" } }
+        }
+        $cv = (& $cf --version 2>&1 | Out-String).Trim()
+        if ($LASTEXITCODE -ne 0) { $miss += "cloudflared.exe khong chay ($cv)" } else { Say "  cloudflared: $cv" }
+    }
+    if ($miss.Count -gt 0) { Say ('[THIEU] ' + ($miss -join ', ')); exit 2 }
+    if ($onWin) { Say 'DU: PHP + Node + cloudflared kem goi chay duoc tren may nay.' }
+    else { Say 'DU (chi kiem tep co mat - khong phai Windows nen chua chay thu node.exe/php.exe/cloudflared.exe).' }
+    exit 0
+}
+
+# Goi co kem runtime (update.json liet ke runtime/node/node.exe) ma tep mat -> diet virus xoa / giai nen thieu, KHONG phai "chua tai"
+$PkgHasRt = $false
+try { $PkgHasRt = ([IO.File]::ReadAllText((Join-Path $WebRoot 'update.json')) -match '"runtime/node/node\.exe"') } catch {}
+$PhpExe = Find-Php
+$NodeExe = Find-Node
+if ($PkgHasRt -and (-not $PhpExe -or -not $NodeExe)) {
+    Say '  [!] Goi nay KEM SAN PHP + Node nhung khong thay/khong chay duoc tep trong runtime\.'
+    if ($script:NodeWhy) { Say "      $script:NodeWhy" }
+    Say '      Thuong do: giai nen chua het (mo thang trong file .zip), hoac chuong trinh diet virus xoa/chan tep.'
+}
+if (($FetchOnly -or ((-not $PhpExe -or -not $NodeExe) -and -not $env:JAGAME_NO_FETCH))) {
+    Say '  Goi chua co san PHP/Node: dang tu tai (~70 MB, chi 1 lan, can Internet)...'
+    New-Item -ItemType Directory -Force -Path $RuntimeDir | Out-Null
+    if ($FetchOnly -or -not $PhpExe) { if (-not (Install-Php)) { Say '  [!] Chua tai duoc PHP.' } }
+    if ($FetchOnly -or -not $NodeExe) { if (-not (Install-Node)) { Say '  [!] Chua tai duoc Node.' } }
+    Remove-Item -LiteralPath (Join-Path $RuntimeDir '.cache') -Recurse -Force -ErrorAction SilentlyContinue
+    $PhpExe = Find-Php
+    $NodeExe = Find-Node
+    if ($FetchOnly) { if ($PhpExe -and $NodeExe) { exit 0 } else { exit 2 } }
+}
+if (-not $PhpExe) {
+    $s = Get-Command php.exe -ErrorAction SilentlyContinue
+    if ($s) { $PhpExe = $s.Source }
+}
+if (-not $PhpExe) { Fail "Khong tim thay php.exe (va tu tai khong thanh cong - ly do o tren).`n      $FullPkgHint" }
+if (-not $NodeExe) {
+    $m = 'Khong tim thay Node.js (>= 22.13)'
+    if ($script:NodeWhy) { $m += ".`n      Chi tiet: $script:NodeWhy" }
+    if ($env:JAGAME_NO_FETCH) { $m += "`n      (JAGAME_NO_FETCH dang bat nen khong tu tai.)" } else { $m += "`n      Tu tai cung khong thanh cong - ly do o tren." }
+    Fail "$m`n      $FullPkgHint"
+}
+Log "  php: $PhpExe"
+if (-not (Test-Path -LiteralPath (Join-Path $RtDir 'server.js'))) { Fail 'Thieu thu muc Realtime\ (cong realtime).' }
+if (-not (Test-Path -LiteralPath (Join-Path $RtDir 'node_modules\socket.io\package.json'))) {
+    $npm = Get-Command npm.cmd -ErrorAction SilentlyContinue
+    if ($Layout -eq 'dev' -and $npm) {
+        Say '  Cai thu vien cho Realtime\ (lan dau)...'
+        Push-Location $RtDir
+        & $npm.Source install --omit=dev --no-audit --no-fund
+        Pop-Location
+    }
+    if (-not (Test-Path -LiteralPath (Join-Path $RtDir 'node_modules\socket.io\package.json'))) { Fail 'Thieu Realtime\node_modules (tai lai goi day du).' }
+}
+
+
+# ---- Visual C++ Runtime: php.exe (vs16/vs17) can VCRUNTIME140.dll + VCRUNTIME140_1.dll ban x64 ----
+# Goi Windows mac dinh KHONG kem vcruntime140*.dll (chua xac nhan giay phep phan phoi lai cua Visual Studio): may chua co
+# Microsoft Visual C++ Redistributable thi tai BAN CHINH THUC cua Microsoft (aka.ms -> download.visualstudio.microsoft.com), kiem chu ky
+# Authenticode cua Microsoft roi moi chay. Phan lon may Windows 10/11 da co san (nhieu ung dung cai kem) -> buoc nay bi bo qua.
 if (-not (Test-Vc)) {
-    $vcFile = Join-Path $env:TEMP 'vc_redist.x64.exe'
+    $vcUrl = 'https://aka.ms/vs/17/release/vc_redist.x64.exe'
+    $vcFile = Join-Path $env:TEMP 'jagame_vc_redist.x64.exe'
     Say ''
     Say '========================================'
-    Say '  May thieu hoac co ban cu cua bo thu vien Microsoft Visual C++ (can cho PHP).'
-    Say '  Dang tai ve va cai - khi Windows hoi, hay bam Yes.'
+    Say '  May chua co (hoac co ban cu) bo thu vien Microsoft Visual C++ Redistributable - PHP can no.'
+    Say '  Dang tai ban CHINH THUC tu Microsoft (~25 MB, chi 1 lan) va cai.'
+    Say '  Windows se hoi "Do you want to allow this app to make changes" - hay bam Yes.'
     Say '========================================'
     Remove-Item -LiteralPath $vcFile -Force -ErrorAction SilentlyContinue
-    try { Invoke-WebRequest -UseBasicParsing -Uri 'https://aka.ms/vs/17/release/vc_redist.x64.exe' -OutFile $vcFile } catch {}
-    if (Test-Path -LiteralPath $vcFile) {
+    $vcOk = Get-File @($vcUrl) $vcFile
+    if ($vcOk) {
+        $sig = $null
+        try { $sig = Get-AuthenticodeSignature -LiteralPath $vcFile } catch {}
+        if (-not $sig -or $sig.Status -ne 'Valid' -or ([string]$sig.SignerCertificate.Subject) -notmatch 'O=Microsoft Corporation') {
+            $st = ''; if ($sig) { $st = [string]$sig.Status }
+            Say "  [LOI] Tep vc_redist tai ve KHONG mang chu ky hop le cua Microsoft ($st) - khong chay. (Mang/proxy thay tep?)"
+            Remove-Item -LiteralPath $vcFile -Force -ErrorAction SilentlyContinue
+            $vcOk = $false
+        }
+    }
+    if ($vcOk) {
         Say '  Dang cai Microsoft Visual C++ Redistributable...'
-        Start-Process -FilePath $vcFile -ArgumentList '/install /passive /norestart' -Wait
+        $vcRc = -1
+        try { $vp = Start-Process -FilePath $vcFile -ArgumentList '/install /passive /norestart' -Wait -PassThru; $vcRc = $vp.ExitCode }
+        catch { Say ('  [!] Khong chay duoc trinh cai: ' + (Err-Text $_)) }
+        Log "  vc_redist ma thoat: $vcRc"
+        if ($vcRc -eq 1223 -or $vcRc -eq 1602) { Say '  [!] Ban da bam No / huy cai dat.' }
+        elseif ($vcRc -eq 3010) { Say '  Da cai xong (Windows co the can khoi dong lai).' }
+        Remove-Item -LiteralPath $vcFile -Force -ErrorAction SilentlyContinue
     }
     if (-not (Test-Vc)) {
-        Fail "Chua cai duoc Microsoft Visual C++ Redistributable (can cho PHP).`n      Tai tay va cai file nay: https://aka.ms/vs/17/release/vc_redist.x64.exe`n      Cai xong roi bam dup run_window.bat lan nua."
+        Fail "Chua cai duoc Microsoft Visual C++ Redistributable (PHP can).`n      Tai tay ban chinh thuc cua Microsoft va cai: $vcUrl`n      (trang huong dan: https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist)`n      Cai xong roi bam dup run_window.bat lan nua."
     }
 }
 
+# php.ini cua goi: LUON truyen -c bang duong dan TUONG DOI tu web root (moi lenh php chay voi thu muc hien tai = web root).
+# PHP tu tim php.ini canh php.exe qua ten tep ANSI: thu muc co chu co dau (C:\Users\Nguyen Van A\...) -> khong thay php.ini
+# -> khong nap sqlite3/gd/curl. Tham so ASCII tuong doi thi chac chan dung.
+function Get-WebRel($abs) {
+    $w = (Resolve-Path -LiteralPath $WebRoot).ProviderPath.TrimEnd('\')
+    $up = Split-Path -Parent $w
+    if ($abs.StartsWith($w + '\', [StringComparison]::OrdinalIgnoreCase)) { return $abs.Substring($w.Length + 1) }
+    if ($up -and $abs.StartsWith($up.TrimEnd('\') + '\', [StringComparison]::OrdinalIgnoreCase)) { return '..\' + $abs.Substring($up.TrimEnd('\').Length + 1) }
+    return $abs
+}
+$PhpExe = (Resolve-Path -LiteralPath $PhpExe).ProviderPath
+$PhpDirRel = Get-WebRel (Split-Path -Parent $PhpExe)
+$PhpBase = @()
+if (Test-Path -LiteralPath (Join-Path (Split-Path -Parent $PhpExe) 'php.ini')) { $PhpBase = @('-c', "$PhpDirRel\php.ini") }
+function Invoke-Php {
+    Push-Location -LiteralPath $WebRoot
+    try { return (& $PhpExe @PhpBase @args 2>$null) } finally { Pop-Location }
+}
+
 # Tien ich bat buoc: sqlite3 (du lieu), gd (anh), curl (link xxxx.jagame.vn), mbstring (chu tieng Viet).
-$mods = (& $PhpExe -m 2>$null) | ForEach-Object { $_.Trim().ToLower() }
+$mods = (Invoke-Php -m) | ForEach-Object { ([string]$_).Trim().ToLower() }
 $missing = @()
 foreach ($x in @('sqlite3', 'gd', 'curl', 'mbstring')) { if ($mods -notcontains $x) { $missing += "php-$x" } }
-if ($missing.Count -gt 0) { Fail ("PHP ($PhpExe) thieu tien ich: " + ($missing -join ' ')) }
+if ($missing.Count -gt 0) { Fail ("PHP ($PhpExe) thieu tien ich: " + ($missing -join ' ') + "`n      $FullPkgHint") }
 
 # ---- Giam sat + Cap nhat 1 nut (RB-03, Web\application\libraries\Selfupdate.php) ----
 # Lan chay nay la CHA: chay chinh file nay o che do CON (JAGAME_CHILD=1, phan duoi: PHP + Node). Con thoat ma 75 (Node nhan
@@ -279,7 +500,7 @@ if (-not $env:JAGAME_CHILD) {
     function Upd($cmd, $extra) {
         $script:UpdRc = 3
         if (-not (Test-Path -LiteralPath (Join-Path (Join-Path $WebRoot 'update') 'apply.php'))) { return '' }
-        $a = @('update/apply.php', $cmd, '.')
+        $a = $PhpBase + @('update/apply.php', $cmd, '.')
         if ($extra) { $a += $extra }
         Push-Location -LiteralPath $WebRoot
         try { $out = (& $PhpExe @a 2>$null | Out-String).Trim(); $script:UpdRc = $LASTEXITCODE } finally { Pop-Location }
@@ -419,12 +640,13 @@ function Stop-Tunnel {
 # PHP chi nghe 127.0.0.1 - moi truy cap tu ngoai di qua gateway (gateway dat X-Jagame-Client-IP = IP that).
 # Windows khong ho tro nhieu worker cho php -S nen PHP_CLI_SERVER_WORKERS khong dat.
 Remove-Item Env:PHP_CLI_SERVER_WORKERS -ErrorAction SilentlyContinue
-$phpArgs = @('-d', 'upload_max_filesize=64M', '-d', 'post_max_size=70M', '-d', 'memory_limit=768M', '-d', 'max_file_uploads=50',
+$phpArgs = $PhpBase + @('-d', 'upload_max_filesize=64M', '-d', 'post_max_size=70M', '-d', 'memory_limit=768M', '-d', 'max_file_uploads=50',
              '-d', 'max_execution_time=300', '-d', 'max_input_vars=5000', '-d', 'date.timezone=Asia/Ho_Chi_Minh',
              '-d', 'expose_php=Off', '-d', 'display_errors=0', '-d', 'log_errors=1')
 # cacert: duong dan TUONG DOI tu web root khi php nam trong goi (php.exe khong nhan chac tham so co chu co dau)
 $caRel = ''
-if (Test-Path -LiteralPath (Join-Path $RuntimeDir 'php\extras\ssl\cacert.pem')) { $caRel = "$PhpRel\extras\ssl\cacert.pem" }
+if (Test-Path -LiteralPath (Join-Path (Split-Path -Parent $PhpExe) 'extras\ssl\cacert.pem')) { $caRel = "$PhpDirRel\extras\ssl\cacert.pem" }
+elseif (Test-Path -LiteralPath (Join-Path $RuntimeDir 'php\extras\ssl\cacert.pem')) { $caRel = "$PhpRel\extras\ssl\cacert.pem" }
 elseif (Test-Path -LiteralPath (Join-Path $LegacyPhpDir 'extras\ssl\cacert.pem')) { $caRel = "$LegacyPhpRel\extras\ssl\cacert.pem" }
 if ($caRel) { $phpArgs += @('-d', "curl.cainfo=$caRel", '-d', "openssl.cafile=$caRel") }
 $phpArgs += @('-S', "127.0.0.1:$PhpPort", 'router.php')

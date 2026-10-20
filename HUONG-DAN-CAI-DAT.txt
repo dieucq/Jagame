@@ -16,9 +16,10 @@ Cài xong là có ngay trang game riêng dạng https://xxxx.jagame.vn
     mật -> kéo xuống -> "Vẫn mở".)
     Linux (hoặc Mac không bấm đúp được): mở Terminal, gõ "bash "
     rồi kéo tệp run_mac.sh vào cửa sổ, nhấn Enter.
-    LẦN ĐẦU CẦN INTERNET: máy tự tải PHP + Node + cloudflared
-    chính thức (khoảng 90 MB tải về, chiếm ~220 MB trên ổ, chỉ
-    1 lần; cửa sổ hiện thanh % khi tải). Không phải cài gì thêm.
+    Gói theo máy (jagame-mac-arm64 / mac-x64 / linux-x64 /
+    linux-arm64) đã KÈM SẴN PHP + Node + cloudflared: giải nén là
+    chạy, không cần Internet lần đầu. (Gói chung jagame-mac-linux
+    thì lần đầu tự tải ~90 MB, cửa sổ hiện thanh %.)
  3. Trình duyệt tự mở http://localhost:6969
     Đặt tên hội quán, biệt danh, tài khoản chủ phòng -> "Tạo hội quán".
  4. Chờ khoảng 1 phút: link https://xxxx.jagame.vn hiện ở
@@ -29,9 +30,11 @@ Cài xong là có ngay trang game riêng dạng https://xxxx.jagame.vn
 --------------------------------------------------------------
  1. Giải nén ra một thư mục (KHÔNG chạy trực tiếp trong .zip).
  2. Bấm đúp run_window.bat (Windows cảnh báo: "More info" ->
-    "Run anyway"). Lần đầu máy tự tải PHP + Node chính thức
-    (khoảng 70 MB, 1 lần, CẦN INTERNET) và có thể hỏi cài "Microsoft
-    Visual C++" (bấm Yes). Không phải cài gì thêm.
+    "Run anyway"). Gói đã KÈM SẴN PHP + Node + cloudflared.
+    Máy chưa có "Microsoft Visual C++ Redistributable" (PHP cần):
+    lần đầu tự tải bản chính thức của Microsoft (~25 MB) và hỏi
+    cài - bấm Yes. Phần lớn máy Windows 10/11 đã có sẵn.
+    Báo lỗi: gửi kèm tệp database\setup.log trong thư mục jagame.
  3. Windows Defender Firewall hỏi quyền mạng: bấm "Allow"
     (để bạn bè trong mạng nhà vào được).
  4. Trình duyệt tự mở http://localhost:6969

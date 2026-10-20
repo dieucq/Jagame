@@ -4,6 +4,8 @@
 #   JAGAME_BIND=0.0.0.0 bash run_mac.sh    # cho máy khác trong mạng nhà mở http://<ip-máy>:6969
 #   JAGAME_PORT=9000 bash run_mac.sh       # cổng khác (bận thì lùi 9001/9002)
 #   JAGAME_NO_CAFFEINATE=1 bash run_mac.sh # cho máy ngủ như thường (mặc định: macOS giữ máy thức khi hội quán chạy)
+#   JAGAME_NO_FETCH=1 bash run_mac.sh --check   # chỉ kiểm gói có đủ PHP + Node + cloudflared KÈM SẴN chạy được trên máy này rồi thoát
+#                                               # (0 = đủ, 1 = thiếu; release.py chạy trên gói vừa giải nén, không tải gì)
 # Trình duyệt / cloudflared -> PORT (Node gateway) -> 127.0.0.1:PHP_PORT (php -S, chỉ nghe loopback).
 # PHP + Node đi kèm gói (runtime/), người dùng không phải cài gì. Bản DEV lấy ở Tools/runtime/<os>-<arch>/
 # (tải bằng: bash Script/fetch_runtime.sh), không có thì dùng php/node của máy.
@@ -11,6 +13,13 @@
 # https://xxxx.jagame.vn; script này chỉ chạy PHP + Node, tải cloudflared lần đầu và gõ /health mỗi phút.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# Locale không phải UTF-8 (LANG trống / vi_VN.UTF-8 không có trên macOS -> C): ps/lsof của các tiến trình con (Tunnelrunner…) mã hóa
+# byte chữ có dấu trong đường dẫn. Đặt UTF-8 có sẵn cho cả nhóm tiến trình (việc nhận tiến trình theo thư mục KHÔNG phụ thuộc vào đây).
+case "$(locale charmap 2>/dev/null)" in
+    UTF-8|utf8) ;;
+    *) L="$(locale -a 2>/dev/null | grep -iE '^(C\.utf-?8|en_US\.utf-?8)$' | head -1)"
+       [ -n "$L" ] && export LC_ALL="$L" ;;
+esac
 
 case "$(uname -s)" in Darwin) HOST_OS=darwin ;; Linux) HOST_OS=linux ;; *) HOST_OS=unknown ;; esac
 case "$(uname -m)" in arm64|aarch64) HOST_ARCH=arm64 ;; x86_64|amd64) HOST_ARCH=x64 ;; *) HOST_ARCH=unknown ;; esac
@@ -70,6 +79,42 @@ if [ -d "$RUNTIME_DIR" ]; then
     chmod +x "$BUNDLED_PHP" "$BUNDLED_NODE" 2>/dev/null
     [ "$HOST_OS" = "darwin" ] && xattr -dr com.apple.quarantine "$RUNTIME_DIR" 2>/dev/null
 fi
+# cloudflared kèm gói (gói theo kiến trúc): cùng xử lý quyền chạy + quarantine
+if [ -f "$CF_TOOL_DIR/cloudflared" ]; then
+    chmod +x "$CF_TOOL_DIR/cloudflared" 2>/dev/null
+    [ "$HOST_OS" = "darwin" ] && xattr -d com.apple.quarantine "$CF_TOOL_DIR/cloudflared" 2>/dev/null
+fi
+
+# ─── Gói sai máy (QA68 BUG-02): runtime kèm gói là của hệ điều hành / chip khác và không chạy được ở đây -> nói rõ tải gói nào ───
+bin_plat() {  # bin_plat <tệp>: darwin-arm64 | darwin-x64 | linux-x64 | linux-arm64 | "" (đọc đầu tệp Mach-O / ELF)
+    local h
+    h="$(od -An -tx1 -N20 "$1" 2>/dev/null | tr -d ' \n')"
+    case "$h" in
+        cffaedfe0c000001*) echo darwin-arm64 ;;
+        cffaedfe07000001*) echo darwin-x64 ;;
+        7f454c46*) case "${h:36:4}" in 3e00) echo linux-x64 ;; b700) echo linux-arm64 ;; esac ;;
+    esac
+}
+plat_name() {  # tên gói trên jagame.vn/#tai-ve
+    case "$1" in
+        darwin-arm64) echo "macOS · Apple chip (M1, M2, M3…)" ;;
+        darwin-x64) echo "macOS · Intel" ;;
+        linux-x64) echo "Linux · x64" ;;
+        linux-arm64) echo "Linux · ARM64" ;;
+        *) echo "$1" ;;
+    esac
+}
+if [ "$LAYOUT" = "release" ] && [ -f "$BUNDLED_NODE" ]; then
+    PKG_PLAT="$(bin_plat "$BUNDLED_NODE")"
+    if [ -n "$PKG_PLAT" ] && [ "$PKG_PLAT" != "$HOST_OS-$HOST_ARCH" ] && ! "$BUNDLED_NODE" -e '0' >/dev/null 2>&1; then
+        echo "[LỖI] Gói này dành cho $(plat_name "$PKG_PLAT"), máy bạn là $(plat_name "$HOST_OS-$HOST_ARCH")."
+        echo "      Hãy tải gói \"$(plat_name "$HOST_OS-$HOST_ARCH")\" ở https://jagame.vn/#tai-ve rồi giải nén ra thư mục mới."
+        [ "$PKG_PLAT" = "darwin-x64" ] && [ "$HOST_OS-$HOST_ARCH" = "darwin-arm64" ] \
+            && echo "      (Hoặc cài Rosetta để chạy gói Intel: softwareupdate --install-rosetta --agree-to-license)"
+        echo "      Đang có dữ liệu ở gói này? Sau khi giải nén gói đúng, chạy cap-nhat-tu-ban-cu trong thư mục mới và kéo thư mục này vào."
+        exit 2
+    fi
+fi
 
 # ─── PHP: đi kèm gói -> của máy (chỉ để dev) ─────────────────────────────────
 PHP_EXE=""
@@ -112,6 +157,21 @@ if [ ! -f "$RT_DIR/node_modules/socket.io/package.json" ]; then
     else
         runtime_missing "Thiếu Realtime/node_modules."
     fi
+fi
+
+# ─── --check: gói có đủ runtime KÈM SẴN chạy được trên máy này không (không chạy hội quán) ───
+if [ "$1" = "--check" ]; then
+    CK_BAD=""
+    [ "$PHP_EXE" = "$BUNDLED_PHP" ] || CK_BAD="$CK_BAD php(kèm gói không chạy được — đang dùng ${PHP_EXE:-không có})"
+    [ "$NODE_EXE" = "$BUNDLED_NODE" ] || CK_BAD="$CK_BAD node(kèm gói không chạy được — đang dùng ${NODE_EXE:-không có})"
+    CF_V="$("$CF_TOOL_DIR/cloudflared" --version 2>/dev/null | head -1)"
+    [ -n "$CF_V" ] || CK_BAD="$CK_BAD cloudflared"
+    echo "  php        : $PHP_EXE ($("$PHP_EXE" -r 'echo PHP_VERSION;' 2>/dev/null))"
+    echo "  node       : $NODE_EXE ($("$NODE_EXE" -v 2>/dev/null))"
+    echo "  cloudflared: $CF_TOOL_DIR/cloudflared (${CF_V:-KHÔNG chạy được})"
+    if [ -n "$CK_BAD" ]; then echo "[THIẾU]$CK_BAD"; exit 1; fi
+    echo "ĐỦ: PHP + Node + cloudflared kèm gói chạy được ($HOST_OS-$HOST_ARCH)"
+    exit 0
 fi
 
 # ─── Giám sát + Cập nhật 1 nút (RB-03, Web/application/libraries/Selfupdate.php) ───────────────────────────────
@@ -172,6 +232,8 @@ if [ -z "$JAGAME_CHILD" ]; then
 fi
 
 # ─── Dọn tiến trình mồ côi CỦA ĐÚNG THƯ MỤC NÀY (R5-04) ─────────────────────
+# QA68 BUG-01: nhận ra "đúng thư mục" bằng thiết bị:inode của thư mục làm việc (php -S và node đều chạy với cwd = web root),
+# KHÔNG so chuỗi đường dẫn: ở locale C, ps/lsof mã hóa byte UTF-8 nên thư mục có chữ có dấu không bao giờ khớp.
 # php -S nhiều tiến trình: tiến trình chính chết (kill -9, hết RAM) thì các worker vẫn giữ cổng (PPID 1) -> lần chạy
 # lại phải lùi cổng, 3 lần là hết cổng. Chỉ giết "php … -S … router.php" có thư mục làm việc = web root này VÀ đã mất
 # cha (cha không còn là php / run_mac.sh / một shell). PHP của chương trình khác, hay Jagame đang chạy ở cửa sổ
@@ -179,12 +241,28 @@ fi
 # ra bằng đường dẫn tuyệt đối tới Realtime/server.js của đúng bản này.
 WEB_REAL="$(cd "$WEB_ROOT" && pwd -P)"
 RT_REAL="$(cd "$RT_DIR" && pwd -P)"
+path_id() {  # path_id <đường dẫn>: "thiết bị:inode"
+    if [ "$HOST_OS" = "darwin" ]; then stat -L -f '%d:%i' "$1" 2>/dev/null; else stat -L -c '%d:%i' "$1" 2>/dev/null; fi
+}
+WEB_ID="$(path_id "$WEB_REAL")"
+cwd_is_web() {  # cwd_is_web <pid...>: in các PID có thư mục làm việc = web root này
+    local pid
+    [ -n "$WEB_ID" ] || return 0
+    if [ -d /proc/self ]; then
+        for pid in "$@"; do [ "$(stat -L -c '%d:%i' "/proc/$pid/cwd" 2>/dev/null)" = "$WEB_ID" ] && echo "$pid"; done
+    elif command -v lsof >/dev/null 2>&1 && [ $# -gt 0 ]; then
+        # -FpDi: "p<pid>" rồi "D<thiết bị hex>" + "i<inode>" (lsof chậm ~1 s mỗi lần gọi trên macOS -> 1 lần cho cả nhóm)
+        LC_ALL=C lsof -a -p "$(echo "$@" | tr ' ' ',')" -d cwd -FpDi 2>/dev/null | while IFS= read -r l; do
+            case "$l" in p*) pid="${l#p}" ;; D*) dev="$(printf '%d' "${l#D}" 2>/dev/null)" ;; i*) [ "$dev:${l#i}" = "$WEB_ID" ] && echo "$pid" ;; esac
+        done
+    fi
+}
 parent_alive() {  # parent_alive <pid>: còn cha "thật" (không phải init) là php / script chạy / một shell
     local ppid pcmd
     ppid="$(ps -o ppid= -p "$1" 2>/dev/null | tr -d ' ')"
     [ -n "$ppid" ] || return 0
     [ "$ppid" = "1" ] && return 1
-    pcmd="$(ps -o command= -p "$ppid" 2>/dev/null)"
+    pcmd="$(LC_ALL=C ps -o command= -p "$ppid" 2>/dev/null)"
     case "$pcmd" in
         *php*|*run_mac.sh*|*keepalive_mac.sh*) return 0 ;;
         -*|*/sh|*/bash|*/zsh|*/fish|*/dash|sh|bash|zsh|fish|dash|"sh "*|"bash "*|"zsh "*|"dash "*|*"/sh "*|*"/bash "*|*"/zsh "*|*"/dash "*) return 0 ;;
@@ -201,23 +279,16 @@ orphan_php_pids() {
         cands="$cands $pid"
     done
     [ -n "$cands" ] || return 0
-    if [ -d /proc/self ]; then
-        for pid in $cands; do
-            [ "$(readlink "/proc/$pid/cwd" 2>/dev/null)" = "$WEB_REAL" ] && echo "$pid"
-        done
-    elif command -v lsof >/dev/null 2>&1; then
-        # -Fpn: dòng "p<pid>" rồi "n<thư mục>"
-        lsof -a -p "$(echo $cands | tr ' ' ',')" -d cwd -Fpn 2>/dev/null | awk -v want="$WEB_REAL" '
-            /^p/ { pid = substr($0, 2) } /^n/ { if (substr($0, 2) == want) print pid }'
-    fi
+    cwd_is_web $cands
 }
 orphan_node_pids() {
-    local pid
+    local pid cands=""
     for pid in $(pgrep -f 'server\.js' 2>/dev/null); do
         case "$(ps -o comm= -p "$pid" 2>/dev/null)" in *node*) ;; *) continue ;; esac
-        case " $(ps -o command= -p "$pid" 2>/dev/null) " in *" $RT_REAL/server.js "*) ;; *) continue ;; esac
-        parent_alive "$pid" || echo "$pid"
+        parent_alive "$pid" || cands="$cands $pid"
     done
+    [ -n "$cands" ] || return 0
+    cwd_is_web $cands   # node chạy với cwd = web root (cd "$WEB_ROOT" trước khi bật)
 }
 kill_pids() {  # kill_pids <pid...>: TERM, chờ tối đa 3 s, còn sống thì KILL
     local pids="$*" i
@@ -296,7 +367,7 @@ rm -f "$DB_DIR/.public_url" 2>/dev/null
 rm -f "$CF_CONF_DIR/.ensure_at" 2>/dev/null
 
 # ─── cloudflared: WEB tự bật/giám sát tunnel (Tunnelrunner.php); script chỉ bảo đảm có sẵn chương trình ───
-if [ ! -x "$CF_TOOL_DIR/cloudflared" ] && ! command -v cloudflared >/dev/null 2>&1; then
+if [ ! -x "$CF_TOOL_DIR/cloudflared" ] && ! command -v cloudflared >/dev/null 2>&1 && [ -z "$JAGAME_NO_FETCH" ]; then
     echo "  Đang tải cloudflared để có link Internet (lần đầu, phần cuối của ~90 MB)..."
     CF_CURL_P="-sS"; [ -t 2 ] && CF_CURL_P="--progress-bar"
     mkdir -p "$CF_TOOL_DIR"
@@ -345,6 +416,17 @@ PHP_PID=""
 NODE_PID=""
 FILTER_PIDS=""
 FIFO_DIR=""
+# cloudflared do web bật (Tunnelrunner): theo PID trong cloudflared/web_tunnel.pid, rồi theo dòng lệnh với đường dẫn ĐÃ THOÁT
+# ký tự regex (QA68 BUG-04: "jagame (1)" / "[bản]" làm pkill -f không khớp -> tunnel treo lại sau khi tắt).
+regex_quote() { printf '%s' "$1" | sed 's/[][\.*^$()+?{}|]/\\&/g'; }
+stop_tunnel() {
+    local p
+    p="$(tr -cd '0-9' < "$CF_CONF_DIR/web_tunnel.pid" 2>/dev/null)"
+    if [ -n "$p" ] && kill -0 "$p" 2>/dev/null; then
+        case "$(ps -o comm= -p "$p" 2>/dev/null)" in *cloudflared*) kill "$p" 2>/dev/null ;; esac
+    fi
+    pkill -f "cloudflared.*$(regex_quote "$CF_CONF_DIR/jagame-tunnel.yml")" 2>/dev/null
+}
 cleanup() {
     trap - EXIT INT TERM
     stop_tree "$BEAT_PID"
@@ -360,10 +442,10 @@ cleanup() {
     [ -n "$NODE_PID" ] && wait "$NODE_PID" 2>/dev/null
     kill_orphan_php
     kill_orphan_node
-    pkill -f "cloudflared.*$CF_CONF_DIR/jagame-tunnel.yml" 2>/dev/null
+    stop_tunnel
     [ -n "$FILTER_PIDS" ] && kill $FILTER_PIDS 2>/dev/null
     [ -n "$FIFO_DIR" ] && rm -rf "$FIFO_DIR" 2>/dev/null
-    rm -f "$CF_CONF_DIR/web_tunnel.pid" "$DB_DIR/.public_url" 2>/dev/null
+    rm -f "$CF_CONF_DIR/web_tunnel.pid" "$DB_DIR/.public_url" "$DB_DIR/.run.pids" 2>/dev/null
     echo ""
     echo "Đã dừng."
 }
@@ -509,6 +591,9 @@ PHP_PID=$!
 JAGAME_PORT="$PORT" JAGAME_BIND="$BIND" JAGAME_PHP_PORT="$PHP_PORT" JAGAME_WEB_ROOT="$WEB_ROOT" \
     "$NODE_EXE" "$RT_REAL/server.js" >>"$NODE_OUT" 2>&1 &
 NODE_PID=$!
+# PID của lần chạy này (cap-nhat-tu-ban-cu.sh dừng bản cũ theo tệp này + CSDL đang mở, không so chuỗi đường dẫn)
+printf 'sup=%s\nchild=%s\nphp=%s\nnode=%s\nport=%s\nphp_port=%s\n' "$([ -n "$JAGAME_SUPERVISOR" ] && echo "$PPID")" "$$" "$PHP_PID" \
+    "$NODE_PID" "$PORT" "$PHP_PORT" > "$DB_DIR/.run.pids" 2>/dev/null
 
 # bash 3.2 (macOS) không có "wait -n": hỏi thăm mỗi giây, một trong hai chết thì dọn cái còn lại (cleanup) và thoát.
 # 2>/dev/null cho cả vòng: không in "Killed: 9 … node …" của bash khi 1 tiến trình bị giết (đã có thông báo riêng bên dưới).
