@@ -626,7 +626,9 @@ body:has(.chatpage) { min-height: 0; }
   .chatpage.is-conv .cp-list.is-dragging { transition: none; }
   .cp-head { padding: max(8px, env(safe-area-inset-top)) 8px 8px 4px; }
   .cp-back { display: grid; }
-  html.cp-locked, html.cp-locked body { overflow: hidden; overscroll-behavior: none; }
+  /* QA66a BUG-01: chỉ khóa ở html (truyền lên khung nhìn). Đặt cả body = body (cao ~thanh trên, vì .chatpage fixed) cắt mất menu tên */
+  html.cp-locked { overflow: hidden; overscroll-behavior: none; }
+  html.cp-locked body { overscroll-behavior: none; }
 }
 @media (min-width: 900px) { .cp-edge { display: none; } }
 /* bottom sheet (A9) thay menu thả xuống trên điện thoại: tay cầm 36×4, vuốt xuống đóng, nền mờ */

@@ -51,11 +51,12 @@ runtime_missing() {  # runtime_missing <mô tả>
     exit 1
 }
 
-# Bản phát hành chưa kèm runtime (vd tải mã từ GitHub): LẦN ĐẦU tự tải PHP tĩnh + Node chính thức (~70 MB, kiểm SHA-256)
+# Bản phát hành chưa kèm runtime (vd tải mã từ GitHub): LẦN ĐẦU tự tải PHP tĩnh + Node chính thức (cùng cloudflared ~90 MB, kiểm SHA-256)
 # vào runtime/ — người dùng vẫn không phải cài gì. JAGAME_NO_FETCH=1 để tắt (dùng php/node của máy).
 if [ "$LAYOUT" = "release" ] && [ -z "$JAGAME_NO_FETCH" ] && [ -f "$SCRIPT_DIR/fetch_runtime.sh" ] \
     && { [ ! -x "$BUNDLED_PHP" ] || [ ! -x "$BUNDLED_NODE" ]; }; then
-    echo "  Lần đầu chạy: đang tải PHP + Node (~70 MB, chỉ 1 lần)..."
+    echo "  Lần đầu chạy: cần Internet để tải PHP + Node + cloudflared (khoảng 90 MB, chỉ 1 lần)."
+    echo "  Mạng chậm có thể mất vài phút — cứ để nguyên cửa sổ này."
     if bash "$SCRIPT_DIR/fetch_runtime.sh"; then
         BUNDLED_PHP="$SCRIPT_DIR/runtime/php"
     else
@@ -111,6 +112,63 @@ if [ ! -f "$RT_DIR/node_modules/socket.io/package.json" ]; then
     else
         runtime_missing "Thiếu Realtime/node_modules."
     fi
+fi
+
+# ─── Giám sát + Cập nhật 1 nút (RB-03, Web/application/libraries/Selfupdate.php) ───────────────────────────────
+# Lần chạy này là CHA: chạy chính script ở chế độ CON (JAGAME_CHILD=1, phần dưới: PHP + Node). Con thoát mã 75 (Node nhận
+# database/.restart) = khởi động lại: đổi mã bản mới đang chờ (php update/apply.php apply — bản apply của BẢN CŨ), chạy lại con,
+# gõ /health?update=<nonce> tối đa 90 s; không đạt -> trả mã cũ (rollback) + chạy lại. Cha đã mở sẵn tệp script nên thay run_mac.sh
+# trên đĩa không ảnh hưởng nó; con mỗi lần chạy đọc bản mới. JAGAME_SUPERVISOR=1 báo PHP/Node là có giám sát (không có = tắt tính năng).
+if [ -z "$JAGAME_CHILD" ]; then
+    UP_DIR="$WEB_ROOT/update"
+    upd() {  # upd <apply|check|rollback|phase> [tham số]
+        local cmd="$1"; shift
+        [ -f "$UP_DIR/apply.php" ] || return 3
+        "$PHP_EXE" "$UP_DIR/apply.php" "$cmd" "$WEB_ROOT" "$@"
+    }
+    CHILD=""
+    SUP_QUIT=""
+    # Con chạy nền (bash bỏ qua SIGINT ở tiến trình nền) -> cha chuyển Ctrl+C / đóng cửa sổ thành TERM cho con (con tự dọn PHP + Node).
+    trap 'SUP_QUIT=1; [ -n "$CHILD" ] && kill -TERM "$CHILD" 2>/dev/null' INT TERM HUP
+    while true; do
+        upd apply >/dev/null 2>&1   # không có bản chờ -> không làm gì
+        JAGAME_CHILD=1 JAGAME_SUPERVISOR=1 bash "$SCRIPT_DIR/run_mac.sh" "$@" &
+        CHILD=$!
+        if [ "$(upd phase 2>/dev/null)" = "verifying" ]; then
+            echo "  Đang chạy thử bản mới (tối đa 90 giây)..."
+            UP_OK=""
+            UP_WHY="timeout"   # lý do quay về: mã thay chữ (update_apply.php dịch ra câu cho chủ nhà)
+            for _ in $(seq 1 90); do
+                sleep 1
+                [ -n "$SUP_QUIT" ] && break
+                if ! kill -0 "$CHILD" 2>/dev/null; then   # bản mới dừng ngay: quay về luôn, không chờ đủ 90 s
+                    wait "$CHILD" 2>/dev/null
+                    UP_WHY="exit:$?"
+                    break
+                fi
+                upd check >/dev/null 2>&1 && { UP_OK=1; break; }
+            done
+            if [ -z "$UP_OK" ] && [ -z "$SUP_QUIT" ]; then
+                echo "[!] Bản mới chưa chạy được ($UP_WHY) — đang quay về bản cũ (dữ liệu giữ nguyên)..."
+                kill -TERM "$CHILD" 2>/dev/null
+                wait "$CHILD" 2>/dev/null
+                upd rollback "$UP_WHY" >/dev/null 2>&1
+                export JAGAME_NO_BROWSER=1
+                continue
+            fi
+            [ -n "$UP_OK" ] && echo "  Đã cập nhật xong."
+        fi
+        RC=0
+        while :; do
+            wait "$CHILD" 2>/dev/null
+            RC=$?
+            kill -0 "$CHILD" 2>/dev/null || break
+        done
+        [ -n "$SUP_QUIT" ] && exit 0
+        [ "$RC" -eq 75 ] || exit "$RC"
+        export JAGAME_NO_BROWSER=1   # chạy lại không mở thêm tab
+        echo "  Đang khởi động lại hội quán..."
+    done
 fi
 
 # ─── Dọn tiến trình mồ côi CỦA ĐÚNG THƯ MỤC NÀY (R5-04) ─────────────────────
@@ -239,16 +297,17 @@ rm -f "$CF_CONF_DIR/.ensure_at" 2>/dev/null
 
 # ─── cloudflared: WEB tự bật/giám sát tunnel (Tunnelrunner.php); script chỉ bảo đảm có sẵn chương trình ───
 if [ ! -x "$CF_TOOL_DIR/cloudflared" ] && ! command -v cloudflared >/dev/null 2>&1; then
-    echo "  Đang tải cloudflared (lần đầu)..."
+    echo "  Đang tải cloudflared để có link Internet (lần đầu, phần cuối của ~90 MB)..."
+    CF_CURL_P="-sS"; [ -t 2 ] && CF_CURL_P="--progress-bar"
     mkdir -p "$CF_TOOL_DIR"
     OS="$(uname -s)"; ARCH="$(uname -m)"
     case "$ARCH" in arm64|aarch64) A=arm64 ;; *) A=amd64 ;; esac
     TMPF="$(mktemp /tmp/cf_dl_XXXXXX)"
     if [ "$OS" = "Darwin" ]; then
-        curl -fsSL "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-darwin-$A.tgz" -o "$TMPF" \
+        curl -fL $CF_CURL_P "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-darwin-$A.tgz" -o "$TMPF" \
             && tar xzf "$TMPF" -C "$CF_TOOL_DIR/" 2>/dev/null
     else
-        curl -fsSL "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-$A" -o "$CF_TOOL_DIR/cloudflared"
+        curl -fL $CF_CURL_P "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-$A" -o "$CF_TOOL_DIR/cloudflared"
     fi
     rm -f "$TMPF"
     chmod +x "$CF_TOOL_DIR/cloudflared" 2>/dev/null
@@ -259,7 +318,13 @@ echo "========================================"
 echo "  Jagame"
 echo "  Máy này : http://localhost:$PORT      (quản trị: /admin)"
 [ "$BIND" = "0.0.0.0" ] && echo "  Mạng nhà: http://<địa-chỉ-IP-máy-này>:$PORT"
-echo "  Internet: link riêng xxxx.jagame.vn tự tạo sau khi cài đặt xong"
+# QA64 L10: câu "sau khi cài đặt xong" chỉ khi CHƯA có tài khoản nào (chưa qua /setup).
+SETUP_DONE="$("$PHP_EXE" -r '$f=$argv[1]; if(!is_file($f)||!class_exists("SQLite3")){echo 0;exit;} try{$d=new SQLite3($f,SQLITE3_OPEN_READONLY); $d->busyTimeout(2000); echo (int)@$d->querySingle("SELECT COUNT(*) FROM users")>0?1:0;}catch(Throwable $e){echo 0;}' "$DB_DIR/jagame.db" 2>/dev/null)"
+if [ "$SETUP_DONE" = "1" ]; then
+    echo "  Internet: link xxxx.jagame.vn hiện bên dưới khi kết nối xong (và ở Quản trị → Mời bạn bè)"
+else
+    echo "  Lần đầu: mở trang trên để tạo hội quán — link xxxx.jagame.vn tự tạo ngay sau đó"
+fi
 echo "  Nhấn Ctrl+C để dừng"
 echo "========================================"
 
@@ -303,7 +368,10 @@ cleanup() {
     echo "Đã dừng."
 }
 trap cleanup EXIT
-trap 'exit 130' INT TERM
+# HUP = đóng cửa sổ Terminal (QA64 L10): dọn như Ctrl+C, không báo "dừng bất thường".
+STOPPING=""
+trap 'STOPPING=1; exit 130' INT TERM
+trap 'STOPPING=1; exit 129' HUP
 
 # ─── Giữ máy thức (macOS): máy ngủ = link hội quán chết cả đêm (HOME-SERVER-RELIABILITY #8) ───
 # caffeinate -i chặn ngủ khi rảnh (màn hình vẫn tắt được, gập nắp vẫn ngủ theo macOS); -w $$ tự thoát khi script này dừng.
@@ -450,11 +518,18 @@ done 2>/dev/null
 if ! kill -0 "$PHP_PID" 2>/dev/null; then
     wait "$PHP_PID" 2>/dev/null
     RC=$?
-    echo "[!] PHP dừng bất thường (mã $RC) — xem database/server.log."
+    WHO="PHP"; WHO_LOG="database/server.log"
 else
     wait "$NODE_PID" 2>/dev/null
     RC=$?
-    echo "[!] Cổng realtime (Node) dừng bất thường (mã $RC) — xem database/realtime.log."
+    WHO="Cổng realtime (Node)"; WHO_LOG="database/realtime.log"
 fi
-[ "$RC" -eq 0 ] && RC=1
+# Đang tắt (Ctrl+C / đóng cửa sổ — tín hiệu tới cả nhóm tiến trình, Node/PHP có thể thoát trước khi bẫy của script chạy) hoặc
+# tiến trình con thoát êm vì nhận lệnh tắt (mã 0 / 129 HUP / 130 INT / 143 TERM): không phải lỗi.
+if [ -n "$STOPPING" ] || [ "$RC" -eq 0 ] || [ "$RC" -eq 129 ] || [ "$RC" -eq 130 ] || [ "$RC" -eq 143 ]; then
+    exit 0
+fi
+# 75 = Node khởi động lại theo yêu cầu (Cập nhật 1 nút / database/.restart): cha (giám sát ở trên) đổi mã nếu có rồi chạy lại.
+[ "$RC" -eq 75 ] && [ -n "$JAGAME_SUPERVISOR" ] && exit 75
+echo "[!] $WHO dừng bất thường (mã $RC) — xem $WHO_LOG."
 exit "$RC"

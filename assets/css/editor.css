@@ -113,8 +113,12 @@
   .ed-tools .ed-desk { display: none; }
   .ed-tools [data-pop] { min-width: 48px; padding: 0 12px; font-size: 19px; }
   .ed-tools [data-pop] span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .ed-bar .ed-primary { flex: 1 1 auto; min-width: 0; }
-  .ed-bar .ed-discard { padding: 0 12px; font-size: 14px; }
+  .ed-bar .ed-primary { flex: 1 1 auto; min-width: 0; padding: 0 12px; }
+  /* QA64 L6: 5 nút phải vừa 360 px — "Bỏ thay đổi" chỉ còn biểu tượng ↺ (chữ cho trình đọc màn hình, title khi giữ) */
+  .ed-bar .ed-discard { min-width: 48px; padding: 0 12px; font-size: 19px; }
+  .ed-bar .ed-discard .ed-lbl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .ed-tools .btn { flex-shrink: 0; }
+  .ed-tools .ed-primary { flex-shrink: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 @media (min-width: 761px) and (max-width: 980px) { .ed-tools [data-pop] span { display: none; } .ed-tools [data-pop] { font-size: 18px; } }
 

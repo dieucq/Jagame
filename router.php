@@ -260,7 +260,8 @@ function rb_router_normalize($path)
  */
 function rb_router_is_private($uri)
 {
-    if (preg_match('~^/(database|cloudflared|application|system|vendor|php|Tools|Script|logs|Realtime|runtime|node_modules)(/|$)~i', $uri)) {
+    // update/ = Cập nhật 1 nút (gói tải về, mã bản mới đang chờ, mã bản cũ prev-<ver>) — Selfupdate.php
+    if (preg_match('~^/(database|cloudflared|application|system|vendor|php|Tools|Script|logs|Realtime|runtime|node_modules|update)(/|$)~i', $uri)) {
         return true;
     }
     // Bản gốc ảnh album (QA54 BUG-3): chỉ phục vụ qua /album/anh-goc/<id> (kiểm quyền xem + cờ cho tải) — Album_model::orig_file.
@@ -280,7 +281,7 @@ function rb_router_is_private($uri)
     if (preg_match('~^/[^/]+\.(txt|md)$~i', $uri)) {   // HUONG-DAN-CAI-DAT.txt, README... ở thư mục gốc bản phát hành
         return true;
     }
-    return (bool) preg_match('~^/(composer\.(json|lock)|web\.config|router\.php)$~i', $uri);
+    return (bool) preg_match('~^/(composer\.(json|lock)|web\.config|router\.php|update_apply\.php|update\.json)$~i', $uri);
 }
 
 /** File tĩnh: chỉ các đuôi giao diện/tài nguyên công khai. Mọi đuôi khác -> 404. */

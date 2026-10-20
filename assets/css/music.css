@@ -166,7 +166,7 @@ html.cm .ma-cov { box-shadow: 0 0 0 2.5px var(--cm-line, var(--ink)), 6px 6px 0 
 .mu-shelf::-webkit-scrollbar { display: none; }
 .mu-shelf > li { flex: none; width: 136px; scroll-snap-align: start; }
 @media (min-width: 761px) { .mu-shelf > li { width: 168px; } }
-.mu-shelf .mu-wrap .mu-fab { display: grid; opacity: 1; transform: none; width: 40px; height: 40px; bottom: calc(var(--mu-t-h, 52px) + 12px); }
+.mu-shelf .mu-wrap .mu-fab { display: grid; opacity: 1; transform: none; width: 44px; height: 44px; bottom: calc(var(--mu-t-h, 52px) + 12px); }
 .mu-shelf-h { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .mu-shelf-h h2 { flex: 1; margin: 0; }
 .mu-shelf-h a { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent-text); font: var(--w-med) var(--fs-callout)/1 var(--f-ui); text-decoration: none; }

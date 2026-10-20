@@ -44,7 +44,7 @@ html { scroll-behavior: auto; }
 }
 .app-ver { padding: 18px 16px calc(18px + env(safe-area-inset-bottom)); display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 6px; }
 .app-ver-sep { opacity: .5; }
-.app-ver a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.app-ver a { color: inherit; text-decoration: underline; text-underline-offset: 2px; display: inline-flex; align-items: center; min-height: 44px; }
 /* Tên miền riêng: nút chọn + ô mã kết nối (views/admin/_domain_shop.php) */
 .domain-shop { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 10px 0; padding: 12px 14px; border: 1.5px dashed var(--line); border-radius: 14px; }
 .domain-shop .ds-otp { display: grid; gap: 4px; flex: 1 1 260px; }

@@ -268,6 +268,64 @@ $missing = @()
 foreach ($x in @('sqlite3', 'gd', 'curl', 'mbstring')) { if ($mods -notcontains $x) { $missing += "php-$x" } }
 if ($missing.Count -gt 0) { Fail ("PHP ($PhpExe) thieu tien ich: " + ($missing -join ' ')) }
 
+# ---- Giam sat + Cap nhat 1 nut (RB-03, Web\application\libraries\Selfupdate.php) ----
+# Lan chay nay la CHA: chay chinh file nay o che do CON (JAGAME_CHILD=1, phan duoi: PHP + Node). Con thoat ma 75 (Node nhan
+# database\.restart) = khoi dong lai: doi ma ban moi dang cho (php update\apply.php apply - ban apply cua BAN CU), chay lai con,
+# go /health?update=<nonce> toi da 90 s; khong dat -> tra ma cu (rollback) + chay lai. PowerShell doc het file luc bat dau nen thay
+# run_window.ps1 tren dia khong anh huong cha; con moi lan doc ban moi. run_window.bat / keepalive_win.bat (cmd doc tung dong theo
+# vi tri byte) KHONG BAO GIO bi thay khi dang chay. php.exe nhan duong dan TUONG DOI tu web root (tham so co chu co dau khong chac).
+if (-not $env:JAGAME_CHILD) {
+    $script:UpdRc = 3
+    function Upd($cmd, $extra) {
+        $script:UpdRc = 3
+        if (-not (Test-Path -LiteralPath (Join-Path (Join-Path $WebRoot 'update') 'apply.php'))) { return '' }
+        $a = @('update/apply.php', $cmd, '.')
+        if ($extra) { $a += $extra }
+        Push-Location -LiteralPath $WebRoot
+        try { $out = (& $PhpExe @a 2>$null | Out-String).Trim(); $script:UpdRc = $LASTEXITCODE } finally { Pop-Location }
+        return $out
+    }
+    function Stop-Child($p) {
+        # Em: Node thay database\.restart -> thoat -> con tu don PHP/Node/tunnel; qua 15 s thi giet ca cay tien trinh.
+        try { [IO.File]::WriteAllText((Join-Path $DbDir '.restart'), '{"why":"stop"}') } catch {}
+        if (-not $p.WaitForExit(15000)) { & taskkill.exe /PID $p.Id /T /F 2>&1 | Out-Null; [void]$p.WaitForExit(5000) }
+        Remove-Item -LiteralPath (Join-Path $DbDir '.restart') -Force -ErrorAction SilentlyContinue
+    }
+    $psExe = (Get-Process -Id $PID).Path
+    if (-not $psExe) { $psExe = 'powershell.exe' }
+    while ($true) {
+        Upd 'apply' | Out-Null
+        $env:JAGAME_CHILD = '1'; $env:JAGAME_SUPERVISOR = '1'
+        $child = Start-Process -FilePath $psExe -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -File "' + $PSCommandPath + '"') -NoNewWindow -PassThru
+        $null = $child.Handle   # giu handle de doc duoc ExitCode sau khi con thoat
+        Remove-Item Env:JAGAME_CHILD -ErrorAction SilentlyContinue
+        if ((Upd 'phase') -eq 'verifying') {
+            Say '  Dang chay thu ban moi (toi da 90 giay)...'
+            $ok = $false
+            $why = 'timeout'   # ly do quay ve: ma thay chu (update_apply.php dich ra cau cho chu nha)
+            for ($i = 0; $i -lt 90; $i++) {
+                Start-Sleep -Seconds 1
+                if ($child.HasExited) { $why = "exit:$($child.ExitCode)"; break }   # ban moi dung ngay: quay ve luon
+                Upd 'check' | Out-Null
+                if ($script:UpdRc -eq 0) { $ok = $true; break }
+            }
+            if (-not $ok) {
+                Say "[!] Ban moi chua chay duoc ($why) - dang quay ve ban cu (du lieu giu nguyen)..."
+                if (-not $child.HasExited) { Stop-Child $child }
+                Upd 'rollback' $why | Out-Null
+                $env:JAGAME_NO_BROWSER = '1'
+                continue
+            }
+            Say '  Da cap nhat xong.'
+        }
+        $child.WaitForExit()
+        $supRc = $child.ExitCode
+        if ($supRc -ne 75) { exit $supRc }
+        $env:JAGAME_NO_BROWSER = '1'
+        Say '  Dang khoi dong lai hoi quan...'
+    }
+}
+
 New-Item -ItemType Directory -Force -Path $CfConfDir, (Join-Path $DbDir 'sessions'), (Join-Path $WebRoot 'uploads\photos') | Out-Null
 $WebReal = (Resolve-Path -LiteralPath $WebRoot).Path
 $RtReal = (Resolve-Path -LiteralPath $RtDir).Path
@@ -379,6 +437,7 @@ try {
     $env:JAGAME_PORT = "$Port"; $env:JAGAME_BIND = $Bind; $env:JAGAME_PHP_PORT = "$PhpPort"; $env:JAGAME_WEB_ROOT = $WebReal
     $NodeProc = Start-Process -FilePath $NodeExe -ArgumentList (Q (Join-Path $RtReal 'server.js')) -WorkingDirectory $RtReal -NoNewWindow -PassThru `
         -RedirectStandardOutput $LogRt -RedirectStandardError $LogRtErr
+    $null = $NodeProc.Handle; $null = $PhpProc.Handle   # giu handle de doc duoc ExitCode (ma 75 = khoi dong lai)
 
     Add-Type -AssemblyName System.Net.Http
     $http = New-Object System.Net.Http.HttpClient
@@ -399,7 +458,11 @@ try {
 
     while ($true) {
         if ($PhpProc.HasExited) { Say "[!] PHP dung bat thuong (ma $($PhpProc.ExitCode)) - xem database\server.log."; $rc = 1; break }
-        if ($NodeProc.HasExited) { Say "[!] Cong realtime (Node) dung bat thuong (ma $($NodeProc.ExitCode)) - xem database\realtime.log."; $rc = 1; break }
+        if ($NodeProc.HasExited) {
+            # 75 = Node khoi dong lai theo yeu cau (Cap nhat 1 nut / database\.restart): cha (giam sat o tren) doi ma neu co roi chay lai.
+            if ($NodeProc.ExitCode -eq 75 -and $env:JAGAME_SUPERVISOR) { Say '  Dang khoi dong lai...'; $rc = 75; break }
+            Say "[!] Cong realtime (Node) dung bat thuong (ma $($NodeProc.ExitCode)) - xem database\realtime.log."; $rc = 1; break
+        }
         if (-not $ready) {
             # Cho trang san sang qua gateway (503/502 khi PHP chua len chua tinh la san sang)
             try {

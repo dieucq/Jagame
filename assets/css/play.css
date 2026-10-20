@@ -663,6 +663,8 @@ html[data-theme="sticker"] .invite-box { border: 2.5px solid var(--ink); box-sha
 html[data-theme="sticker"] .chat-fab { border: 2.5px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
 html[data-theme="sticker"] .room-sound, html[data-theme="sticker"] .play-back { border: 2.5px solid var(--ink); }
 html[data-theme="sticker"] .chat-head { border-bottom: 2.5px solid var(--ink); background: var(--yel); }
+/* QA66b BUG-1: chế độ tối — chữ đầu khung lật sáng (--ink) nên nền vàng cố định chỉ còn 1.27:1 -> nền giấy tối pha chút vàng */
+html[data-theme="sticker"][data-mode="dark"] .chat-head { background: color-mix(in srgb, var(--yel) 18%, var(--paper)); }
 html[data-theme="sticker"] .room-result.is-win { box-shadow: 5px 5px 0 var(--ink); border: 2.5px solid var(--ink); }
 html[data-theme="sticker"] .seat { border-width: 2.5px; box-shadow: 3px 3px 0 var(--ink); }
 html[data-theme="sticker"] .seat.is-empty { box-shadow: none; }
@@ -887,6 +889,11 @@ html[data-theme] .jg-end .jg-end-sec { box-shadow: none; color: var(--ink); }
   .jg-end-card > .jg-end-acts, .jg-end-acts { position: static; margin-top: 4px; }
   .jg-end-word { font-size: min(34px, 10cqw); }
   .jg-end-p { padding-top: 2px; }
+  /* QA58d T-1: win98 có thanh tiêu đề cửa sổ (đệm trên 34px) — ở 360×640 hàng nói nhanh lòi đáy thẻ 13px: thanh mỏng hơn + nút phụ thấp hơn chút */
+  html[data-theme="win98"] .jg-end .jg-end-card { padding-top: 24px; background-size: 100% 16px, auto; }
+  html[data-theme="win98"] .jg-end .jg-end-head { padding-top: 0; }
+  html[data-theme="win98"] .jg-end .jg-end-card > .jg-end-acts { margin-top: 0; }
+  html[data-theme="win98"] .jg-end .jg-end-more .jg-end-sec { min-height: 46px; }
 }
 @media (orientation: landscape) and (max-height: 520px) and (max-width: 899px) {
   /* Ngang thấp: thẻ 2 cột (kết quả + thưởng | nút) bên phải, dưới thanh trên; bàn bên trái thấy được. */

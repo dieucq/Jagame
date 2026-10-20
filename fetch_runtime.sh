@@ -43,13 +43,17 @@ else
 fi
 mkdir -p "$DEST" "$CACHE"
 
+# QA64 L4: lần chạy đầu trên máy người dùng phải THẤY tiến độ (cửa sổ đứng im vài phút = tưởng treo). Có màn hình -> thanh %
+# của curl; chạy trong script/log (không tty) -> im lặng như cũ. FETCH_LABEL = tên hiển thị của tệp đang tải.
+CURL_P="-sS"
+[ -t 2 ] && CURL_P="--progress-bar"
 fetch() {  # fetch <file> <url> [url dự phòng...]: tải nếu chưa có (qua .part: lần lỗi không để lại file hỏng)
     local out="$1" url
     shift
     [ -s "$out" ] && return 0
     for url in "$@"; do
-        echo "  tải $url"
-        if curl -fsSL --retry 2 --connect-timeout 15 -o "$out.part" "$url"; then
+        if [ -n "${FETCH_LABEL:-}" ]; then echo "  Đang tải $FETCH_LABEL ..."; else echo "  tải $url"; fi
+        if curl -fL $CURL_P --retry 2 --connect-timeout 15 -o "$out.part" "$url"; then
             mv "$out.part" "$out"
             return 0
         fi
@@ -132,8 +136,8 @@ fi
 NODE_NAME="node-v$NODE_VER-$OS-$ARCH"
 NODE_TGZ="$CACHE/$NODE_NAME.tar.gz"
 NODE_SUMS="$CACHE/node-v$NODE_VER-SHASUMS256.txt"
-fetch "$NODE_SUMS" "https://nodejs.org/dist/v$NODE_VER/SHASUMS256.txt"
-fetch "$NODE_TGZ" "https://nodejs.org/dist/v$NODE_VER/$NODE_NAME.tar.gz"
+FETCH_LABEL="mã kiểm SHA-256 của Node" CURL_P="-sS" fetch "$NODE_SUMS" "https://nodejs.org/dist/v$NODE_VER/SHASUMS256.txt"
+FETCH_LABEL="[1/2] Node.js $NODE_VER (~55 MB, nodejs.org)" fetch "$NODE_TGZ" "https://nodejs.org/dist/v$NODE_VER/$NODE_NAME.tar.gz"
 WANT="$(awk -v f="$NODE_NAME.tar.gz" '$2 == f { print $1 }' "$NODE_SUMS")"
 GOT="$(sha256_of "$NODE_TGZ")"
 if [ -z "$WANT" ] || [ "$WANT" != "$GOT" ]; then
@@ -157,7 +161,7 @@ PHP_TGZ="$CACHE/php-$PHP_FLAVOR-$PHP_VER-$PHP_OS-$PHP_ARCH.tar.gz"
 # dl.static-php.dev chuyển hướng sang DigitalOcean Spaces (fra1) — một số mạng (đã gặp ở VN) không nối được; bản CDN của
 # cùng bucket thì được -> thử lần lượt.
 PHP_PATH="static-php-cli/$PHP_FLAVOR/php-$PHP_VER-cli-$PHP_OS-$PHP_ARCH.tar.gz"
-fetch "$PHP_TGZ" "https://dl.static-php.dev/$PHP_PATH" "https://static-php-cli.fra1.cdn.digitaloceanspaces.com/$PHP_PATH"
+FETCH_LABEL="[2/2] PHP $PHP_VER (~15 MB, static-php.dev)" fetch "$PHP_TGZ" "https://dl.static-php.dev/$PHP_PATH" "https://static-php-cli.fra1.cdn.digitaloceanspaces.com/$PHP_PATH"
 tar -xzf "$PHP_TGZ" -C "$TMP" php
 mv "$TMP/php" "$DEST/php"
 chmod 0755 "$DEST/php"

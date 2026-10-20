@@ -28,28 +28,45 @@ Trang chủ: **https://jagame.vn** · Bản phát hành, hướng dẫn và bộ
 ## Cài đặt
 Tải gói ở **https://jagame.vn/#tai-ve** (khuyến nghị), hoặc nút **Code → Download ZIP** ở trên. Giải nén ra một thư mục cố định (đừng chạy bên trong tệp .zip).
 
-**macOS / Linux:** mở Terminal trong thư mục vừa giải nén rồi chạy:
+**macOS:** bấm đúp **`Jagame.command`**. Lần đầu macOS chặn ("không xác định được nhà phát triển") thì bấm **chuột phải → Mở → Mở**
+(macOS 15 trở lên: *Cài đặt hệ thống → Quyền riêng tư & Bảo mật → Vẫn mở*).
+
+**Linux** (hoặc Mac không bấm đúp được): mở Terminal trong thư mục vừa giải nén rồi chạy:
 ```bash
 bash run_mac.sh
 ```
 
 **Windows 10/11 (64-bit):** bấm đúp **`run_window.bat`** (Windows cảnh báo thì bấm *More info → Run anyway*; tường lửa hỏi thì bấm *Allow*). Bản Windows chạy đủ cổng realtime (chơi game, chat) như macOS/Linux. Bản Windows mới được kiểm ít trên máy thật hơn macOS/Linux — gặp lỗi xin [báo ở đây](https://github.com/phamduybk/Jagame/issues).
 
-Lần chạy đầu máy tự tải PHP + Node chính thức (~70 MB, chỉ 1 lần, **cần có mạng**) — bạn không phải cài gì thêm.
+Gói tải về chỉ khoảng 10 MB: **lần chạy đầu cần Internet** để máy tự tải PHP + Node + cloudflared chính thức (khoảng 90 MB tải về, chiếm
+~220 MB trên ổ, chỉ 1 lần, cửa sổ hiện tiến độ %) — bạn không phải cài gì thêm.
 
 Trình duyệt tự mở **http://localhost:6969** → đặt tên hội quán và tài khoản chủ nhà → xong (máy tự cài sẵn 12 trò). Vào **Quản trị → Mời bạn bè** để gửi link qua Zalo, Messenger.
 
 > Máy tính phải **bật** và cửa sổ Jagame phải **đang mở** thì người thân mới vào được.
 
-**Quên mật khẩu chủ nhà?** Trong thư mục chương trình chạy: `runtime/php index.php cli doi_mat_khau <mật khẩu mới>` trên macOS/Linux (gói kèm sẵn PHP trong `runtime/`; bố cục cũ: `runtime/php/php`), Windows: `php\php.exe index.php cli doi_mat_khau <mật khẩu mới>`.
+**Quên mật khẩu chủ nhà?** Mở Terminal trong thư mục `jagame`, gõ `./runtime/php index.php cli doi_mat_khau` trên macOS/Linux (bố cục cũ:
+`./runtime/php/php`), Windows: `runtime\php\php.exe index.php cli doi_mat_khau` (gói cũ: `php\php.exe`), rồi nhập mật khẩu mới 2 lần.
 
 ## Cập nhật
-Khi có bản mới, **Quản trị → Tổng quan** hiện thẻ "Có bản Jagame mới". Cách cập nhật (5 bước, xem đủ ở [jagame.vn/#tai-ve](https://jagame.vn/#tai-ve)):
-1. Quản trị → Cài đặt → Hệ thống → **Sao lưu tự động & khôi phục** → **Sao lưu ngay**.
-2. Tải gói mới, giải nén ra chỗ tạm.
-3. Tắt Jagame (đóng cửa sổ đen / Terminal).
-4. Chép mọi thứ trong thư mục mới đè lên thư mục cũ — **không xóa** `database/`, `uploads/`, `games/`, `cloudflared/` của bản cũ.
-5. Chạy lại. Link `xxxx.jagame.vn` giữ nguyên. Game thì không cần làm gì — tự cập nhật từ kho.
+Khi có bản mới, **Quản trị → Tổng quan** hiện thẻ "Có bản Jagame mới". Dữ liệu nằm trong 4 thư mục `database/`, `uploads/`, `games/`,
+`cloudflared/` của bản đang dùng. Có 3 cách (xem đủ ở [jagame.vn/#cap-nhat](https://jagame.vn/#cap-nhat)):
+
+**Cách 1 — khuyên dùng (từ bản 0.5.0):** Quản trị → Tổng quan → thẻ "Có bản Jagame mới" → **Cập nhật ngay** → đánh dấu xác nhận →
+**Cập nhật**. Máy tự sao lưu, tải, kiểm và chạy bản mới; bản mới lỗi thì tự quay về bản cũ. Máy đang chạy bản **cũ hơn 0.5.0** chưa có
+nút này: cập nhật tay **một lần** bằng cách 2 (hoặc 3), từ đó về sau dùng cách 1.
+
+**Cách 2 — script `cap-nhat-tu-ban-cu`:**
+1. Quản trị → Cài đặt → **Sao lưu** → **Sao lưu ngay**.
+2. Tải gói mới, giải nén ra một thư mục **MỚI**. **Không** kéo thư mục `jagame` mới đè lên thư mục cũ — Finder hỏi *Thay thế* mà bấm vào
+   là **mất hết dữ liệu**.
+3. Trong thư mục mới bấm đúp **`cap-nhat-tu-ban-cu.command`** (macOS) / **`cap-nhat-tu-ban-cu.bat`** (Windows) / chạy
+   `bash cap-nhat-tu-ban-cu.sh` (Linux), kéo thư mục `jagame` **cũ** vào cửa sổ, nhấn Enter: script tự dừng bản cũ, chép 4 thư mục dữ
+   liệu sang, kiểm tra rồi chạy bản mới. Thư mục cũ giữ nguyên — dùng ổn vài hôm rồi hãy xóa.
+
+**Cách 3 — làm tay:** tắt bản cũ, chép 4 thư mục dữ liệu từ thư mục cũ sang thư mục mới (ghi đè), rồi chạy bản mới.
+
+Link `xxxx.jagame.vn` giữ nguyên. Game thì không cần làm gì — tự cập nhật từ kho.
 
 ## Dành cho nhà phát triển
 Ai cũng viết được game hoặc ứng dụng nhỏ (bình chọn, bảng điểm, đố vui tự soạn…) cho Jagame và gửi lên **Chợ game**. Chuẩn giao tiếp

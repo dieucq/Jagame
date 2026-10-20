@@ -9,10 +9,16 @@ Cài xong là có ngay trang game riêng dạng https://xxxx.jagame.vn
  macOS / LINUX
 --------------------------------------------------------------
  1. Giải nén ra một thư mục (KHÔNG chạy trực tiếp trong .zip).
- 2. Mở Terminal trong thư mục đó, chạy:
-        bash run_mac.sh
-    Lần đầu máy tự tải PHP + Node chính thức (~70 MB, 1 lần).
-    Không phải cài gì thêm.
+ 2. macOS: bấm đúp Jagame.command trong thư mục jagame.
+    Lần đầu macOS báo "không thể mở vì không xác định được nhà
+    phát triển": bấm CHUỘT PHẢI vào Jagame.command -> Mở -> Mở.
+    (macOS 15 trở lên: Cài đặt hệ thống -> Quyền riêng tư & Bảo
+    mật -> kéo xuống -> "Vẫn mở".)
+    Linux (hoặc Mac không bấm đúp được): mở Terminal, gõ "bash "
+    rồi kéo tệp run_mac.sh vào cửa sổ, nhấn Enter.
+    LẦN ĐẦU CẦN INTERNET: máy tự tải PHP + Node + cloudflared
+    chính thức (khoảng 90 MB tải về, chiếm ~220 MB trên ổ, chỉ
+    1 lần; cửa sổ hiện thanh % khi tải). Không phải cài gì thêm.
  3. Trình duyệt tự mở http://localhost:6969
     Đặt tên hội quán, biệt danh, tài khoản chủ phòng -> "Tạo hội quán".
  4. Chờ khoảng 1 phút: link https://xxxx.jagame.vn hiện ở
@@ -24,7 +30,7 @@ Cài xong là có ngay trang game riêng dạng https://xxxx.jagame.vn
  1. Giải nén ra một thư mục (KHÔNG chạy trực tiếp trong .zip).
  2. Bấm đúp run_window.bat (Windows cảnh báo: "More info" ->
     "Run anyway"). Lần đầu máy tự tải PHP + Node chính thức
-    (~70 MB, 1 lần, cần Internet) và có thể hỏi cài "Microsoft
+    (khoảng 70 MB, 1 lần, CẦN INTERNET) và có thể hỏi cài "Microsoft
     Visual C++" (bấm Yes). Không phải cài gì thêm.
  3. Windows Defender Firewall hỏi quyền mạng: bấm "Allow"
     (để bạn bè trong mạng nhà vào được).
@@ -51,15 +57,44 @@ Cài xong là có ngay trang game riêng dạng https://xxxx.jagame.vn
    hình chính điện thoại (menu tên -> Cài app).
  - Mời người thân: Quản trị -> "Mời bạn bè" (link + mã QR). Cấm chat,
    khóa, duyệt thành viên: Quản trị -> "Thành viên".
- - Sao lưu: Quản trị -> Cài đặt -> "Tải bản sao lưu đầy đủ", hoặc
-   chép thư mục database/ và uploads/ khi chương trình đang tắt.
+ - Sao lưu: máy tự sao lưu mỗi đêm. Làm ngay: Quản trị -> Cài đặt
+   -> "Sao lưu" -> "Sao lưu ngay". Cách tay: tắt chương trình, chép
+   4 thư mục database/, uploads/, games/, cloudflared/ ra nơi an toàn.
  - Mọi người (và bạn) đọc "Hướng dẫn" ngay trong app: menu tên ->
    Hướng dẫn (địa chỉ /huong-dan), có cả phần riêng cho chủ phòng.
 
- Quên mật khẩu chủ phòng: trong thư mục chương trình chạy
-     php index.php cli doi_mat_khau
- (Windows: runtime\php\php.exe hoặc php\php.exe, tùy gói)
+ Quên mật khẩu chủ phòng: mở Terminal trong thư mục jagame, gõ
+     macOS / Linux:  ./runtime/php index.php cli doi_mat_khau
+     Windows:        runtime\php\php.exe index.php cli doi_mat_khau
+ (gói cũ: macOS/Linux ./runtime/php/php, Windows php\php.exe)
+ rồi nhập mật khẩu mới 2 lần (chữ không hiện khi gõ).
 
- Cập nhật: tải bản mới, chép đè (GIỮ database/, uploads/,
- cloudflared/), chạy lại.
+--------------------------------------------------------------
+ CẬP NHẬT LÊN BẢN MỚI (giữ nguyên tin nhắn, ảnh, game, link)
+--------------------------------------------------------------
+ Dữ liệu nằm trong 4 thư mục của bản đang dùng:
+     database/  uploads/  games/  cloudflared/
+
+ CÁCH 1 (khuyên dùng, từ bản 0.5.0): Quản trị -> Tổng quan -> thẻ
+ "Có bản Jagame mới" -> "Cập nhật ngay" -> đánh dấu xác nhận ->
+ "Cập nhật". Máy tự sao lưu, tải, kiểm, chạy bản mới; bản mới lỗi
+ thì tự quay về bản cũ.
+ Máy đang chạy bản CŨ HƠN 0.5.0 chưa có nút này: cập nhật tay MỘT
+ LẦN bằng cách 2 (hoặc 3), từ đó về sau dùng cách 1.
+
+ CÁCH 2: script cap-nhat-tu-ban-cu
+ 1. Quản trị -> Cài đặt -> "Sao lưu" -> "Sao lưu ngay", chờ xong.
+ 2. Tải gói mới, giải nén ra một thư mục MỚI (vd Downloads/
+    jagame-moi). KHÔNG kéo thư mục jagame mới đè lên thư mục cũ:
+    Finder hỏi "Thay thế" -> bấm vào là MẤT HẾT dữ liệu.
+    KHÔNG BẤM "THAY THẾ".
+ 3. Trong thư mục MỚI bấm đúp:
+        macOS   : cap-nhat-tu-ban-cu.command
+        Windows : cap-nhat-tu-ban-cu.bat
+        Linux   : bash cap-nhat-tu-ban-cu.sh
+    Kéo thư mục jagame CŨ vào cửa sổ, nhấn Enter. Chương trình tự
+    dừng bản cũ, chép 4 thư mục dữ liệu sang, kiểm tra rồi chạy bản
+    mới. Thư mục cũ được giữ nguyên — dùng ổn vài hôm rồi hãy xóa.
+ CÁCH 3 (làm tay, nếu không chạy được script): tắt bản cũ, chép 4 thư mục
+ trên từ thư mục cũ sang thư mục mới (ghi đè), rồi chạy bản mới.
 ==============================================================
