@@ -78,7 +78,7 @@
 .post-ava { flex: none; display: block; border-radius: 50%; padding: 4px; margin: -4px; }   /* vùng bấm 44×44 quanh avatar 36 */
 .post-ava .ava, .post-head > .ava { width: 36px; height: 36px; }
 .post-who { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 6px; white-space: nowrap; overflow: hidden; }
-.post-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; color: inherit; text-decoration: none; font: 700 var(--fs-callout)/1.3 var(--f-body); padding: 12px 0; margin: -12px 0; }   /* vùng bấm 44px, không đổi bố cục */
+.post-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; color: inherit; text-decoration: none; font: 700 var(--fs-callout)/1.3 var(--f-body); padding: 13px 0; margin: -13px 0; }   /* vùng bấm ≥ 44px (WebKit đo thấp hơn 1px), không đổi bố cục */
 .post-ago { flex: none; color: var(--muted); font-size: var(--fs-xs); }
 .post-menu-btn { flex: none; width: 44px; height: 44px; border: 0; background: none; color: var(--ink); font-size: 24px; line-height: 1; cursor: pointer; border-radius: 50%; }
 .post-menu-btn:hover { background: var(--soft); }
@@ -141,6 +141,8 @@
 .cm-body { flex: 1; min-width: 0; padding: 8px 12px; border-radius: var(--r-row); background: var(--soft); }
 .cm-body b { font-size: var(--fs-sm); }
 .cm-body b a { color: inherit; text-decoration: none; }
+/* BUG-06 (QA sau-20261021-chat): link tên tác giả / người bình luận cao ~19px -> vùng bấm 44px mà không đổi bố cục dòng */
+.post-cap-name, .cm-body b a { display: inline-block; padding: 13px 0; margin: -13px 0; }
 .cm-body small { color: var(--muted); margin-left: 6px; font-size: var(--fs-xs); }
 .cm-text { margin: 2px 0 0; overflow-wrap: anywhere; white-space: pre-line; line-height: 1.45; font-size: var(--fs-callout); }
 .cm-sticker { width: 112px; height: 112px; display: block; margin-top: 4px; }
@@ -257,6 +259,18 @@ html.sc-lock { overflow: hidden; }
 .pf-kpis span { font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .pf-actions { display: flex; gap: 10px; width: 100%; margin-top: var(--sp-3); }
 .pf-actions .btn { flex: 1; min-height: 48px; }
+/* QA themes-anime T-01: ở 360px hàng Tặng tim + Nhắn tin + ✉ (nút giao diện rộng, vd shinobi) không được nới cột lưới -> xuống dòng.
+   Khung hẹp (≤ 400px): 2 nút chữ chia đôi dòng 1, "✉ Thách cờ thư" (hiện chữ) cả dòng 2 — mọi giao diện như nhau, không nút icon trơ trọi. */
+.pf-hero { grid-template-columns: minmax(0, 1fr); container: pfh / inline-size; }
+.pf-actions { flex-wrap: wrap; justify-content: center; min-width: 0; }
+.pf-actions .btn { flex: 1 1 auto; max-width: 100%; }
+.pf-actions .btn.pf-iconbtn { flex: 0 0 48px; }
+.pf-iconlbl { display: none; }
+@container pfh (max-width: 400px) {
+  .pf-actions .btn { flex: 1 1 calc(50% - 5px); min-width: 0; }
+  .pf-actions .btn.pf-iconbtn { flex: 1 1 100%; width: auto; padding: 0 16px; }
+  .pf-iconlbl { display: inline; }
+}
 .pf-report[hidden] { display: none; }
 .pf-sec .pg-h2 .pf-all, .pf-sec .pg-h2 a { display: inline-flex; align-items: center; min-height: 44px; margin: -12px 0; font: 600 var(--fs-sm) var(--f-body); color: var(--accent-text); background: none; border: 0; padding: 0; cursor: pointer; text-transform: none; letter-spacing: 0; white-space: nowrap; }
 .pf-badges { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
@@ -296,7 +310,7 @@ html.sc-lock { overflow: hidden; }
 .rk-ctl { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .rk-ctl > .rk-tabs { flex: 1 1 auto; }
 .rk-ctl > .rk-tabs > button { padding: 0 6px; }
-.rk-game { flex: 0 1 auto; max-width: 46%; min-width: 0; min-height: 44px; padding: 0 12px 0 14px; display: inline-flex; align-items: center; gap: 8px; border-radius: var(--r-pill); border: 1.5px solid var(--hair-strong);
+.rk-game { flex: 0 1 auto; max-width: 46%; min-width: min(7.5em, 40%); min-height: 44px; padding: 0 12px 0 14px; display: inline-flex; align-items: center; gap: 8px; border-radius: var(--r-pill); border: 1.5px solid var(--hair-strong);
   background: var(--paper); color: var(--ink); font: 600 var(--fs-sm) var(--f-body); cursor: pointer; }
 .rk-game span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rk-game:disabled { opacity: .5; }

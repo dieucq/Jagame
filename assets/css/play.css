@@ -723,6 +723,12 @@ html[data-theme="tet"] .room-result.is-win .rr-emoji { background: var(--gold, #
 .jg-end-head { position: relative; isolation: isolate; padding: 6px 40px 0; display: grid; justify-items: center; gap: 2px; }
 .jg-end-burst { position: absolute; left: calc(50% - 110px); top: -10px; width: 220px; height: 82px; z-index: -1; color: var(--gold); opacity: .42; }
 .jg-end.is-draw .jg-end-burst { color: var(--silver); opacity: .5; }
+/* QA sau-20261021-game BUG-04: nền tối — hình nổ 42% thành mảng nâu/xám sáng sau chữ (tiêu đề 2,5:1, dòng phụ 2,65:1) -> chỉ còn ánh nhẹ
+   (≈ 16%), chữ giữ ≥ 4.5:1 trên nền thẻ. Cùng danh sách giao diện tối với themes.css G11. */
+html[data-mode="dark"] .jg-end-burst,
+html:is([data-theme="neon"], [data-theme="trungthu"], [data-theme="cyber"], [data-theme="kiemsi"], [data-theme="cucquang"], [data-theme="huyenthoai"]) .jg-end-burst { opacity: .16; }
+html[data-mode="dark"] .jg-end.is-draw .jg-end-burst,
+html:is([data-theme="neon"], [data-theme="trungthu"], [data-theme="cyber"], [data-theme="kiemsi"], [data-theme="cucquang"], [data-theme="huyenthoai"]) .jg-end.is-draw .jg-end-burst { opacity: .14; }
 .jg-end-word { margin: 0; max-width: 100%; font: var(--head-style, normal) var(--head-w, 800) min(46px, 12cqw)/1.15 var(--f-display, var(--f-head)); letter-spacing: -.02em;
   text-transform: uppercase; color: var(--accent-text, var(--accent)); overflow-wrap: anywhere; text-wrap: balance; }
 .jg-end-word.is-long { font-size: min(32px, 9cqw); letter-spacing: -.01em; text-transform: none; }
@@ -881,6 +887,12 @@ html[data-theme] .jg-end .jg-end-sec { box-shadow: none; color: var(--ink); }
   .jg-end-badge-em { width: 28px; height: 28px; border-radius: 50%; font-size: var(--fs-subhead); box-shadow: none; }
   .jg-end-badge-txt b { font-size: var(--fs-footnote, 13px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .jg-end-badge-txt small { display: none; }
+  /* QA sau-20261021-game BUG-10: có huy hiệu mới -> không cuộn ngang (huy hiệu từng nằm ngoài màn 390 không dấu hiệu): xuống dòng,
+     huy hiệu đứng đầu (play.js chèn trước) và rộng tối đa 1 hàng. */
+  .jg-end-rewards:has(> .jg-end-badge) { flex-wrap: wrap; justify-content: center; overflow: visible; margin-inline: 0; padding: 2px 0;
+    -webkit-mask-image: none; mask-image: none; }
+  .jg-end-rewards:has(> .jg-end-badge) > .jg-end-rw { flex: 0 1 auto; }
+  .jg-end-rewards:has(> .jg-end-badge) > .jg-end-badge { max-width: 100%; }
 }
 /* QA58c BUG-B: điện thoại thấp (iPhone 390×664, 360×640, 375×667): khối nút KHÔNG dính đáy (che tên + viên thưởng) — nằm trong luồng,
    thẻ được cao hơn (bàn vẫn hé phía trên): đọc được kết quả · tỉ số · tên · thưởng ngay khi mở, cuộn tiếp mới tới nút phụ. */

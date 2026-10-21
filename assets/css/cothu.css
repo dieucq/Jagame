@@ -51,6 +51,8 @@
 .as-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
 .as-body { display: grid; gap: 8px; min-width: 0; }
 .as-stage { min-height: 200px; }
+/* QA sau-20261021-game BUG-09: đồng hồ lượt của client game (đếm giây từ lúc mở trang) vô nghĩa với hạn theo ngày -> ẩn; hạn thật ở .as-status. */
+.as-game :is(.jgc-clock, .jgv-clock, .jgt-clock, .jgu-clock) { display: none; }
 .as-msgs { list-style: none; margin: 0 0 8px; padding: 8px; max-height: 220px; overflow-y: auto; display: grid; gap: 6px; border-radius: var(--r-row, 12px); background: var(--soft); }
 .as-msgs:empty { display: none; }
 .as-msgs li { display: flex; }

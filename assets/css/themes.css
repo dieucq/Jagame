@@ -709,5 +709,5 @@ html[data-theme="ninja"]:not([data-cc]) .hero-title { text-shadow: 3px 0 0 var(-
 html[data-cc] .sec-hero .hero-fx { opacity: .25; }   /* hình trang trí trôi sau tên quán khi nền đã đổi theo màu riêng */
 /* QA58a BUG-2: màu nhấn riêng — thẻ Chơi nhanh / Ghép nhanh của MỌI giao diện dùng gradient accent → --accent-end (cc_vars: đuôi đi xa màu chữ),
    lớp hoa văn ::before cũng ngả về đuôi đó: chữ trên thẻ ≥ 4.5 ở mọi điểm. Giao diện giữ hình dáng/viền, chỉ đổi dải màu. */
-html[data-theme]:not([data-theme="riso"])[style*="--accent-end"] :is(.qp, .hub-mode.is-quick) { background: linear-gradient(135deg, var(--accent), var(--accent-end)); }
-html[data-theme]:not([data-theme="riso"])[style*="--accent-end"] :is(.qp, .hub-mode.is-quick)::before { background: color-mix(in srgb, var(--accent-end) 60%, transparent); }
+html[data-theme]:not([data-theme="riso"], .an)[style*="--accent-end"] :is(.qp, .hub-mode.is-quick) { background: linear-gradient(135deg, var(--accent), var(--accent-end)); }   /* .an (anime): thẻ tự lo nền + chữ an toàn ở themes-anime.css */
+html[data-theme]:not([data-theme="riso"], .an)[style*="--accent-end"] :is(.qp, .hub-mode.is-quick)::before { background: color-mix(in srgb, var(--accent-end) 60%, transparent); }

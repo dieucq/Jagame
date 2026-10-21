@@ -30,6 +30,21 @@ if ($uri !== '/' && file_exists($file) && !is_dir($file)) {
     if (!rb_router_static_allowed($uri) || !rb_router_realpath_ok($file)) {
         rb_router_404();
     }
+    // QA bảo mật BUG-03: tệp KHÔNG tin cậy (gói game cộng đồng / tự cài, mọi .svg/.html/.xml dưới /games và /uploads) mở thẳng
+    // trên origin chính phải là tài liệu "chết": CSP sandbox (không script, origin mờ) + nosniff; svg/html còn tải về thay vì hiện.
+    // <img>/<script>/<link> từ trang vẫn chạy bình thường (CSP + Content-Disposition chỉ áp khi tệp được mở làm tài liệu).
+    // Phải tự phục vụ: built-in server bỏ mọi header đặt trước `return false`.
+    if (rb_router_untrusted($uri)) {
+        if (preg_match('~\.(mp3|m4a|ogg)$~i', $uri)) {
+            foreach (rb_router_sandbox_headers($uri) as $line) {
+                header($line);
+            }
+            rb_router_serve_media($file);
+        }
+        $q = (string) substr((string) $_SERVER['REQUEST_URI'], $cut);
+        rb_router_serve_immutable($file, $uri, rb_router_immutable($uri, $q) ? 'public, max-age=31536000, immutable' : 'public, max-age=604800', rb_router_sandbox_headers($uri));
+        rb_router_404();   // kiểu lạ / phương thức khác GET-HEAD: không để built-in server phục vụ trần
+    }
     // Media: built-in server không hỗ trợ HTTP Range -> Chromium/iOS không tua được (R3-21). Tự phục vụ.
     if (preg_match('~\.(mp3|m4a|ogg)$~i', $uri)) {
         rb_router_serve_media($file);
@@ -50,7 +65,8 @@ if ($uri !== '/' && file_exists($file) && !is_dir($file)) {
 }
 
 // Serve index.html for directory requests (e.g. /help/)
-if (is_dir($file)) {
+// QA bảo mật BUG-20: KHÔNG phục vụ index.html thư mục dưới /games và /uploads (gói game / tệp người dùng sẽ chạy script trên origin chính).
+if (is_dir($file) && !preg_match('~^/(games|uploads)(/|$)~i', $uri)) {
     $index = rtrim($file, '/\\') . '/index.html';
     if (file_exists($index) && rb_router_realpath_ok($index)) {
         header('Content-Type: text/html; charset=utf-8');
@@ -185,8 +201,41 @@ function rb_router_immutable($uri, $query)
     return (bool) preg_match('~^/uploads/photos/[0-9a-f]{2}/[0-9a-f]{32}_[a-z]\.(jpe?g|png|gif|webp)$~i', $uri);
 }
 
-/** Phục vụ 1 file tĩnh với Cache-Control dài hạn ($cache_control, mặc định 1 năm immutable) + ETag/Last-Modified (304 khi trình duyệt đã có). GET/HEAD; khác -> để nguyên. */
-function rb_router_serve_immutable($file, $uri, $cache_control = 'public, max-age=31536000, immutable')
+/**
+ * Tệp tĩnh không tin cậy (QA bảo mật BUG-03): mọi tệp của game hạng community|local (games/<id>/.jagame_tier, PHP ghi lúc giải nén —
+ * gói không mang được tệp chấm; thiếu tệp = game chính thức cài trước khi có hạng) + mọi tài liệu có thể chạy script
+ * (.svg/.html/.htm/.xml) dưới /games/ và /uploads/ bất kể hạng.
+ */
+function rb_router_untrusted($uri)
+{
+    if (preg_match('~^/(games|uploads)/.+\.(svg|html?|xml|xhtml)$~i', $uri)) {
+        return true;
+    }
+    if (!preg_match('~^/games/([A-Za-z0-9_-]+)/~', $uri, $m)) {
+        return false;
+    }
+    $tf = rb_router_root() . '/games/' . $m[1] . '/.jagame_tier';
+    if (!is_file($tf)) {
+        return false;
+    }
+    return trim((string) @file_get_contents($tf, false, null, 0, 32)) !== 'official';
+}
+
+/** Header kèm tệp không tin cậy: CSP sandbox (không allow-scripts) + chặn mọi tải ngoài; svg/html -> attachment. */
+function rb_router_sandbox_headers($uri)
+{
+    $h = array(
+        "Content-Security-Policy: sandbox; default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:",
+        'X-Content-Type-Options: nosniff',
+    );
+    if (preg_match('~\.(svg|html?|xml|xhtml)$~i', $uri)) {
+        $h[] = 'Content-Disposition: attachment; filename="' . preg_replace('~[^A-Za-z0-9._-]~', '_', basename($uri)) . '"';
+    }
+    return $h;
+}
+
+/** Phục vụ 1 file tĩnh với Cache-Control dài hạn ($cache_control, mặc định 1 năm immutable) + ETag/Last-Modified (304 khi trình duyệt đã có). GET/HEAD; khác -> để nguyên. $extra = header thêm (cả lúc 304). */
+function rb_router_serve_immutable($file, $uri, $cache_control = 'public, max-age=31536000, immutable', array $extra = array())
 {
     $method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
     if ($method !== 'GET' && $method !== 'HEAD') {
@@ -209,6 +258,9 @@ function rb_router_serve_immutable($file, $uri, $cache_control = 'public, max-ag
     $ims = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? strtotime((string) $_SERVER['HTTP_IF_MODIFIED_SINCE']) : false;
     header('Cache-Control: ' . $cache_control);
     header('ETag: ' . $etag);
+    foreach ($extra as $line) {
+        header($line);
+    }
     if (in_array($ext, array('woff', 'woff2', 'ttf', 'otf'), true)) {
         // Phông là tài nguyên công khai: khung cách ly game (iframe sandbox, origin "null" — /gframe) tải phông ở chế độ CORS.
         header('Access-Control-Allow-Origin: *');

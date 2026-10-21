@@ -1,0 +1,448 @@
+/* Jagame — 3 GIAO DIỆN ANIME (config/content.php `themes`: group 'comic' + 'pack' => 'anime'; <html data-theme="…" class="cm an">).
+   Nạp SAU themes-comic.css (dùng chung khung truyện html.cm: ô viền mực, tiêu đề bong bóng, chữ tượng thanh --cm-sfx, .hero-fx i×6, ô hiện dần).
+   Chỉ nạp khi giao diện thuộc nhóm này hoặc đang ở chế độ sửa (views/partials/head.php) => giao diện khác không tải byte nào.
+   Thiết kế + kiểm: Docs/design/THEMES-ANIME.md. Hình: assets/img/themes/{mangaden,shinobi,baoboi}-*.svg (Docs/design/svg-gen/gen_anime.py).
+   ⚠ Bản quyền: TỰ VẼ, chỉ lấy cảm hứng thể loại (manga đen trắng, ninja nói chung, đồ chơi tương lai). Không nhân vật / logo / biểu tượng /
+     tên tác phẩm nào; linh vật "Bíp" (mèo-robot trắng tai nhọn, mặt màn LED) do Jagame tự thiết kế.
+   Quy ước (như themes-comic.css / themes-v3.css):
+   - Khối [data-theme="x"] CHỈ đặt biến (ô xem trước .ed-swatch cũng đọc). Trang trí: html[data-theme="x"] …
+   - Màu chữ luôn qua --ink/--paper/--accent-ink/--accent-text (color_helper.php cc_vars() sửa tương phản khi chủ nhà đặt màu riêng);
+     mảng màu cứng phải có :not([data-cc]) hoặc vá html[data-mode="dark"] ở cuối tệp.
+   - Chuyển động: chỉ transform/opacity; prefers-reduced-motion tắt hết (cuối tệp). */
+
+/* ═══════════════════════════ 1. MANGA — đen trắng + 1 màu nhấn, chấm tram, khung truyện, bóng thoại, đường tốc độ, chữ "BÙM!" ═══════════════════════════ */
+[data-theme="mangaden"] {
+  --bg: #f7f6f2; --ink: #0d0d0f; --accent: #1748e0;
+  --paper: #ffffff; --soft: color-mix(in srgb, var(--accent) 8%, var(--paper)); --line: var(--ink);
+  --muted: color-mix(in srgb, var(--ink) 78%, var(--bg)); --sec-alt: color-mix(in srgb, var(--ink) 4%, var(--paper));
+  --f-head: "Bangers", "Be Vietnam Pro", sans-serif; --head-w: 400; --head-case: uppercase; --head-track: .04em;
+  --radius: 3px; --r-btn: 4px; --r-icon: 6px; --r-img: 2px; --r-field: 3px; --card-bw: 3px;
+  --card-line: var(--ink); --card-shadow: 5px 5px 0 var(--ink); --btn-shadow: 3px 3px 0 var(--ink);
+  --tone: radial-gradient(color-mix(in srgb, var(--ink) 24%, transparent) 1.25px, transparent 1.7px) 0 0 / 7px 7px;
+  --tone-acc: radial-gradient(color-mix(in srgb, var(--accent) 55%, transparent) 1.5px, transparent 2px) 0 0 / 7px 7px;
+  --hero-bg: var(--paper); --hero-pattern: var(--tone);
+  --icon-bg: color-mix(in srgb, var(--accent) 10%, var(--paper)); --hl: var(--accent); --badge-bg: var(--ink); --badge-ink: var(--paper);
+  --edge-on: ""; --edge: url(../img/themes/mangaden-band.svg); --edge-h: 14px;
+  --orn: none; --ph: url(../img/themes/mangaden-ph.svg); --glyph: url(../img/themes/mangaden-orn.svg);
+  --toast-bg: var(--ink); --toast-ink: var(--paper); --toast-r: 3px; --toast-sh: 4px 4px 0 var(--accent);
+  --sheet-top: linear-gradient(var(--ink), var(--ink)); --sheet-top-h: 6px; --grip: var(--ink); --sheet-sh: 0 -4px 0 var(--accent);
+  --bar-fill: repeating-linear-gradient(-60deg, transparent 0 5px, color-mix(in srgb, var(--paper) 30%, transparent) 5px 7px), var(--accent); --bar-track: var(--paper);
+}
+html[data-theme="mangaden"] {
+  --cm-bubble-bg: var(--paper); --cm-bubble-ink: var(--ink); --cm-bubble-r: 999px; --cm-drop: 5px 5px 0 var(--ink); --cm-drop-hover: 8px 9px 0 var(--accent);
+  --cm-burst: var(--accent); --cm-tone: color-mix(in srgb, var(--ink) 18%, transparent);
+  --cm-sfx: "BÙM!|RẦM!|VÚT!|XOẸT!|ĐÙNG!"; --cm-sfx-bg: var(--paper); --cm-sfx-ink: var(--ink); --cm-sfx-line: var(--ink);
+  --cm-title-shadow: 3px 3px 0 var(--paper), 6px 6px 0 var(--accent); --f-btn: var(--f-head); --f-btn-w: 400;
+  --cm-title-fs: clamp(1.9rem, 6vw, 2.9rem); --cm-from: translateY(26px) scale(.92); --cm-hover: translate(-3px, -5px);
+}
+/* nền trang: giấy trắng ngà + chấm tram mờ ở 2 góc như trang truyện in */
+html[data-theme="mangaden"] body.site { background:
+  radial-gradient(70% 380px at 100% 0, color-mix(in srgb, var(--ink) 7%, transparent), transparent 70%) no-repeat,
+  var(--bg); }
+html[data-theme="mangaden"] :is(.topbar, .tabbar) { border-color: var(--ink); }
+html[data-theme="mangaden"] .topbar { border-bottom-width: 3px; }
+html[data-theme="mangaden"] .tabbar { border-top: 3px solid var(--ink); box-shadow: none; }
+html[data-theme="mangaden"] .tabbar a.is-on::before { width: 36px; height: 5px; margin-left: -18px; border-radius: 0; background: var(--accent); transform: skewX(-20deg); }
+html[data-theme="mangaden"] .topbar .logo-mono { border-radius: 3px; background: var(--ink); color: var(--paper); box-shadow: 2px 2px 0 var(--accent); }
+html[data-theme="mangaden"] .brand-name { font-family: var(--f-head); letter-spacing: .04em; }
+/* tiêu đề mục = chữ Bangers + bóng thoại "!!" nhỏ phía trước */
+html[data-theme="mangaden"] :is(.ah-row h2, .pg-h2 > span:first-child) { font-family: var(--f-head); font-weight: 400; letter-spacing: .05em; text-transform: uppercase; }
+html[data-theme="mangaden"] .ah-row h2 { font-size: clamp(1.3rem, 4.4vw, 1.6rem); }
+html[data-theme="mangaden"] .ah-row h2::before { content: ""; display: inline-block; width: 1.1em; height: .92em; margin-right: .4em; vertical-align: -.06em;
+  background: var(--accent); -webkit-mask: var(--glyph) center / contain no-repeat; mask: var(--glyph) center / contain no-repeat; }
+html[data-theme="mangaden"] .pg-title { letter-spacing: .04em; text-shadow: 2px 2px 0 color-mix(in srgb, var(--accent) 35%, transparent); }
+/* thẻ Chơi nhanh = ô truyện đen, đường tập trung trắng tỏa từ tâm, chữ trắng */
+html[data-theme="mangaden"] .qp { background: var(--ink); color: var(--paper); border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--accent); }
+html[data-theme="mangaden"] .qp::before { inset: -40% -10% -40% 35%; width: auto; height: auto; border-radius: 0; background: var(--paper); opacity: .2;
+  -webkit-mask: url(../img/themes/mangaden-focus.svg) center / cover no-repeat; mask: url(../img/themes/mangaden-focus.svg) center / cover no-repeat; }
+html[data-theme="mangaden"] .qp-title { font-size: 1.5rem; letter-spacing: .05em; }
+html[data-theme="mangaden"] .qp-ic { background: var(--paper); border: 2.5px solid var(--paper); box-shadow: 3px 3px 0 var(--accent); }
+html[data-theme="mangaden"] .hub-mode { border: 2.5px solid var(--ink); border-radius: 3px; box-shadow: 3px 3px 0 var(--ink); }
+html[data-theme="mangaden"] .hub-mode.is-quick { background: var(--ink); color: var(--paper); box-shadow: 5px 5px 0 var(--accent); }
+html[data-theme="mangaden"] .hub-mode.is-quick::before { inset: -20%; width: auto; height: auto; border-radius: 0; background: var(--paper); opacity: .2;
+  -webkit-mask: url(../img/themes/mangaden-focus.svg) center / cover no-repeat; mask: url(../img/themes/mangaden-focus.svg) center / cover no-repeat; }
+html[data-theme="mangaden"] .hub-mode.is-quick .hub-mode-ic { background: var(--accent); color: var(--accent-ink); border-radius: 3px; box-shadow: 3px 3px 0 var(--paper); }
+html[data-theme="mangaden"] .hub-mode.is-quick .hub-mode-t b { font: 400 1.6rem/1.1 var(--f-head); letter-spacing: .05em; text-transform: uppercase; }
+html[data-theme="mangaden"] .hub-mode-ic { border-radius: 3px; box-shadow: inset 0 0 0 2px var(--ink); background: var(--paper); color: var(--ink); }
+html[data-theme="mangaden"] .qp-go { background: var(--accent); color: var(--accent-ink); border: 2.5px solid var(--paper); box-shadow: 3px 3px 0 var(--paper); font-family: var(--f-head); font-weight: 400; letter-spacing: .06em; font-size: 1.1rem; }
+/* thẻ trò = ô truyện: viền mực 3px, bóng mực; bìa có chấm tram; trỏ = bóng xanh + đường tốc độ chạy qua */
+html[data-theme="mangaden"] .gc { border: 3px solid var(--ink); border-radius: 3px; box-shadow: 4px 4px 0 var(--ink); }
+html[data-theme="mangaden"] .gc-cover { position: relative; }
+html[data-theme="mangaden"] .gc-cover::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: var(--tone); opacity: .7; mix-blend-mode: multiply; }
+html[data-theme="mangaden"] .gc-name { font-family: var(--f-head); font-weight: 400; letter-spacing: .04em; text-transform: uppercase; font-size: 1.15rem; }
+html[data-theme="mangaden"] .gc:hover { box-shadow: 6px 6px 0 var(--accent); }
+html[data-theme="mangaden"] .gc:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); }
+html[data-theme="mangaden"] :is(.qs-card, .list, .u-empty-row, .rc, .bdg) { border: 2.5px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); border-radius: 3px; }
+html[data-theme="mangaden"] .row-ic { background: var(--paper); color: var(--ink); border-radius: 3px; box-shadow: inset 0 0 0 2px var(--ink), 2px 2px 0 var(--accent); }
+html[data-theme="mangaden"] .qs-bar { border-radius: 0; box-shadow: inset 0 0 0 2px var(--ink); background: var(--paper); }
+html[data-theme="mangaden"] .qs-bar i { border-radius: 0; }
+html[data-theme="mangaden"] .empty-box { border: 2.5px dashed var(--ink); border-radius: 3px; background: var(--tone), var(--paper); }
+html[data-theme="mangaden"] .bdg.is-on { box-shadow: 4px 4px 0 var(--accent); }
+html[data-theme="mangaden"] .rk-pod .rk-pod-step { border: 3px solid var(--ink); border-bottom: 0; border-radius: 0; background: var(--tone), var(--paper); color: var(--ink); }
+html[data-theme="mangaden"] .rk-pod.is-1 .rk-pod-step { background: var(--tone-acc), var(--paper); }
+/* hồ sơ: avatar viền mực + bóng xanh; dải bìa = đường tập trung */
+html[data-theme="mangaden"] :is(.pf-hero > .ava, .me-ava) { box-shadow: 0 0 0 3px var(--ink), 5px 5px 0 3px var(--accent); }
+html[data-theme="mangaden"] :is(.pf-band, .me-band) { border: 3px solid var(--ink); border-radius: 3px; box-shadow: 5px 5px 0 var(--ink); position: relative; overflow: hidden; isolation: isolate;
+  background: var(--paper); }
+html[data-theme="mangaden"] :is(.pf-band, .me-band)::before { content: ""; position: absolute; inset: -30%; z-index: -1; background: var(--ink); opacity: .85;
+  -webkit-mask: url(../img/themes/mangaden-focus.svg) center / cover no-repeat; mask: url(../img/themes/mangaden-focus.svg) center / cover no-repeat; }
+html[data-theme="mangaden"] .ofr-ava .ava { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4.5px var(--ink); }
+/* chat: bong bóng thoại truyện — người khác = giấy viền mực, của mình = mực đặc chữ trắng */
+html[data-theme="mangaden"] .cx { --bub-me: var(--ink); --bub-me-ink: var(--paper); --bub-other: var(--paper); --bub-other-ink: var(--ink); --bub-r: 18px; --bub-r-s: 4px; }
+html[data-theme="mangaden"] .cx .msg.is-other:not(.is-emoji, .is-sticker, .is-image, .is-deleted) .msg-bubble { box-shadow: inset 0 0 0 2.5px var(--ink); }
+html[data-theme="mangaden"] .cx .msg.is-me:not(.is-emoji, .is-sticker, .is-image, .is-deleted) .msg-bubble { box-shadow: 3px 3px 0 var(--accent); }
+/* bàn chơi: cờ vua trắng / xám tram, caro viền mực X xanh O đen, mặt bàn bài = giấy chấm tram khung mực */
+html[data-theme="mangaden"] .jgv { --jgv-sq-l: #ffffff; --jgv-sq-d: #a9adb8; --jgv-co-l: #4b4f5a; --jgv-co-d: #ffffff; }
+html[data-theme="mangaden"] .jgv-frame { border-color: var(--ink); border-radius: 2px; box-shadow: 6px 6px 0 var(--ink); }
+html[data-theme="mangaden"] .jgc { --jgc-r: 2px; --jgc-paper: var(--paper); --jgc-frame: var(--ink); --jgc-bw: 3px; --jgc-shadow: 6px 6px 0 var(--ink); --jgc-sheen: none;
+  --jgc-grid: color-mix(in srgb, var(--ink) 22%, transparent); --jgc-x: var(--accent); --jgc-o: var(--ink); --jgc-pdy: 0px; --jgc-chip-r: 3px; }
+html[data-theme="mangaden"] .jgl-felt { border-radius: 4px; background: var(--tone), color-mix(in srgb, var(--ink) 10%, var(--paper));
+  box-shadow: inset 0 0 0 3px var(--ink), inset 0 0 0 7px var(--paper), inset 0 0 0 9px var(--ink), 5px 5px 0 var(--ink); }
+html[data-theme="mangaden"] .jgk-card { --jgk-back: var(--accent); }
+html[data-theme="mangaden"] .jg-end-card { border: 3px solid var(--ink); border-radius: 3px; box-shadow: 7px 7px 0 var(--accent); }
+html[data-theme="mangaden"] .jg-end.is-win .jg-end-word { font-family: var(--f-head); letter-spacing: .05em; color: var(--ink); text-shadow: 3px 3px 0 var(--paper), 6px 6px 0 var(--accent); }
+html[data-theme="mangaden"] .jg-end-burst { color: var(--accent); opacity: .5; }
+html[data-theme="mangaden"] .bare-card { border: 3px solid var(--ink); box-shadow: 7px 7px 0 var(--accent); }
+html[data-theme="mangaden"] .jg-sheet-box { border: 3px solid var(--ink); border-bottom: 0; }
+html[data-theme="mangaden"] :is(input, textarea, select):not([type=checkbox]):not([type=radio]):not([type=color]):not(.cx-input):not(.quick-name):not(.quick-code) { border: 2px solid var(--ink); border-radius: 3px; }
+html[data-theme="mangaden"] :is(input, textarea):focus-visible { box-shadow: 3px 3px 0 var(--accent); outline: 0; }
+/* trang chủ khách (landing): ô truyện, đường tập trung sau tiêu đề, trang truyện nghiêng, chữ "BÙM!" */
+html[data-theme="mangaden"] .sec-hero { border-bottom: 4px solid var(--ink); }
+html[data-theme="mangaden"] .sec-hero::before { opacity: .55; -webkit-mask: radial-gradient(ellipse at 22% 40%, transparent 0 22%, #000 70%); mask: radial-gradient(ellipse at 22% 40%, transparent 0 22%, #000 70%); }
+html[data-theme="mangaden"] .hero-title { color: var(--ink); line-height: 1.04; font-size: clamp(3rem, 11vw, 6.2rem); letter-spacing: .03em; }
+html[data-theme="mangaden"] .eyebrow { background: var(--ink); color: var(--paper); padding: 6px 14px; transform: skew(-10deg); font-family: var(--f-head); letter-spacing: .14em; font-weight: 400; font-size: var(--fs-subhead); }
+html[data-theme="mangaden"] .hero-tagline { position: relative; background: var(--paper); color: var(--ink); border: 3px solid var(--ink); border-radius: 26px; padding: 12px 20px; max-width: 40ch; box-shadow: 4px 4px 0 var(--ink); }
+html[data-theme="mangaden"] .hero-tagline::after { content: ""; position: absolute; left: 34px; bottom: -14px; width: 22px; height: 22px; background: var(--paper);
+  border: solid var(--ink); border-width: 0 3px 3px 0; transform: skew(22deg) rotate(45deg); }
+html[data-theme="mangaden"] .hero-img { border-color: var(--ink); box-shadow: 10px 10px 0 var(--accent); --cm-img-rot: -1.5deg; filter: grayscale(.15) contrast(1.05); }
+html[data-theme="mangaden"] .sec-hero .slot-empty { background: var(--tone), var(--paper); }
+html[data-theme="mangaden"] .hero-fx i:nth-child(1) { right: 3%; top: 6%; width: 250px; height: 300px; background-image: url(../img/themes/mangaden-page.svg); --rot: 4deg; transform: rotate(4deg);
+  filter: drop-shadow(8px 8px 0 var(--ink)); animation: cm-bob 7s ease-in-out infinite; }
+html[data-theme="mangaden"] .hero-fx i:nth-child(2) { left: 46%; top: 6%; width: 150px; height: 96px; background: var(--paper); border: 3px solid var(--ink); border-radius: 50%;
+  box-shadow: 4px 4px 0 var(--ink); animation: am-pop 4.5s var(--cm-ease) infinite; }
+html[data-theme="mangaden"] .hero-fx i:nth-child(2)::after { content: "!?"; position: absolute; inset: 0; display: grid; place-items: center; font: 400 48px/1 var(--f-head); color: var(--accent); }
+html[data-theme="mangaden"] .hero-fx i:nth-child(3) { left: 54%; bottom: 3%; width: 230px; height: 150px; animation: am-pop 5.5s var(--cm-ease) -2s infinite; }
+html[data-theme="mangaden"] .hero-fx i:nth-child(3)::before { content: ""; position: absolute; inset: 0; background: var(--accent);
+  -webkit-mask: url(../img/themes/comic-burst.svg) center / 100% 100% no-repeat; mask: url(../img/themes/comic-burst.svg) center / 100% 100% no-repeat; }
+html[data-theme="mangaden"] .hero-fx i:nth-child(3)::after { content: "BÙM!"; position: absolute; inset: 0; display: grid; place-items: center; transform: rotate(-8deg);
+  font: 400 54px/1 var(--f-head); letter-spacing: .03em; color: var(--paper); -webkit-text-stroke: 2px var(--ink); paint-order: stroke fill; text-shadow: 3px 3px 0 var(--ink); }
+html[data-theme="mangaden"] .hero-fx i:nth-child(4) { right: -6%; bottom: -12%; width: 520px; height: 300px; background: var(--ink); opacity: .12;
+  -webkit-mask: url(../img/themes/mangaden-speed.svg) center / 100% 100% no-repeat; mask: url(../img/themes/mangaden-speed.svg) center / 100% 100% no-repeat; animation: am-zip 2.4s linear infinite; }
+html[data-theme="mangaden"] .hero-fx i:nth-child(5) { left: 4%; top: 12%; width: 46px; height: 46px; background: var(--accent);
+  -webkit-mask: url(../img/themes/comic-burst.svg) center / contain no-repeat; mask: url(../img/themes/comic-burst.svg) center / contain no-repeat; animation: cm-pulse 1.8s ease-in-out infinite; }
+html[data-theme="mangaden"] .hero-fx i:nth-child(6) { display: none; }
+@keyframes am-pop { 0%, 18%, 100% { transform: scale(1) rotate(0); } 6% { transform: scale(1.14) rotate(-4deg); } 12% { transform: scale(.96) rotate(2deg); } }
+@keyframes am-zip { from { transform: translateX(0); } to { transform: translateX(-60px); } }
+@media (max-width: 760px) {
+  html[data-theme="mangaden"] .hero-fx i:nth-child(1) { right: -40px; top: 8px; width: 120px; height: 144px; filter: drop-shadow(4px 4px 0 var(--ink)); }
+  html[data-theme="mangaden"] .hero-fx i:nth-child(2) { left: auto; right: 104px; top: 14px; width: 84px; height: 56px; }
+  html[data-theme="mangaden"] .hero-fx i:nth-child(2)::after { font-size: 28px; }
+  html[data-theme="mangaden"] .hero-fx i:nth-child(3) { left: auto; right: -30px; bottom: auto; top: 46%; width: 150px; height: 100px; opacity: .9; }
+  html[data-theme="mangaden"] .hero-fx i:nth-child(3)::after { font-size: 34px; }
+  html[data-theme="mangaden"] .hero-fx i:nth-child(5) { display: none; }
+}
+
+/* ═══════════════════════════ 2. NINJA — giấy dó, cuộn giấy, lá tre bay, phi tiêu, mây cuộn; cam · đen · xanh lá ═══════════════════════════ */
+[data-theme="shinobi"] {
+  --bg: #f6efe2; --ink: #17130f; --accent: #e85d04; --leaf: #2f8f46; --night: #1b1712; --wood: #8a3412;
+  --paper: #fffaf1; --soft: color-mix(in srgb, var(--accent) 10%, var(--paper)); --line: color-mix(in srgb, var(--ink) 22%, var(--bg));
+  --muted: color-mix(in srgb, var(--ink) 78%, var(--bg)); --sec-alt: color-mix(in srgb, var(--leaf) 8%, var(--paper));
+  --f-head: "Potta One", "Be Vietnam Pro", sans-serif; --head-w: 400; --head-case: none; --head-track: 0;
+  --radius: 6px; --r-btn: 6px; --r-icon: 10px; --r-img: 4px; --r-field: 5px; --card-bw: 2.5px;
+  --card-line: var(--ink); --card-shadow: 4px 4px 0 var(--ink); --btn-shadow: 3px 3px 0 var(--ink);
+  --washi: url(../img/themes/shinobi-washi.svg) 0 0 / 160px 160px;
+  --hero-bg: linear-gradient(180deg, #120f0b 0%, #2a2118 62%, #3e2c18 100%);
+  --hero-pattern: radial-gradient(1.4px 1.4px at 12% 18%, #fff7e6 50%, transparent 51%), radial-gradient(1.2px 1.2px at 34% 9%, #fff7e6 50%, transparent 51%),
+    radial-gradient(1.6px 1.6px at 58% 22%, #fff7e6 50%, transparent 51%), radial-gradient(1.2px 1.2px at 81% 12%, #fff7e6 50%, transparent 51%);
+  --hero-ink: #fff4e4; --hero-muted: #e9dcc7; --hero-eyebrow: #ffb27a;
+  --icon-bg: color-mix(in srgb, var(--leaf) 12%, var(--paper)); --hl: var(--accent); --badge-bg: var(--night); --badge-ink: #ffb27a;
+  --edge-on: ""; --edge: url(../img/themes/shinobi-band.svg); --edge-h: 14px;
+  --orn: none; --ph: url(../img/themes/shinobi-ph.svg); --glyph: url(../img/themes/shinobi-orn.svg);
+  --toast-bg: var(--night); --toast-ink: #fff4e4; --toast-r: 6px; --toast-sh: 4px 4px 0 var(--accent);
+  --sheet-top: linear-gradient(90deg, var(--wood), #c4602f 50%, var(--wood)); --sheet-top-h: 9px; --grip: var(--ink); --sheet-sh: 0 -3px 0 var(--ink);
+  --bar-fill: repeating-linear-gradient(-45deg, transparent 0 6px, color-mix(in srgb, #000 14%, transparent) 6px 9px), var(--accent); --bar-track: color-mix(in srgb, var(--leaf) 10%, var(--paper));
+}
+html[data-theme="shinobi"] {
+  --cm-bubble-bg: var(--paper); --cm-bubble-ink: var(--ink); --cm-bubble-r: 6px; --cm-tail: none; --cm-title-tf: none;
+  --cm-drop: 4px 4px 0 var(--ink); --cm-drop-hover: 7px 7px 0 var(--accent); --cm-burst: var(--leaf);
+  --cm-from: translateX(-60px) rotate(-2deg); --cm-hover: translate(-3px, -5px) rotate(-.6deg);
+  --cm-sfx: "VÚT!|XOẸT!|PHỤT!|BỤP!"; --cm-sfx-bg: var(--paper); --cm-sfx-ink: var(--accent); --cm-sfx-line: var(--ink);
+  --cm-title-shadow: 0 3px 0 #000, 0 0 24px color-mix(in srgb, var(--accent) 45%, transparent); --f-btn: var(--f-body); --f-btn-w: 700;
+  --cm-title-fs: clamp(1.7rem, 5.4vw, 2.5rem); --cm-img-rot: 0deg;
+}
+html[data-theme="shinobi"] body.site { background: var(--washi), var(--bg); }
+html[data-theme="shinobi"] :is(.topbar, .tabbar) { border-color: var(--ink); }
+html[data-theme="shinobi"] .topbar { border-bottom-width: 3px; box-shadow: 0 3px 0 color-mix(in srgb, var(--accent) 80%, transparent); }
+html[data-theme="shinobi"] .tabbar { border-top: 3px solid var(--ink); box-shadow: none; }
+html[data-theme="shinobi"] .tabbar a.is-on::before { width: 14px; height: 14px; margin-left: -7px; top: -8px; border-radius: 0; background: var(--accent);
+  -webkit-mask: var(--glyph) center / contain no-repeat; mask: var(--glyph) center / contain no-repeat; }
+html[data-theme="shinobi"] .topbar .logo-mono { background: var(--night); color: #ffb27a; border-radius: 50%; box-shadow: 0 0 0 2px var(--accent); }
+/* tiêu đề mục: phông Potta One (nét bút lông) + phi tiêu cam quay khi trỏ hàng */
+html[data-theme="shinobi"] :is(.ah-row h2, .pg-h2 > span:first-child) { font-family: var(--f-head); font-weight: 400; letter-spacing: 0; }
+html[data-theme="shinobi"] .ah-row h2 { font-size: clamp(1.15rem, 4vw, 1.4rem); }
+html[data-theme="shinobi"] .ah-row h2::before { content: ""; display: inline-block; width: 1em; height: 1em; margin-right: .42em; vertical-align: -.12em;
+  background: var(--accent); -webkit-mask: var(--glyph) center / contain no-repeat; mask: var(--glyph) center / contain no-repeat; transition: transform .5s var(--cm-ease); }
+html[data-theme="shinobi"] .ah-row:hover h2::before { transform: rotate(180deg); }
+html[data-theme="shinobi"] .pg-title { font-weight: 400; }
+/* thẻ Chơi nhanh = CUỘN GIẤY mở: giấy dó giữa, 2 trục gỗ ở mép, dải dây cam */
+html[data-theme="shinobi"] .qp { color: var(--ink); background: var(--washi), color-mix(in srgb, #ecd29c 45%, var(--paper)); border: 2.5px solid var(--ink);
+  border-inline-width: 14px; border-inline-color: var(--wood); border-radius: 12px; box-shadow: 0 0 0 2.5px var(--ink), 5px 5px 0 2.5px var(--ink); margin-inline: 2px; }
+html[data-theme="shinobi"] .qp::before { inset: auto -24px -36px auto; width: 150px; height: 150px; border-radius: 0; background: var(--leaf); opacity: .16;
+  -webkit-mask: var(--glyph) center / contain no-repeat; mask: var(--glyph) center / contain no-repeat; }
+html[data-theme="shinobi"] .qp-kicker { color: var(--accent-text); }
+html[data-theme="shinobi"] .qp-ic { background: var(--paper); box-shadow: inset 0 0 0 2px var(--ink); }
+html[data-theme="shinobi"] .hub-mode { border: 2.5px solid var(--ink); border-radius: 6px; box-shadow: 3px 3px 0 var(--ink); background: var(--washi), var(--paper); }
+html[data-theme="shinobi"] .hub-mode.is-quick { background: var(--ink); color: var(--paper); box-shadow: 5px 5px 0 var(--accent); }
+html[data-theme="shinobi"] .hub-mode.is-quick::before { inset: auto -34px -40px auto; width: 150px; height: 150px; border-radius: 0; background: var(--accent); opacity: .35;
+  -webkit-mask: var(--glyph) center / contain no-repeat; mask: var(--glyph) center / contain no-repeat; }
+html[data-theme="shinobi"] .hub-mode.is-quick .hub-mode-ic { background: var(--accent); color: var(--accent-ink); border-radius: 50%; }
+html[data-theme="shinobi"] .hub-mode.is-quick .hub-mode-t b { font: 400 1.45rem/1.15 var(--f-head); }
+html[data-theme="shinobi"] .hub-mode-ic { border-radius: 50%; box-shadow: inset 0 0 0 2px var(--ink); background: var(--icon-bg); color: var(--ink); }
+html[data-theme="shinobi"] .qp-go { background: var(--accent); color: var(--accent-ink); border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+/* thẻ trò: viền mực, bóng mực; trỏ = vệt chém cam chéo + bóng cam */
+html[data-theme="shinobi"] .gc { border: 2.5px solid var(--ink); border-radius: 6px; box-shadow: 4px 4px 0 var(--ink); position: relative; }
+html[data-theme="shinobi"] .gc::after { content: ""; position: absolute; left: -4px; right: -4px; top: 42%; height: 7px; z-index: 3; pointer-events: none; background: var(--accent);
+  transform: scaleX(0) rotate(-10deg); transform-origin: 0 50%; opacity: 0; }
+html[data-theme="shinobi"] .gc:hover::after { animation: am-slash .45s var(--cm-ease-in); }
+html[data-theme="shinobi"] .gc:hover { box-shadow: 6px 6px 0 var(--accent); }
+html[data-theme="shinobi"] .gc:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+@keyframes am-slash { 0% { transform: scaleX(0) rotate(-10deg); opacity: 1; } 55% { transform: scaleX(1) rotate(-10deg); opacity: 1; } 100% { transform: scaleX(1) translateX(30%) rotate(-10deg); opacity: 0; } }
+html[data-theme="shinobi"] :is(.qs-card, .list, .u-empty-row, .rc, .bdg) { border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); border-radius: 6px; background: var(--washi), var(--paper); }
+html[data-theme="shinobi"] .row-ic { background: var(--icon-bg); color: var(--ink); border-radius: 50%; box-shadow: inset 0 0 0 2px var(--ink); }
+html[data-theme="shinobi"] .qs-bar { border-radius: 3px; box-shadow: inset 0 0 0 2px var(--ink); }
+html[data-theme="shinobi"] .qs-bar i { border-radius: 0; }
+html[data-theme="shinobi"] .empty-box { border: 2.5px dashed var(--ink); border-radius: 8px; background: var(--washi), var(--paper); }
+html[data-theme="shinobi"] .bdg.is-on { box-shadow: 3px 3px 0 var(--accent); }
+html[data-theme="shinobi"] .rk-pod .rk-pod-step { border: 2.5px solid var(--ink); border-bottom: 0; border-radius: 6px 6px 0 0; color: var(--ink); background: var(--washi), var(--paper); }
+html[data-theme="shinobi"] .rk-pod.is-1 .rk-pod-step { background: var(--washi), color-mix(in srgb, var(--accent) 22%, var(--paper)); }
+/* hồ sơ: avatar vòng mực + cam; bìa = đêm trăng có rặng tre */
+html[data-theme="shinobi"] :is(.pf-hero > .ava, .me-ava) { box-shadow: 0 0 0 3px var(--ink), 0 0 0 6px var(--accent), 4px 5px 0 6px var(--ink); }
+html[data-theme="shinobi"] :is(.pf-band, .me-band) { border: 2.5px solid var(--ink); border-radius: 8px; box-shadow: 4px 4px 0 var(--ink);
+  background: url(../img/themes/shinobi-bamboo.svg) right 12px bottom -40px / 70px auto no-repeat, url(../img/themes/shinobi-moon.svg) right 92px top 14px / 48px auto no-repeat,
+    var(--hero-pattern), var(--hero-bg); }
+html[data-theme="shinobi"] .ofr-ava .ava { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4.5px var(--leaf); }
+/* chat: người khác = giấy dó viền mực; của mình = đêm, chữ kem, bóng cam */
+html[data-theme="shinobi"] .cx { --bub-me: var(--ink); --bub-me-ink: var(--paper); --bub-other: var(--paper); --bub-other-ink: var(--ink); --bub-r: 10px; --bub-r-s: 3px; }
+html[data-theme="shinobi"] .cx .msg.is-other:not(.is-emoji, .is-sticker, .is-image, .is-deleted) .msg-bubble { box-shadow: inset 0 0 0 2px var(--ink); }
+html[data-theme="shinobi"] .cx .msg.is-me:not(.is-emoji, .is-sticker, .is-image, .is-deleted) .msg-bubble { box-shadow: 3px 3px 0 var(--accent); }
+/* bàn chơi: cờ vua kem–xanh tre, caro giấy dó X cam O lá, mặt bàn bài = chiếu tatami */
+html[data-theme="shinobi"] .jgv { --jgv-sq-l: #f3e3c0; --jgv-sq-d: #3f8f52; --jgv-co-l: #2d6b3b; --jgv-co-d: #f3e3c0; }
+html[data-theme="shinobi"] .jgv-frame { border-color: var(--ink); border-radius: 4px; box-shadow: 5px 5px 0 var(--ink), inset 0 0 0 3px var(--wood); }
+html[data-theme="shinobi"] .jgc { --jgc-r: 6px; --jgc-paper: color-mix(in srgb, #f0dcb0 40%, var(--paper)); --jgc-frame: var(--ink); --jgc-bw: 3px; --jgc-shadow: 5px 5px 0 var(--ink); --jgc-sheen: none;
+  --jgc-grid: color-mix(in srgb, #8a6a3a 34%, transparent); --jgc-x: #d14f00; --jgc-o: #1f7a3a; --jgc-chip-r: 6px; }
+html[data-theme="shinobi"] .jgl-felt { border-radius: 6px;
+  background: repeating-linear-gradient(90deg, transparent 0 22px, color-mix(in srgb, #000 10%, transparent) 22px 23px), linear-gradient(180deg, #7d9a52, #5f7f3c);
+  box-shadow: inset 0 0 0 6px #2a2118, inset 0 0 0 8px #c9a86a, 5px 5px 0 var(--ink); }
+html[data-theme="shinobi"] .jgk-card { --jgk-back: #1f6b33; }
+html[data-theme="shinobi"] .jg-end-card { border: 2.5px solid var(--ink); border-radius: 8px; box-shadow: 6px 6px 0 var(--accent); background: var(--washi), var(--paper); }
+html[data-theme="shinobi"] .jg-end.is-win .jg-end-word { font-family: var(--f-head); color: var(--accent-text); text-shadow: 3px 3px 0 color-mix(in srgb, var(--leaf) 45%, transparent); }
+html[data-theme="shinobi"] .jg-end-burst { color: var(--leaf); opacity: .45; }
+html[data-theme="shinobi"] .bare-card { border: 2.5px solid var(--ink); box-shadow: 6px 6px 0 var(--accent); background: var(--washi), var(--paper); }
+html[data-theme="shinobi"] .jg-sheet-box { border: 2.5px solid var(--ink); border-bottom: 0; }
+html[data-theme="shinobi"] :is(input, textarea):focus-visible { box-shadow: 3px 3px 0 var(--accent); outline: 0; border-color: var(--ink); }
+/* landing: đêm trăng, rặng tre 2 bên, mây cuộn trôi, lá tre bay, phi tiêu phóng qua, cuộn giấy */
+html[data-theme="shinobi"] .hero-title { color: var(--hero-ink); font-size: clamp(2.6rem, 9.5vw, 5.4rem); line-height: 1.12; }
+html[data-theme="shinobi"] .eyebrow { background: var(--accent); color: #17130f; padding: 6px 14px; border-radius: 4px; font-weight: 800; letter-spacing: .14em; box-shadow: 3px 3px 0 #000; }
+html[data-theme="shinobi"] .hero-tagline { position: relative; margin: 0 18px; max-width: 42ch; padding: 12px 18px; background: color-mix(in srgb, #ecd29c 45%, var(--paper)); color: var(--ink);
+  border-block: 3px solid #000; font-weight: 600; }
+html[data-theme="shinobi"] .hero-tagline::before, html[data-theme="shinobi"] .hero-tagline::after { content: ""; position: absolute; top: -9px; bottom: -9px; width: 16px;
+  background: linear-gradient(90deg, #5e220b, #c4602f 45%, #5e220b); border: 3px solid #000; border-radius: 7px; }
+html[data-theme="shinobi"] .hero-tagline::before { left: -16px; } html[data-theme="shinobi"] .hero-tagline::after { right: -16px; }
+html[data-theme="shinobi"] .sec-hero :is(.btn-accent, .quick-go) { border-color: #000; box-shadow: 4px 4px 0 #000; }
+html[data-theme="shinobi"] .sec-hero .quick-play { border-color: #000; box-shadow: 6px 6px 0 var(--accent); color: var(--ink); }
+html[data-theme="shinobi"] .sec-hero .btn-ghost { background: transparent; color: var(--hero-ink); border-color: var(--hero-ink); }
+html[data-theme="shinobi"] .hero-img { border-color: #000; box-shadow: 0 0 0 4px var(--wood), 10px 10px 0 4px #000; }
+html[data-theme="shinobi"] .sec-hero .slot-empty { background: radial-gradient(circle at 70% 30%, #ffe9b8 0 18%, transparent 19%), linear-gradient(180deg, #2a2118, #3e2c18); }
+html[data-theme="shinobi"] .sec-hero .slot-ph { background: #ffb27a; }
+html[data-theme="shinobi"] .hero-fx i:nth-child(1) { right: 8%; top: 7%; width: 120px; height: 120px; background-image: url(../img/themes/shinobi-moon.svg); filter: drop-shadow(0 0 30px rgba(255, 220, 150, .45)); }
+html[data-theme="shinobi"] .hero-fx i:nth-child(2) { right: -10px; bottom: -6px; width: 130px; height: 280px; background-image: url(../img/themes/shinobi-bamboo.svg); }
+html[data-theme="shinobi"] .hero-fx i:nth-child(3) { left: 30%; top: 4%; width: 190px; height: 84px; background-image: url(../img/themes/shinobi-cloud.svg); --dx: 80px; animation: cm-drift 12s ease-in-out infinite alternate; opacity: .95; }
+html[data-theme="shinobi"] .hero-fx i:nth-child(4) { left: -80px; top: 14%; width: 56px; height: 56px; background-image: url(../img/themes/shinobi-shuriken.svg); animation: am-throw 6s cubic-bezier(.5, 0, .3, 1) infinite; z-index: 1; }
+html[data-theme="shinobi"] .hero-fx i:nth-child(5) { left: -60px; top: 40%; width: 64px; height: 20px; background-image: url(../img/themes/shinobi-leaf.svg); animation: am-leaf 8s linear infinite; }
+html[data-theme="shinobi"] .hero-fx i:nth-child(6) { left: -60px; top: 70%; width: 50px; height: 16px; background-image: url(../img/themes/shinobi-leaf.svg); animation: am-leaf 10s linear -4s infinite; }
+@keyframes am-leaf { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 8% { opacity: 1; } 50% { transform: translate(55vw, 50px) rotate(220deg); } 92% { opacity: 1; } 100% { transform: translate(110vw, -10px) rotate(430deg); opacity: 0; } }
+@keyframes am-throw { 0%, 35% { transform: translate(0, 0) rotate(0); opacity: 0; } 37% { opacity: 1; } 62% { transform: translate(calc(100vw + 120px), 90px) rotate(1440deg); opacity: 1; } 63%, 100% { opacity: 0; transform: translate(calc(100vw + 120px), 90px); } }
+@media (max-width: 760px) {
+  html[data-theme="shinobi"] .hero-fx i:nth-child(1) { right: 14px; top: 12px; width: 64px; height: 64px; }
+  html[data-theme="shinobi"] .hero-fx i:nth-child(2) { right: -30px; bottom: auto; top: 150px; width: 70px; height: 150px; opacity: .85; }
+  html[data-theme="shinobi"] .hero-fx i:nth-child(3) { left: auto; right: 60px; top: 30px; width: 120px; height: 54px; }
+}
+
+/* ═══════════════════════════ 3. BẢO BỐI TƯƠNG LAI — trời xanh mây tròn, túi bảo bối, phong linh, cửa thần kỳ, linh vật Bíp ═══════════════════════════ */
+[data-theme="baoboi"] {
+  --bg: #eaf5ff; --ink: #0b2747; --accent: #1668d6; --red: #d42a33; --sky: #bfe3ff; --sun: #ffd23f;
+  --paper: #ffffff; --soft: color-mix(in srgb, var(--accent) 10%, var(--paper)); --line: color-mix(in srgb, var(--ink) 20%, var(--bg));
+  --muted: color-mix(in srgb, var(--ink) 78%, var(--bg)); --sec-alt: color-mix(in srgb, var(--sky) 45%, var(--paper));
+  --f-head: "Baloo 2", "Be Vietnam Pro", sans-serif; --head-w: 800; --head-case: none; --head-track: -.01em;
+  --radius: 22px; --r-btn: 999px; --r-icon: 18px; --r-img: 26px; --r-field: 14px; --card-bw: 3px;
+  --card-line: var(--ink); --card-shadow: 0 5px 0 var(--ink); --btn-shadow: 0 4px 0 var(--ink);
+  --hero-bg: linear-gradient(180deg, #7cc4ff 0%, #bfe3ff 55%, var(--bg) 100%);
+  --hero-pattern: radial-gradient(circle at 20% 30%, #fff 0 2.5px, transparent 3.5px) 0 0 / 150px 130px, radial-gradient(circle at 70% 60%, color-mix(in srgb, #fff 70%, transparent) 0 1.5px, transparent 2.5px) 40px 20px / 110px 170px;
+  --hero-ink: var(--ink); --hero-muted: color-mix(in srgb, var(--ink) 82%, #bfe3ff); --hero-eyebrow: var(--paper);
+  --icon-bg: color-mix(in srgb, var(--sky) 55%, var(--paper)); --hl: var(--red); --badge-bg: var(--red); --badge-ink: #fff;
+  --edge-on: ""; --edge: url(../img/themes/baoboi-band.svg); --edge-h: 18px;
+  --orn: none; --ph: url(../img/themes/baoboi-ph.svg); --glyph: url(../img/themes/baoboi-orn.svg);
+  --toast-bg: var(--ink); --toast-ink: var(--paper); --toast-r: 999px; --toast-sh: 0 4px 0 color-mix(in srgb, var(--accent) 70%, var(--ink));
+  --sheet-top: linear-gradient(90deg, var(--accent), var(--accent)); --sheet-top-h: 8px; --grip: var(--accent); --sheet-sh: 0 -4px 0 var(--ink);
+  --bar-fill: repeating-linear-gradient(-45deg, var(--red) 0 8px, color-mix(in srgb, var(--red) 70%, #fff) 8px 14px); --bar-track: var(--paper);
+}
+html[data-theme="baoboi"] {
+  --cm-bubble-bg: var(--paper); --cm-bubble-ink: var(--ink); --cm-bubble-r: 30px; --cm-drop: 0 5px 0 var(--ink); --cm-drop-hover: 0 9px 0 var(--ink);
+  --cm-burst: var(--sun); --cm-tone: color-mix(in srgb, var(--accent) 14%, transparent);
+  --cm-from: translateY(30px) scale(.9); --cm-hover: translateY(-6px) rotate(-1deg); --cm-ease: cubic-bezier(.34, 1.7, .5, 1);
+  --cm-sfx: "BÍP BÍP!|TING!|PỪM!|WOA!"; --cm-sfx-bg: var(--sun); --cm-sfx-ink: var(--ink); --cm-sfx-line: var(--ink); --cm-sfx-w: 800;
+  --cm-title-shadow: 0 4px 0 var(--paper), 0 7px 0 var(--ink); --f-btn: var(--f-head); --f-btn-w: 800;
+  --cm-title-fs: clamp(1.7rem, 5vw, 2.5rem); --cm-img-rot: -1deg;
+}
+html[data-theme="baoboi"] body.site { background:
+  url(../img/themes/baoboi-cloud.svg) right -50px top 70px / 210px auto no-repeat,
+  url(../img/themes/baoboi-cloud.svg) left -70px top 420px / 170px auto no-repeat,
+  linear-gradient(180deg, color-mix(in srgb, var(--sky) 60%, var(--bg)) 0, var(--bg) 520px); }
+html[data-theme="baoboi"] :is(.topbar, .tabbar) { --bar-bg: var(--paper); border-color: var(--ink); }
+html[data-theme="baoboi"] .topbar { border-bottom-width: 3px; }
+html[data-theme="baoboi"] .tabbar { border-top: 3px solid var(--ink); box-shadow: none; }
+html[data-theme="baoboi"] .tabbar a.is-on::before { width: 12px; height: 12px; margin-left: -6px; top: -7px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 2.5px var(--ink); }
+html[data-theme="baoboi"] .topbar .logo-mono { border-radius: 50%; background: var(--accent); color: var(--accent-ink); box-shadow: 0 0 0 2.5px var(--ink), 0 3px 0 2.5px var(--ink); }
+html[data-theme="baoboi"] :is(.ah-row h2, .pg-h2 > span:first-child) { font-family: var(--f-head); font-weight: 800; letter-spacing: -.01em; }
+html[data-theme="baoboi"] .ah-row h2 { font-size: clamp(1.2rem, 4vw, 1.45rem); }
+html[data-theme="baoboi"] .ah-row h2::before { content: ""; display: inline-block; width: 1em; height: 1em; margin-right: .38em; vertical-align: -.1em;
+  background: var(--red); -webkit-mask: var(--glyph) center / contain no-repeat; mask: var(--glyph) center / contain no-repeat; }
+html[data-theme="baoboi"] .ah-row:nth-of-type(2n) h2::before { background: var(--accent); }
+/* thẻ Chơi nhanh = bầu trời: xanh, mây tròn trắng dưới đáy, gờ đáy mực như đồ chơi */
+html[data-theme="baoboi"] .qp { background: linear-gradient(180deg, var(--accent), var(--accent-end)); border: 3px solid var(--ink); border-radius: 26px; box-shadow: 0 6px 0 var(--ink); }
+html[data-theme="baoboi"] .qp::before { inset: auto -20px -40px auto; width: 150px; height: 75px; border-radius: 0; background: url(../img/themes/baoboi-cloud.svg) center / contain no-repeat; opacity: .22; }
+html[data-theme="baoboi"] .qp-ic { background: var(--paper); border-radius: 50%; box-shadow: 0 0 0 3px var(--ink); }
+html[data-theme="baoboi"] .hub-mode { border: 3px solid var(--ink); border-radius: 22px; box-shadow: 0 4px 0 var(--ink); }
+html[data-theme="baoboi"] .hub-mode.is-quick { background: linear-gradient(180deg, var(--accent), var(--accent-end)); box-shadow: 0 6px 0 var(--ink); }
+html[data-theme="baoboi"] .hub-mode.is-quick::before { inset: -20px -50px auto auto; width: 140px; height: 70px; border-radius: 0; background: url(../img/themes/baoboi-cloud.svg) center / contain no-repeat; opacity: .22; }
+html[data-theme="baoboi"] .hub-mode.is-quick .hub-mode-ic { background: var(--paper); color: var(--accent); border-radius: 50%; box-shadow: 0 0 0 3px var(--ink); }
+html[data-theme="baoboi"] .hub-mode.is-quick .hub-mode-t b { font: 800 1.4rem/1.1 var(--f-head); }
+html[data-theme="baoboi"] .hub-mode-ic { border-radius: 50%; box-shadow: inset 0 0 0 2.5px var(--ink); background: var(--icon-bg); color: var(--ink); }
+html[data-theme="baoboi"] .qp-go { background: var(--paper); color: var(--ink); border: 3px solid var(--ink); box-shadow: 0 4px 0 var(--ink); font-family: var(--f-head); font-weight: 800; font-size: 1.05rem; }
+html[data-theme="baoboi"] .qp-title { font-size: 1.35rem; }
+html[data-theme="baoboi"]:not([style*="--accent-end"]) :is(.qp, .hub-mode.is-quick) { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 86%, var(--ink)), var(--accent-end)); }   /* màu gốc: đậm thêm đầu dải (chữ trắng ≥ 4.5); màu riêng: theo --accent-end của cc_vars */
+/* thẻ trò = khối đồ chơi bo tròn: viền mực + gờ đáy; trỏ = nảy lên */
+html[data-theme="baoboi"] .gc { border: 3px solid var(--ink); border-radius: 22px; box-shadow: 0 5px 0 var(--ink); transition: transform .35s var(--cm-ease), box-shadow .2s; }
+html[data-theme="baoboi"] .gc:hover { transform: translateY(-4px); box-shadow: 0 9px 0 var(--ink); }
+html[data-theme="baoboi"] .gc:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--ink); }
+html[data-theme="baoboi"] .gc-name { font-family: var(--f-head); font-weight: 800; font-size: 1.12rem; }
+html[data-theme="baoboi"] :is(.qs-card, .list, .u-empty-row, .rc, .bdg) { border: 2.5px solid var(--ink); box-shadow: 0 4px 0 var(--ink); border-radius: 20px; }
+html[data-theme="baoboi"] .row-ic { border-radius: 50%; background: color-mix(in srgb, var(--sky) 55%, var(--paper)); color: var(--ink); box-shadow: inset 0 0 0 2.5px var(--ink); }
+html[data-theme="baoboi"] .qs-bar { border-radius: 999px; box-shadow: inset 0 0 0 2.5px var(--ink); }
+/* ô rỗng: Bíp ngồi chờ thay biểu tượng chung */
+html[data-theme="baoboi"] .empty-box { border: 3px dashed color-mix(in srgb, var(--accent) 60%, var(--ink)); border-radius: 22px; background: var(--paper); }
+html[data-theme="baoboi"] .empty-box > svg:first-child { background: url(../img/themes/baoboi-bot-sit.svg) center / contain no-repeat; }
+html[data-theme="baoboi"] .empty-box:not(.is-row) > svg:first-child { width: 84px; height: 96px; }
+html[data-theme="baoboi"] .empty-box > svg:first-child > * { visibility: hidden; }
+html[data-theme="baoboi"] .bdg.is-on { box-shadow: 0 4px 0 var(--accent), 0 0 0 2px var(--sun) inset; }
+html[data-theme="baoboi"] .rk-pod .rk-pod-step { border: 3px solid var(--ink); border-bottom: 0; border-radius: 18px 18px 0 0; color: var(--ink); background: var(--paper); }
+html[data-theme="baoboi"]:not([data-cc]) .rk-pod.is-1 .rk-pod-step { background: color-mix(in srgb, var(--sun) 60%, var(--paper)); }
+html[data-theme="baoboi"]:not([data-cc]) .rk-pod.is-2 .rk-pod-step { background: color-mix(in srgb, var(--sky) 60%, var(--paper)); }
+/* hồ sơ: avatar vòng xanh + chấm đỏ (ăng-ten), bìa = trời có mây + cửa thần kỳ */
+html[data-theme="baoboi"] :is(.pf-hero > .ava, .me-ava) { box-shadow: 0 0 0 3px var(--paper), 0 0 0 6px var(--accent), 0 6px 0 6px var(--ink); }
+html[data-theme="baoboi"] :is(.pf-band, .me-band) { border: 3px solid var(--ink); border-radius: 22px; box-shadow: 0 5px 0 var(--ink);
+  background: url(../img/themes/baoboi-door.svg) right 18px bottom -6px / 52px auto no-repeat, url(../img/themes/baoboi-cloud.svg) left -30px bottom -18px / 150px auto no-repeat,
+    url(../img/themes/baoboi-cloud.svg) right 90px top 8px / 90px auto no-repeat, linear-gradient(180deg, #7cc4ff, #cfeaff); }
+html[data-theme="baoboi"] .ofr-ava .ava { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4.5px var(--accent); }
+/* chat: bong bóng tròn trịa, của mình xanh chữ trắng, người khác trắng viền mực */
+html[data-theme="baoboi"] .cx { --bub-me: var(--accent); --bub-me-ink: var(--accent-ink); --bub-other: var(--paper); --bub-other-ink: var(--ink); --bub-r: 22px; --bub-r-s: 6px; }
+html[data-theme="baoboi"] .cx .msg.is-other:not(.is-emoji, .is-sticker, .is-image, .is-deleted) .msg-bubble { box-shadow: inset 0 0 0 2.5px var(--ink); }
+html[data-theme="baoboi"] .cx .msg.is-me:not(.is-emoji, .is-sticker, .is-image, .is-deleted) .msg-bubble { box-shadow: 0 3px 0 var(--ink); }
+/* bàn chơi: cờ vua trắng–xanh trời, caro X đỏ O xanh khung bo tròn, mặt bàn bài = trời có mây */
+html[data-theme="baoboi"] .jgv { --jgv-sq-l: #ffffff; --jgv-sq-d: #8cc8ff; --jgv-co-l: #1668d6; --jgv-co-d: #ffffff; }
+html[data-theme="baoboi"] .jgv-frame { border-color: var(--ink); border-radius: 14px; box-shadow: 0 6px 0 var(--ink); }
+html[data-theme="baoboi"] .jgc { --jgc-r: 18px; --jgc-paper: var(--paper); --jgc-frame: var(--ink); --jgc-bw: 3px; --jgc-shadow: 0 6px 0 var(--ink); --jgc-sheen: none;
+  --jgc-grid: color-mix(in srgb, var(--accent) 26%, transparent); --jgc-x: #d42830; --jgc-o: #1668d6; --jgc-chip-r: 999px; }
+html[data-theme="baoboi"] .jgl-felt { border-radius: 26px;
+  background: url(../img/themes/baoboi-cloud.svg) left -40px bottom -30px / 200px auto no-repeat, url(../img/themes/baoboi-cloud.svg) right -30px top -20px / 140px auto no-repeat,
+    linear-gradient(180deg, #4f9ee8, #2a74c9);
+  box-shadow: inset 0 0 0 4px var(--ink), inset 0 0 0 8px #fff, inset 0 0 0 10px var(--ink), 0 6px 0 var(--ink); }
+html[data-theme="baoboi"] .jgk-card { --jgk-back: #e2333b; }
+html[data-theme="baoboi"] .jg-end-card { border: 3px solid var(--ink); border-radius: 26px; box-shadow: 0 7px 0 var(--ink); }
+html[data-theme="baoboi"] .jg-end.is-win .jg-end-word { font-family: var(--f-head); font-weight: 800; color: var(--accent-text); text-shadow: 0 4px 0 color-mix(in srgb, var(--sun) 80%, transparent); }
+html[data-theme="baoboi"] .jg-end-burst { color: var(--sun); opacity: .8; }
+html[data-theme="baoboi"] .bare-card { border: 3px solid var(--ink); border-radius: 26px; box-shadow: 0 7px 0 var(--ink); }
+html[data-theme="baoboi"] .jg-sheet-box { border: 3px solid var(--ink); border-bottom: 0; }
+html[data-theme="baoboi"] :is(input, textarea):focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent); outline: 0; border-color: var(--accent); }
+html[data-theme="baoboi"] body.site .btn:not(:disabled):not(.btn-sm):active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+/* landing: trời xanh, mây tròn trôi, cửa thần kỳ, túi bảo bối, phong linh đung đưa, Bíp vẫy tay */
+html[data-theme="baoboi"] .hero-title { color: var(--paper); -webkit-text-stroke: 0; line-height: 1.08; margin-bottom: .32em; font-size: clamp(2.8rem, 10vw, 5.6rem);
+  text-shadow: 0 4px 0 var(--ink), 3px 0 0 var(--ink), -3px 0 0 var(--ink), 0 -3px 0 var(--ink), 3px 4px 0 var(--ink), -3px 4px 0 var(--ink), 0 9px 0 color-mix(in srgb, var(--ink) 30%, transparent); }
+html[data-theme="baoboi"] .eyebrow { background: var(--red); color: #fff; border: 3px solid var(--ink); border-radius: 999px; padding: 5px 16px; box-shadow: 0 3px 0 var(--ink); font-weight: 800; margin-bottom: 14px; }
+html[data-theme="baoboi"] .hero-tagline { background: var(--paper); color: var(--ink); border: 3px solid var(--ink); border-radius: 26px; padding: 12px 20px; box-shadow: 0 5px 0 var(--ink); max-width: 40ch; }
+html[data-theme="baoboi"] .hero-img { border: 4px solid var(--ink); box-shadow: 0 10px 0 var(--ink); background: var(--paper); border-radius: 30px; }
+html[data-theme="baoboi"] .sec-hero .slot-empty { background: radial-gradient(circle at 50% 30%, #fff, #d6ecff); }
+html[data-theme="baoboi"] .sec-hero .slot-ph { background: var(--accent); }
+html[data-theme="baoboi"] .hero-fx i:nth-child(1) { left: -50px; top: 3%; width: 250px; height: 125px; background-image: url(../img/themes/baoboi-cloud.svg); --dx: 70px; animation: cm-drift 12s ease-in-out infinite alternate; }
+html[data-theme="baoboi"] .hero-fx i:nth-child(2) { right: -40px; bottom: 6%; width: 220px; height: 110px; background-image: url(../img/themes/baoboi-cloud.svg); --dx: -60px; animation: cm-drift 10s ease-in-out infinite alternate; }
+html[data-theme="baoboi"] .hero-fx i:nth-child(3) { right: 4%; top: 6%; width: 80px; height: 113px; background-image: url(../img/themes/baoboi-door.svg); --rot: 4deg; animation: cm-bob 5s ease-in-out infinite; z-index: 1; }
+html[data-theme="baoboi"] .hero-fx i:nth-child(4) { left: 44%; top: 2%; width: 40px; height: 75px; background-image: url(../img/themes/baoboi-chime.svg); transform-origin: 50% 0; animation: cm-swing 2.8s ease-in-out infinite; }
+html[data-theme="baoboi"] .hero-fx i:nth-child(5) { left: 55%; bottom: 3%; width: 120px; height: 138px; background-image: url(../img/themes/baoboi-bot.svg); --rot: -3deg; animation: cm-bob 3.6s ease-in-out infinite; z-index: 1; }
+html[data-theme="baoboi"] .hero-fx i:nth-child(6) { left: calc(55% + 140px); bottom: 5%; width: 64px; height: 70px; background-image: url(../img/themes/baoboi-pouch.svg); --rot: 6deg; animation: cm-bob 4.2s ease-in-out -1s infinite; }
+@media (max-width: 760px) {
+  html[data-theme="baoboi"] .hero-fx i:nth-child(1) { left: -80px; top: 200px; width: 180px; height: 90px; }
+  html[data-theme="baoboi"] .hero-fx i:nth-child(2) { bottom: 1%; width: 150px; height: 75px; }
+  html[data-theme="baoboi"] .hero-fx i:nth-child(3) { right: 10px; top: 10px; width: 46px; height: 65px; }
+  /* QA themes-anime T-02: Bíp không nấp sau thẻ "Đặt biệt danh" / bị mép cắt nữa — đứng TRỌN VẸN ở góc trên phải cạnh Cửa thần kỳ
+     (chỗ chuông gió cũ), nhãn trên cùng chừa chỗ cho Bíp (dài thì xuống dòng) nên không che chữ/nút */
+  html[data-theme="baoboi"] .hero-fx i:nth-child(4) { display: none; }
+  html[data-theme="baoboi"] .hero-fx i:nth-child(5) { left: auto; right: 62px; bottom: auto; top: 8px; width: 54px; height: 62px; z-index: 1; }
+  html[data-theme="baoboi"] .sec-hero .eyebrow { max-width: calc(100% - 116px); }
+  html[data-theme="baoboi"] .hero-fx i:nth-child(6) { display: none; }
+}
+
+/* ═══ Chung: chấm đỏ đếm (tab Chat, chuông) đậm hơn để chữ trắng ≥ 4.5 cả lúc "nảy" (chế độ tối G11 tự đặt lại --live) ═══ */
+:is([data-theme="mangaden"], [data-theme="shinobi"], [data-theme="baoboi"]) { --live: #c42530; }
+/* ═══ Chung cho 3 giao diện: điện thoại hẹp — ô "cách chơi" ở hub gọn lại (viền dày ăn chỗ chữ) ═══ */
+@media (max-width: 400px) {
+  html.an .hub-mode:not(.is-quick) { padding: 10px; gap: 8px; }
+  html.an .hub-mode:not(.is-quick) .hub-mode-ic { width: 36px; height: 36px; }
+}
+/* ═══ Chung cho 3 giao diện: tiêu đề hồ sơ không ép chữ hoa với tên người; số liệu dùng phông thân (đọc rõ) ═══ */
+html.an :is(.qs-streak-n, .rk-pod-val, .pf-kpis b, .me-kpis b) { font-family: var(--f-ui, "Be Vietnam Pro"), sans-serif; }
+html.an :is(.pf-name, .me-name) { text-transform: none; }
+
+/* ═══ Màu riêng chủ nhà (data-cc): bỏ mảng màu cứng phía sau chữ ═══ */
+html[data-theme="shinobi"][data-cc] { --hero-bg: linear-gradient(170deg, var(--soft), var(--bg) 70%); --hero-pattern: none; }
+html[data-theme="shinobi"][data-cc] .qp { background: var(--paper); }
+html[data-theme="baoboi"][data-cc] { --hero-bg: linear-gradient(180deg, color-mix(in srgb, var(--accent) 30%, var(--bg)), var(--bg)); --hero-pattern: none; }
+html[data-theme="baoboi"][data-cc] .hero-title { color: var(--ink); }
+html:is([data-theme="baoboi"], [data-theme="shinobi"], [data-theme="mangaden"])[data-cc] body.site { background: var(--bg); }
+
+/* ═══ Chế độ tối người chơi (themes.css G11 đổi token nền/mực) — vá chỗ cứng màu sáng ═══ */
+html[data-mode="dark"]:is([data-theme="mangaden"], [data-theme="shinobi"], [data-theme="baoboi"]) { --tone: radial-gradient(color-mix(in srgb, var(--ink) 16%, transparent) 1.25px, transparent 1.7px) 0 0 / 7px 7px; }
+html[data-mode="dark"][data-theme="mangaden"] { --line: color-mix(in srgb, var(--ink) 60%, var(--bg)); }
+html[data-mode="dark"][data-theme="mangaden"] .gc-cover::after { mix-blend-mode: normal; opacity: .25; }
+html[data-mode="dark"][data-theme="mangaden"] .qp { background: color-mix(in srgb, var(--accent) 22%, #000); border-color: var(--ink); color: var(--ink); }
+html[data-mode="dark"][data-theme="mangaden"] .qp::before { background: var(--ink); }
+html[data-mode="dark"][data-theme="mangaden"] .hero-title { color: var(--ink); }
+html[data-mode="dark"][data-theme="shinobi"] body.site { background: var(--bg); }
+html[data-mode="dark"][data-theme="shinobi"] .eyebrow { color: #17130f; }
+html[data-mode="dark"][data-theme="shinobi"] :is(.qs-card, .list, .u-empty-row, .rc, .bdg, .empty-box, .jg-end-card, .bare-card, .rk-pod .rk-pod-step) { background: var(--paper); }
+html[data-mode="dark"][data-theme="shinobi"] .qp { background: var(--paper); color: var(--ink); }
+html[data-mode="dark"][data-theme="shinobi"] .hero-tagline { background: var(--paper); }
+html[data-mode="dark"][data-theme="shinobi"] .jgc { --jgc-paper: var(--paper); --jgc-x: #ff8a3d; --jgc-o: #5fd17f; }
+html[data-mode="dark"][data-theme="baoboi"] body.site { background: var(--bg); }
+html[data-mode="dark"][data-theme="baoboi"] :is(.rk-pod.is-1, .rk-pod.is-2) .rk-pod-step { background: var(--paper); }
+html[data-mode="dark"][data-theme="baoboi"] .eyebrow { color: #fff; }
+html[data-mode="dark"][data-theme="baoboi"]:not([style*="--accent-end"]) :is(.qp, .hub-mode.is-quick) { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 82%, #000), color-mix(in srgb, var(--accent) 66%, #000)); }
+html[data-mode="dark"][data-theme="baoboi"] .hero-title { color: #fff; text-shadow: 0 4px 0 #0b2747, 3px 0 0 #0b2747, -3px 0 0 #0b2747, 0 -3px 0 #0b2747, 3px 4px 0 #0b2747, -3px 4px 0 #0b2747, 0 0 30px color-mix(in srgb, var(--accent) 60%, transparent); }
+html[data-mode="dark"][data-theme="baoboi"] .jgc { --jgc-x: #ff6b72; --jgc-o: #7cb8ff; }
+html[data-mode="dark"][data-theme="mangaden"] .jgc { --jgc-x: #7c9cff; }
+html[data-mode="dark"]:is([data-theme="mangaden"], [data-theme="shinobi"], [data-theme="baoboi"]) .hero-tagline { background: var(--paper); }
+
+/* ═══ Ô xem trước trong "Giao diện" (thanh sửa): ảnh chụp thật màn đầu trang chủ (assets/img/themes/anime/<khóa>.jpg) ═══ */
+.ed-swatch:is([data-theme="mangaden"], [data-theme="shinobi"], [data-theme="baoboi"]) { background: center / cover no-repeat; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12); }
+.ed-swatch:is([data-theme="mangaden"], [data-theme="shinobi"], [data-theme="baoboi"]) > i,
+.ed-swatch:is([data-theme="mangaden"], [data-theme="shinobi"], [data-theme="baoboi"])::before,
+.ed-swatch:is([data-theme="mangaden"], [data-theme="shinobi"], [data-theme="baoboi"])::after { display: none; }
+.ed-swatch[data-theme="mangaden"] { background-image: url(../img/themes/anime/mangaden.jpg); }
+.ed-swatch[data-theme="shinobi"] { background-image: url(../img/themes/anime/shinobi.jpg); }
+.ed-swatch[data-theme="baoboi"] { background-image: url(../img/themes/anime/baoboi.jpg); }
+
+/* ═══ Giảm chuyển động: đứng yên ở vị trí gốc ═══ */
+@media (prefers-reduced-motion: reduce) {
+  html.an .hero-fx i, html.an .hero-fx i::before, html.an .hero-fx i::after, html.an .gc::after, html.an .ah-row h2::before { animation: none !important; transition: none !important; }
+  html.an .gc { transition: none; }
+  html[data-theme="shinobi"] .hero-fx i:nth-child(n+4) { display: none; }
+}

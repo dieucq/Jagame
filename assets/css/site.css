@@ -388,6 +388,9 @@ html[data-theme="neon"] .gc-live, html[data-theme="trungthu"] .gc-live { color: 
 .gc-letter { display: grid; place-items: center; font: var(--head-w) 2.6rem/1 var(--f-head); color: var(--ink); background: color-mix(in srgb, var(--paper) 70%, transparent); border-radius: 24%; }
 .gc-live[hidden] { display: none; }
 .gc-tabs::-webkit-scrollbar { display: none; }
+/* Trong phần trang chủ (.sec): hàng chip thẳng mép với tiêu đề + lưới (cùng --maxw, căn giữa) — max-width: 100% ở trên đè
+   mất `.sec > *` nên trước đây hàng chip bám sát mép trái màn hình máy tính. */
+.sec > .gc-tabs { max-width: var(--maxw); }
 
 /* ── Ai đang online ────────────────────────────────────────── */
 .online-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 16px; }
@@ -698,8 +701,9 @@ html[data-theme="pixel"] .chips > *, html[data-theme="pixel"] .gc-tabs > button 
   body.has-tabbar .topnav .chat-link { display: none; }
   /* Ẩn khi bàn phím mở (app.js body.kb-open) và khi vào sâu: hội thoại (.chatpage.is-conv) / phòng chơi (.play-room hiện) —
      CSS :has cho lần vẽ đầu, body.tab-deep (app.js) là dự phòng cho trình duyệt cũ. */
-  body.kb-open .tabbar, body.tab-deep .tabbar, body:has(.chatpage.is-conv) .tabbar, body:has(.play-room:not([hidden])) .tabbar { transform: translateY(100%); }
-  body.has-tabbar.tab-deep, body.has-tabbar:has(.play-room:not([hidden])) { --app-tabbar-h: 0px; padding-bottom: 0; }
+  body.kb-open .tabbar, body.tab-deep .tabbar, body:has(.chatpage.is-conv) .tabbar, body:has(.play-room:not([hidden])) .tabbar,
+  body:has([data-async-game]) .tabbar { transform: translateY(100%); }   /* ván cờ thư = "vào sâu" như phòng chơi (QA sau-20261021-game BUG-09) */
+  body.has-tabbar.tab-deep, body.has-tabbar:has(.play-room:not([hidden])), body.has-tabbar:has([data-async-game]) { --app-tabbar-h: 0px; padding-bottom: 0; }
   /* Danh sách /chat (khung cố định, chat.css) chừa chỗ cho thanh tab; mở hội thoại thì phủ toàn màn như cũ. */
   body.has-tabbar:not(.kb-open):not(.tab-deep) .chatpage:not(.is-conv) { height: calc(var(--vvh, 100dvh) - var(--cp-top) - var(--app-tabbar-h)); }
 }
