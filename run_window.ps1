@@ -291,7 +291,7 @@ function Test-Node($exe) {
     if (-not $exe -or -not (Test-Path -LiteralPath $exe)) { return $false }
     $o = ''
     try {
-        $o = (& $exe -e 'const [a,b]=process.versions.node.split(".").map(Number); console.log(process.version); process.exit(a>22||(a===22&&b>=13)?0:1)' 2>&1 | Out-String).Trim()
+        $o = (& $exe -e 'const [a,b]=process.versions.node.match(/[0-9]+/g).map(Number); console.log(process.version); process.exit(a>22||(a===22&&b>=13)?0:1)' 2>&1 | Out-String).Trim()
         if ($LASTEXITCODE -eq 0) { Log "  node: $exe $o"; return $true }
         $script:NodeWhy = "$exe chay ra ma $LASTEXITCODE`: $o"
     } catch { $script:NodeWhy = "$exe khong chay duoc: " + (Err-Text $_) }
