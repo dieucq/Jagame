@@ -995,7 +995,13 @@ html.cm .msg-invite { border: 2px solid var(--sig-line, var(--ink)); box-shadow:
 /* Sheet chọn trò để rủ chơi */
 .cp-sheet.is-games { max-height: min(78dvh, 640px); display: flex; flex-direction: column; touch-action: auto; }
 @media (min-width: 700px) { .cp-sheet.is-games { left: 0; right: 0; margin: 0 auto; width: min(520px, 100%); } }
-.cp-games { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; overflow-y: auto; overscroll-behavior: contain; padding: 4px 4px 8px; }
+/* QA N-03 (WebKit): khung flex cột co tiêu đề + hàng lưới -> tiêu đề bị ô tìm đè, thẻ 2 dòng mất "N người" */
+.cp-sheet.is-games > .cp-sheet-handle, .cp-sheet.is-games > .cp-sheet-title { flex: none; }
+.cp-games-find { flex: none; margin: 0 4px 8px; min-height: 44px; padding: 0 14px; border: 1px solid var(--hair); border-radius: 12px; background: var(--s-sunk, var(--soft));
+  color: var(--ink); font: inherit; font-size: 16px; }
+.cp-games-find:focus-visible { outline: 3px solid var(--focus, var(--accent)); outline-offset: 1px; }
+/* thanh cuộn LUÔN thấy (Mac/điện thoại ẩn mặc định -> tưởng chỉ có 1 màn trò) */
+.cp-games { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; flex: 1 1 auto; min-height: 0; grid-auto-rows: max-content; align-content: start; overflow-y: auto; scrollbar-width: thin; overscroll-behavior: contain; padding: 4px 4px 8px; }
 .cp-games-wait { grid-column: 1 / -1; margin: 18px 8px; text-align: center; color: var(--muted); }
 .cp-game { display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 104px; padding: 10px 6px; border: 0; border-radius: var(--r-lg, 16px); background: var(--s-sunk);
   color: var(--ink); font: inherit; text-align: center; cursor: pointer; }

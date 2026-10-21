@@ -94,7 +94,11 @@ html.cm .ab-stack .ab-l2, html.cm .ab-stack .ab-l3 { box-shadow: 0 0 0 2px var(-
 .am-shelf::-webkit-scrollbar { display: none; }
 .am-shelf > * { scroll-snap-align: start; min-width: 0; }
 .am-shelf .ab-stack { margin: 6px 8px 10px; }
-@media (min-width: 761px) { .am-shelf { grid-auto-columns: 176px; } }
+@media (min-width: 761px) {
+  .am-shelf { grid-auto-columns: 176px; }
+  /* Máy tính: kệ thẳng mép với tiêu đề phần (cùng --maxw, căn giữa) — lề âm tràn mép chỉ hợp điện thoại; trước đây kệ dính sát mép trái màn hình. */
+  .am-shelf { margin-inline: auto; max-width: var(--maxw); padding-inline: 4px; scroll-padding-inline: 4px; }
+}
 .ab-act { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 12px; text-decoration: none; color: var(--ink); }
 .ab-act > div { flex: 1; min-width: 0; font: var(--w-reg) var(--fs-callout)/1.35 var(--f-ui); overflow-wrap: anywhere; }
 .ab-act small { display: block; color: var(--muted); font-size: var(--fs-footnote); }

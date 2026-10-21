@@ -25,3 +25,7 @@
 .up-dlg-f p, .up-dlg-f .up-notes { margin: 0; }
 @media (prefers-reduced-motion: reduce) { .up-steps li.is-now .up-dot { animation: none; } .up-meter i { transition: none; } }
 @media (max-width: 480px) { .up-steps { grid-template-columns: 1fr 1fr; } .up .btn-row .btn { flex: 1 1 100%; justify-content: center; } }
+/* Lấy mã mới từ cây phát triển (Devupdate): thanh chạy vô định */
+.up-meter.is-busy i { width: 35%; animation: up-busy 1.4s ease-in-out infinite; }
+@keyframes up-busy { 0% { transform: translateX(-100%); } 100% { transform: translateX(290%); } }
+@media (prefers-reduced-motion: reduce) { .up-meter.is-busy i { animation: none; width: 100%; opacity: .5; } }

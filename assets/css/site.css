@@ -391,6 +391,8 @@ html[data-theme="neon"] .gc-live, html[data-theme="trungthu"] .gc-live { color: 
 /* Trong phần trang chủ (.sec): hàng chip thẳng mép với tiêu đề + lưới (cùng --maxw, căn giữa) — max-width: 100% ở trên đè
    mất `.sec > *` nên trước đây hàng chip bám sát mép trái màn hình máy tính. */
 .sec > .gc-tabs { max-width: var(--maxw); }
+/* Mô tả phần đứng riêng (không nằm trong .sec-head, vd phần Album ảnh lúc sửa): .sec-sub { margin: 0 } đè mất căn giữa của `.sec > *`. */
+.sec > .sec-sub { max-width: var(--maxw); margin: 0 auto 12px; }
 
 /* ── Ai đang online ────────────────────────────────────────── */
 .online-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 16px; }
