@@ -1,0 +1,15 @@
+.git
+.github
+cloudflared
+php
+Realtime/node_modules
+database
+uploads
+games
+application/logs
+application/cache
+*.db
+*.db-wal
+*.db-shm
+.env
+.env.*

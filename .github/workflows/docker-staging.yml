@@ -1,0 +1,26 @@
+name: Jagame staging build
+on:
+  pull_request:
+    paths:
+      - 'Dockerfile.php'
+      - 'Dockerfile.realtime'
+      - 'compose.staging.yaml'
+      - '.dockerignore'
+      - '.github/workflows/docker-staging.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: docker compose -f compose.staging.yaml config -q
+      - run: docker compose -f compose.staging.yaml build
+      - name: Verify PHP modules
+        run: docker run --rm --network none --entrypoint php jagame-php:staging -m | grep -ix 'pdo_sqlite'
+      - name: Verify Node runtime
+        run: docker run --rm --network none --entrypoint node jagame-realtime:staging --version
