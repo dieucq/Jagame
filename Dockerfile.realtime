@@ -1,0 +1,9 @@
+FROM node:22-bookworm-slim
+WORKDIR /app
+COPY Realtime/package.json Realtime/package-lock.json ./
+RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
+COPY --chown=node:node Realtime/ ./
+RUN mkdir -p /data/database && chown -R node:node /data
+USER node
+EXPOSE 6969
+CMD ["node","server.js"]
