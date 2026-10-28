@@ -1,0 +1,50 @@
+name: jagame-staging
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    image: jagame-php:staging
+    restart: "no"
+    expose:
+      - "6968"
+    volumes:
+      - jagame_db:/app/database
+      - jagame_uploads:/app/uploads
+      - jagame_games:/app/games
+      - jagame_logs:/app/application/logs
+      - jagame_cache:/app/application/cache
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    mem_limit: 512m
+    pids_limit: 128
+  realtime:
+    build:
+      context: .
+      dockerfile: Dockerfile.realtime
+    image: jagame-realtime:staging
+    restart: "no"
+    depends_on:
+      - php
+    ports:
+      - "127.0.0.1:16969:6969"
+    environment:
+      JAGAME_PORT: "6969"
+      JAGAME_BIND: "0.0.0.0"
+      JAGAME_PHP_PORT: "6968"
+      JAGAME_DB: "/data/database/jagame.db"
+      TZ: Asia/Ho_Chi_Minh
+    volumes:
+      - jagame_db:/data/database
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    mem_limit: 512m
+    pids_limit: 128
+volumes:
+  jagame_db:
+  jagame_uploads:
+  jagame_games:
+  jagame_logs:
+  jagame_cache:
